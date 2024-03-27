@@ -8,7 +8,7 @@ import androidx.compose.runtime.ReadOnlyComposable
 @Composable
 fun PienoteTheme(
     typography: Types = PienoteTheme.typography,
-    colors: Colors = PienoteTheme.pienoteColor,
+    colors: Colors = PienoteTheme.colors,
     shapes: Shapes = PienoteTheme.shapes,
     content: @Composable () -> Unit
 ) {
@@ -21,7 +21,7 @@ fun PienoteTheme(
 }
 
 object PienoteTheme {
-    val pienoteColor: Colors
+    val colors: Colors
         @Composable
         @ReadOnlyComposable
         get() = if (isSystemInDarkTheme())

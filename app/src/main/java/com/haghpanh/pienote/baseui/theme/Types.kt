@@ -19,6 +19,18 @@ val robotoRegularFont = FontFamily(Font(R.font.roboto_regular, FontWeight.Normal
 
 @Immutable
 data class Types(
+    val h1: TextStyle = TextStyle(
+        fontFamily = robotoBoldFont,
+        fontWeight = FontWeight.Bold,
+        fontSize = 42.sp
+    ),
+
+    val h2: TextStyle = TextStyle(
+        fontFamily = robotoBoldFont,
+        fontWeight = FontWeight.Bold,
+        fontSize = 32.sp
+    ),
+
     val h6: TextStyle = TextStyle(
         fontFamily = robotoBoldFont,
         fontWeight = FontWeight.Bold,
@@ -39,7 +51,7 @@ data class Types(
 
     val body1: TextStyle = TextStyle(
         fontFamily = robotoBoldFont,
-        fontWeight = FontWeight.SemiBold,
+        fontWeight = FontWeight.Bold,
         fontSize = 14.sp
     ),
 

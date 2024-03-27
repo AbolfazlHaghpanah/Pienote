@@ -1,13 +1,17 @@
 [versions]
 agp = "8.2.2"
-kotlin = "1.9.0"
+kotlin = "1.9.23"
 core-ktx = "1.12.0"
 junit = "4.13.2"
 androidx-test-ext-junit = "1.1.5"
 espresso-core = "3.5.1"
 lifecycle-runtime-ktx = "2.7.0"
 activity-compose = "1.8.2"
-compose-bom = "2023.08.00"
+composeCompiler = "1.5.11"
+composeFoundation = "1.6.4"
+composeMaterial = "1.6.4"
+composeRuntime = "1.6.4"
+composeUi = "1.6.4"
 
 [libraries]
 core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
@@ -16,16 +20,27 @@ androidx-test-ext-junit = { group = "androidx.test.ext", name = "junit", version
 espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso-core" }
 lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycle-runtime-ktx" }
 activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activity-compose" }
-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "compose-bom" }
+composeUi = { module = "androidx.compose.ui:ui", version.ref = "composeUi" }
+composeCompiler = { module = "androidx.compose.compiler:compiler", version.ref = "composeCompiler" }
+composeFoundation = { module = "androidx.compose.foundation:foundation", version.ref = "composeFoundation" }
+composeRuntime = { module = "androidx.compose.runtime:runtime", version.ref = "composeRuntime" }
 ui = { group = "androidx.compose.ui", name = "ui" }
-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
-material = { group = "androidx.compose.material", name = "material" }
+ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics", version.ref = "composeUi" }
+ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling", version.ref = "composeUi" }
+ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview", version.ref = "composeUi" }
+ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest", version.ref = "composeUi" }
+ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4", version.ref = "composeUi" }
+material = { group = "androidx.compose.material", name = "material", version.ref = "composeMaterial" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 kotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 
+[bundles]
+compose = [
+    "activity-compose",
+    "composeRuntime",
+    "composeFoundation",
+    "composeUi",
+    "composeCompiler"
+]
