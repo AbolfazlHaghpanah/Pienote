@@ -51,14 +51,16 @@ data class Types(
 
     val body1: TextStyle = TextStyle(
         fontFamily = robotoBoldFont,
-        fontWeight = FontWeight.Bold,
-        fontSize = 14.sp
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 16.sp,
+        lineHeight = 20.sp
     ),
 
     val body2: TextStyle = TextStyle(
         fontFamily = robotoRegularFont,
         fontWeight = FontWeight.SemiBold,
-        fontSize = 12.sp
+        fontSize = 16.sp,
+        lineHeight = 20.sp
     ),
 
     val button: TextStyle = TextStyle(
