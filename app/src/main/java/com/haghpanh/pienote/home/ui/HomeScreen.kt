@@ -33,7 +33,7 @@ fun HomeScreen(
         Text(
             modifier = Modifier
                 .padding(24.dp),
-            style = PienoteTheme.typography.body1,
+            style = PienoteTheme.typography.body2,
             text = "These are the harmonies for Hex 474A51 color. Our color palette generator creates beautiful color palettes from any color. We use 9 different algorithms to find your perfect color harmonies.",
             color = PienoteTheme.colors.onBackground
         )
