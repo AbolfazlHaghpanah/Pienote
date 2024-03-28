@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Pienote</string>
+    <string name="label_title">Title</string>
 </resources>

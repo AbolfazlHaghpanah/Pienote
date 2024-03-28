@@ -45,7 +45,12 @@ fun HomeScreenPreview() {
                     ),
                 null,
                 null
-            )
+            ),
+            {},
+            {},
+            {},
+            {},
+            {}
         )
     }
 }

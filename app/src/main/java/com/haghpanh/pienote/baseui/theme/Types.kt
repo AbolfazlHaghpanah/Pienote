@@ -38,7 +38,7 @@ data class Types(
     ),
 
     val subtitle1: TextStyle = TextStyle(
-        fontFamily = robotoBoldFont,
+        fontFamily = robotoMediumFont,
         fontWeight = FontWeight.SemiBold,
         fontSize = 16.sp
     ),
@@ -50,14 +50,14 @@ data class Types(
     ),
 
     val body1: TextStyle = TextStyle(
-        fontFamily = robotoBoldFont,
+        fontFamily = robotoRegularFont,
         fontWeight = FontWeight.SemiBold,
         fontSize = 16.sp,
         lineHeight = 20.sp
     ),
 
     val body2: TextStyle = TextStyle(
-        fontFamily = robotoMediumFont,
+        fontFamily = robotoBoldFont,
         fontWeight = FontWeight.SemiBold,
         fontSize = 16.sp,
         lineHeight = 20.sp

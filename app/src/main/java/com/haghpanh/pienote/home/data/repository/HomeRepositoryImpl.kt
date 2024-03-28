@@ -3,6 +3,7 @@ package com.haghpanh.pienote.home.data.repository
 import com.haghpanh.pienote.commondata.entity.NoteEntity
 import com.haghpanh.pienote.home.data.localdatasource.HomeLocalDataSource
 import com.haghpanh.pienote.home.domain.model.NoteDomainModel
+import com.haghpanh.pienote.home.domain.model.QuickNoteDomainModel
 import com.haghpanh.pienote.home.domain.repository.HomeRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -21,22 +22,21 @@ class HomeRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun insertNote(note: NoteDomainModel) {
+    override suspend fun insertNote(note: QuickNoteDomainModel) {
         val mappedNote = note.toNoteEntity()
 
         homeLocalDataSource.insertNote(mappedNote)
     }
 
-    private fun NoteDomainModel.toNoteEntity(): NoteEntity =
+    private fun QuickNoteDomainModel.toNoteEntity(): NoteEntity =
         NoteEntity(
-            id = id,
-            title = title,
-            note = note,
-            image = image,
+            title = title.orEmpty(),
+            note = note.orEmpty(),
+            image = null,
             addedTime = addedTime,
-            lastChangedTime = lastChangedTime,
-            categoryId = categoryId,
-            priority = priority
+            lastChangedTime = null,
+            categoryId = null,
+            priority = null
         )
 
     private fun NoteEntity.toDomainModel(): NoteDomainModel =
