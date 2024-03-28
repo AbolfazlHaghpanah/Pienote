@@ -36,11 +36,15 @@ class HomeViewModel @Inject constructor(
     }
 
     fun insertNotes() {
-        
+
     }
 
     private fun createState(): HomeViewState =
-        HomeViewState(null)
+        HomeViewState(
+            notes = null,
+            quickNoteTitle = null,
+            quickNoteNote = null
+        )
 
     private fun NoteDomainModel.toUiModel(): Note =
         Note(
