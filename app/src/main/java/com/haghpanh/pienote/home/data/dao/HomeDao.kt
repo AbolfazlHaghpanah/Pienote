@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface HomeDao {
-    @Query("select * from notes")
+    @Query("select * from notes order by id desc")
     fun observeNotes(): Flow<List<NoteEntity>>
 
     @Insert
