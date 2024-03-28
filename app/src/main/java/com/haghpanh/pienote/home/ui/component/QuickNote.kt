@@ -81,7 +81,7 @@ fun QuickNoteTextField(
             onValueChange = onUpdateNote,
             placeholder = {
                 Text(
-                    text = "Write Here...",
+                    text = stringResource(R.string.label_write_here),
                     style = PienoteTheme.typography.body2
                 )
             },
@@ -106,7 +106,7 @@ fun QuickNoteTextField(
                     backgroundColor = Color.Transparent
                 )
             ) {
-                Text(text = "Discard")
+                Text(text = stringResource(R.string.label_discard))
             }
 
             Spacer(modifier = modifier.width(16.dp))
@@ -114,7 +114,7 @@ fun QuickNoteTextField(
             TextButton(
                 onClick = onDone
             ) {
-                Text(text = "Done")
+                Text(text = stringResource(R.string.label_done))
             }
 
         }
@@ -155,7 +155,7 @@ fun QuickNoteButton(
                 .aspectRatio(0.4f)
                 .fillMaxHeight(),
             imageVector = Icons.Rounded.Add,
-            contentDescription = "Quick Note"
+            contentDescription = stringResource(R.string.label_quick_note)
         )
     }
 }
