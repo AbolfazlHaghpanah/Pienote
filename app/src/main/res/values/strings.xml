@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Pienote</string>
     <string name="label_title">Title</string>
-    <string name="label_write_here">Write Here...</string>
+    <string name="label_write_here">Write Here…</string>
     <string name="label_discard">Discard</string>
     <string name="label_done">Done</string>
     <string name="label_quick_note">Quick Note</string>

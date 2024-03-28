@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.ButtonDefaults
@@ -47,8 +48,7 @@ fun QuickNoteTextField(
                 color = PienoteTheme.colors.surface,
                 shape = PienoteTheme.shapes.veryLarge
             )
-            .fillMaxWidth()
-            .aspectRatio(0.8f),
+            .fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ) {
@@ -76,7 +76,7 @@ fun QuickNoteTextField(
             modifier = modifier
                 .padding(bottom = 24.dp, start = 24.dp, end = 24.dp)
                 .fillMaxWidth()
-                .aspectRatio(1.8f),
+                .heightIn(min = 250.dp),
             value = note,
             onValueChange = onUpdateNote,
             placeholder = {
