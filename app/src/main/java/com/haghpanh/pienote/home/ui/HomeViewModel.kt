@@ -2,8 +2,9 @@ package com.haghpanh.pienote.home.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.haghpanh.pienote.commondata.entity.NoteEntity
-import com.haghpanh.pienote.home.data.localdatasource.HomeLocalDataSource
+import com.haghpanh.pienote.home.domain.model.NoteDomainModel
+import com.haghpanh.pienote.home.domain.usecase.HomeInsertNoteUseCase
+import com.haghpanh.pienote.home.domain.usecase.HomeObserveNotesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,7 +14,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val homeLocalDataSource: HomeLocalDataSource
+    private val homeInsertNoteUseCase: HomeInsertNoteUseCase,
+    private val homeObserveNotesUseCase: HomeObserveNotesUseCase
 ) : ViewModel() {
     private val _state = MutableStateFlow(createState())
     val state = _state.asStateFlow()
@@ -24,16 +26,23 @@ class HomeViewModel @Inject constructor(
 
     private fun observeNotes() {
         viewModelScope.launch(Dispatchers.IO) {
-            homeLocalDataSource.observeNotes().collect { notes ->
-                _state.emit(HomeViewState(notes.map { it.toUiModel() }))
+            homeObserveNotesUseCase().collect { notes ->
+                val mappedNotes = notes.map { it.toUiModel() }
+                val newState = state.value.copy(notes = mappedNotes)
+
+                _state.emit(newState)
             }
         }
+    }
+
+    fun insertNotes() {
+        
     }
 
     private fun createState(): HomeViewState =
         HomeViewState(null)
 
-    private fun NoteEntity.toUiModel(): Note =
+    private fun NoteDomainModel.toUiModel(): Note =
         Note(
             id = id,
             title = title,
