@@ -2,7 +2,6 @@ package com.haghpanh.pienote.home.data.localdatasource
 
 import com.haghpanh.pienote.commondata.entity.CategoryEntity
 import com.haghpanh.pienote.commondata.entity.NoteEntity
-import com.haghpanh.pienote.commondata.relation.NoteWithCategory
 import com.haghpanh.pienote.home.data.dao.HomeDao
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject

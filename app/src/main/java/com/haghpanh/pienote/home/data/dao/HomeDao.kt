@@ -6,7 +6,6 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.haghpanh.pienote.commondata.entity.CategoryEntity
 import com.haghpanh.pienote.commondata.entity.NoteEntity
-import com.haghpanh.pienote.commondata.relation.NoteWithCategory
 import kotlinx.coroutines.flow.Flow
 
 @Dao

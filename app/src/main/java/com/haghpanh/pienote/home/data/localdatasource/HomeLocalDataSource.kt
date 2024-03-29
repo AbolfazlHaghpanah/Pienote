@@ -2,7 +2,6 @@ package com.haghpanh.pienote.home.data.localdatasource
 
 import com.haghpanh.pienote.commondata.entity.CategoryEntity
 import com.haghpanh.pienote.commondata.entity.NoteEntity
-import com.haghpanh.pienote.commondata.relation.NoteWithCategory
 import kotlinx.coroutines.flow.Flow
 
 interface HomeLocalDataSource {
