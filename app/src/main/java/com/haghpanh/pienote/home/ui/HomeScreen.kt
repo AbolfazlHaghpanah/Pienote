@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import com.haghpanh.pienote.home.ui.component.HomeCategoryItem
 import com.haghpanh.pienote.home.ui.component.HomeNoteItem
 import com.haghpanh.pienote.home.ui.component.QuickNoteButton
 import com.haghpanh.pienote.home.ui.component.QuickNoteTextField
@@ -99,11 +100,26 @@ fun HomeScreen(
                 }
 
                 items(
-                    items = state.notes ?: emptyList(),
+                    items = state.categories ?: emptyList(),
                     key = { item -> item.id }
+                ) { category ->
+                    HomeCategoryItem(
+                        modifier = Modifier.animateItemPlacement(
+                            animationSpec = tween(300)
+                        ),
+                        name = category.name,
+                        priority = category.priority
+                    )
+                }
+
+                items(
+                    items = state.notes ?: emptyList(),
+                    key = { item -> "${item.id}_${item.title}" }
                 ) { note ->
                     HomeNoteItem(
-                        modifier = Modifier.animateItemPlacement(),
+                        modifier = Modifier.animateItemPlacement(
+                            animationSpec = tween(300)
+                        ),
                         title = note.title,
                         note = note.note
                     )

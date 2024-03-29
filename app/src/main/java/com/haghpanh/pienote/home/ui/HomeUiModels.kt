@@ -13,3 +13,11 @@ data class Note(
     val categoryId: Int? = null,
     val priority: Int? = null
 )
+
+@Immutable
+data class Category(
+    val id: Int = 0,
+    val name: String,
+    val priority: Int?,
+    val image: String?
+)
