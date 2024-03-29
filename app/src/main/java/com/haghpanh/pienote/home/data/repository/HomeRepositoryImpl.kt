@@ -67,26 +67,6 @@ class HomeRepositoryImpl @Inject constructor(
             priority = null
         )
 
-    private fun NoteEntity.toDomainModel(): NoteDomainModel =
-        NoteDomainModel(
-            id = id,
-            title = title,
-            note = note,
-            image = image,
-            addedTime = addedTime,
-            lastChangedTime = lastChangedTime,
-            categoryId = categoryId,
-            priority = priority
-        )
-
-    private fun CategoryEntity.toDomainModel(): CategoryDomainModel =
-        CategoryDomainModel(
-            id = id,
-            name = name,
-            priority = priority,
-            image = image
-        )
-
     private fun CategoryDomainModel.toEntity(): CategoryEntity =
         CategoryEntity(
             id = id,

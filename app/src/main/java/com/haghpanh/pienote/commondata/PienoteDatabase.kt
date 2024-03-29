@@ -5,6 +5,7 @@ import androidx.room.RoomDatabase
 import com.haghpanh.pienote.commondata.entity.CategoryEntity
 import com.haghpanh.pienote.commondata.entity.NoteEntity
 import com.haghpanh.pienote.home.data.dao.HomeDao
+import com.haghpanh.pienote.note.data.dao.NoteDao
 
 @Database(
     entities = [
@@ -15,4 +16,5 @@ import com.haghpanh.pienote.home.data.dao.HomeDao
 )
 abstract class PienoteDatabase : RoomDatabase() {
     abstract fun HomeDao(): HomeDao
+    abstract fun NoteDao(): NoteDao
 }
