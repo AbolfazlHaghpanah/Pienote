@@ -13,12 +13,12 @@ data class NoteWithCategory(
         parentColumn = "category_id",
         entityColumn = "id"
     )
-    val category: CategoryEntity
+    val category: CategoryEntity?
 ) : BaseEntity<NoteWithCategoryDomainModel> {
 
     override fun toDomainModel(): NoteWithCategoryDomainModel =
         NoteWithCategoryDomainModel(
             note = note.toDomainModel(),
-            category = category.toDomainModel()
+            category = category?.toDomainModel()
         )
 }

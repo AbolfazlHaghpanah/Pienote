@@ -53,7 +53,11 @@ class HomeViewModel @Inject constructor(
     fun reverseQuickNoteState() {
         viewModelScope.launch {
             val newState =
-                getCurrentState().copy(hasClickedOnQuickNote = !getCurrentState().hasClickedOnQuickNote)
+                getCurrentState().copy(
+                    hasClickedOnQuickNote = !getCurrentState().hasClickedOnQuickNote,
+                    quickNoteNote = null,
+                    quickNoteTitle = null
+                )
             _state.emit(newState)
         }
     }

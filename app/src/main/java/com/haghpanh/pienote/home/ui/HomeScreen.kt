@@ -6,6 +6,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -21,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import com.haghpanh.pienote.baseui.navigation.AppScreens.NoteScreen
 import com.haghpanh.pienote.home.ui.component.HomeCategoryItem
 import com.haghpanh.pienote.home.ui.component.HomeNoteItem
 import com.haghpanh.pienote.home.ui.component.QuickNoteButton
@@ -49,7 +51,12 @@ private fun HomeScreen(
         onUpdateQuickNoteNote = viewModel::setQuickNoteNote,
         onUpdateQuickNoteTitle = viewModel::setQuickNoteTitle,
         onQuickNoteClick = viewModel::reverseQuickNoteState,
-        onQuickNoteDiscard = viewModel::reverseQuickNoteState
+        onQuickNoteDiscard = viewModel::reverseQuickNoteState,
+        navigateToNote = {route ->
+            navController.navigate(route) {
+                launchSingleTop = true
+            }
+        }
     )
 }
 
@@ -61,7 +68,8 @@ fun HomeScreen(
     onUpdateQuickNoteTitle: (String) -> Unit,
     onUpdateQuickNoteNote: (String) -> Unit,
     onQuickNoteClick: () -> Unit,
-    onQuickNoteDiscard: () -> Unit
+    onQuickNoteDiscard: () -> Unit,
+    navigateToNote: (String) -> Unit
 ) {
     Scaffold { paddingValues ->
         Box(
@@ -81,8 +89,8 @@ fun HomeScreen(
                             fadeIn(tween(300))
                                 .togetherWith(fadeOut(tween(300)))
                         }
-                    ) { wantsToAdd ->
-                        if (wantsToAdd) {
+                    ) { wantsToAddQuickNote ->
+                        if (wantsToAddQuickNote) {
                             QuickNoteTextField(
                                 title = state.quickNoteTitle.orEmpty(),
                                 note = state.quickNoteNote.orEmpty(),
@@ -117,9 +125,13 @@ fun HomeScreen(
                     key = { item -> "${item.id}_${item.title}" }
                 ) { note ->
                     HomeNoteItem(
-                        modifier = Modifier.animateItemPlacement(
-                            animationSpec = tween(300)
-                        ),
+                        modifier = Modifier
+                            .animateItemPlacement(
+                                animationSpec = tween(300)
+                            )
+                            .clickable {
+                                navigateToNote(NoteScreen.createRoute(note.id, true))
+                            },
                         title = note.title,
                         note = note.note
                     )
