@@ -1,12 +1,12 @@
 package com.haghpanh.pienote.home.data.repository
 
-import com.haghpanh.pienote.commondata.entity.CategoryEntity
 import com.haghpanh.pienote.commondata.entity.NoteEntity
+import com.haghpanh.pienote.commondomain.model.CategoryDomainModel
+import com.haghpanh.pienote.commondomain.model.NoteDomainModel
 import com.haghpanh.pienote.home.data.localdatasource.HomeLocalDataSource
-import com.haghpanh.pienote.home.domain.model.CategoryDomainModel
-import com.haghpanh.pienote.home.domain.model.NoteDomainModel
 import com.haghpanh.pienote.home.domain.model.QuickNoteDomainModel
 import com.haghpanh.pienote.home.domain.repository.HomeRepository
+import com.haghpanh.pienote.commondata.utils.toEntity
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -65,13 +65,5 @@ class HomeRepositoryImpl @Inject constructor(
             lastChangedTime = null,
             categoryId = null,
             priority = null
-        )
-
-    private fun CategoryDomainModel.toEntity(): CategoryEntity =
-        CategoryEntity(
-            id = id,
-            name = name,
-            priority = priority,
-            image = image
         )
 }

@@ -18,6 +18,7 @@ hiltNavigationCompose = "1.0.0"
 room = "2.6.1"
 ksp = "1.9.23-1.0.19"
 lifecycle = "2.7.0"
+coil = "2.6.0"
 
 [libraries]
 core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
@@ -50,6 +51,7 @@ room = { module = "androidx.room:room-runtime", version.ref = "room" }
 roomCompiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 roomCompilerKsp = { module = "androidx.room:room-compiler", version.ref = "room" }
 roomKtx = { module = "androidx.room:room-ktx", version.ref = "room" }
+coil = {module = "io.coil-kt:coil-compose" ,version.ref = "coil"}
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

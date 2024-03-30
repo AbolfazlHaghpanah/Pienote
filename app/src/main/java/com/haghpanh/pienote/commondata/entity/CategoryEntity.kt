@@ -2,7 +2,7 @@ package com.haghpanh.pienote.commondata.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.haghpanh.pienote.home.domain.model.CategoryDomainModel
+import com.haghpanh.pienote.commondomain.model.CategoryDomainModel
 
 @Entity(tableName = "categories")
 data class CategoryEntity(

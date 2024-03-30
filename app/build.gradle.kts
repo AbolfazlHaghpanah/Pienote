@@ -72,6 +72,7 @@ dependencies {
     debugImplementation(libs.ui.tooling)
     debugImplementation(libs.ui.test.manifest)
     implementation(libs.bundles.compose)
+    implementation(libs.coil)
 
     //hilt
     implementation(libs.hilt)

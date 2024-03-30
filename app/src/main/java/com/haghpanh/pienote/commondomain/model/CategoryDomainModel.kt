@@ -1,4 +1,4 @@
-package com.haghpanh.pienote.home.domain.model
+package com.haghpanh.pienote.commondomain.model
 
 data class CategoryDomainModel(
     val id: Int,

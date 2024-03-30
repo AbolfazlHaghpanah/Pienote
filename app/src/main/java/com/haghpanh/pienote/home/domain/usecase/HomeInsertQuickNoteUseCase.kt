@@ -1,6 +1,5 @@
 package com.haghpanh.pienote.home.domain.usecase
 
-import com.haghpanh.pienote.home.domain.model.NoteDomainModel
 import com.haghpanh.pienote.home.domain.model.QuickNoteDomainModel
 import com.haghpanh.pienote.home.domain.repository.HomeRepository
 import javax.inject.Inject
