@@ -1,5 +1,6 @@
 package com.haghpanh.pienote.note.ui
 
+import android.net.Uri
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -8,6 +9,7 @@ import com.haghpanh.pienote.commondomain.model.NoteDomainModel
 import com.haghpanh.pienote.note.domain.usecase.NoteGetCategoriesUseCase
 import com.haghpanh.pienote.note.domain.usecase.NoteInsertNoteUseCase
 import com.haghpanh.pienote.note.domain.usecase.NoteObserveNoteInfoUseCase
+import com.haghpanh.pienote.note.domain.usecase.NoteUpdateNoteImageUseCase
 import com.haghpanh.pienote.note.domain.usecase.NoteUpdateNoteUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -22,6 +24,7 @@ class NoteViewModel @Inject constructor(
     private val getCategoriesUseCase: NoteGetCategoriesUseCase,
     private val insertNoteUseCase: NoteInsertNoteUseCase,
     private val updateNoteUseCase: NoteUpdateNoteUseCase,
+    private val noteUpdateNoteImageUseCase: NoteUpdateNoteImageUseCase,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     private val isExist = savedStateHandle.get<Boolean>("isExist") ?: false
@@ -46,12 +49,13 @@ class NoteViewModel @Inject constructor(
         }
     }
 
-    fun updateNoteImage(uri: String?) {
+    fun updateNoteImage(uri: Uri?) {
         viewModelScope.launch {
-            val newNote = getCurrentState().note?.copy(image = uri)
-            val newState = getCurrentState().copy(note = newNote)
+            val note = getCurrentState().note?.toDomainModel()
 
-            _state.emit(newState)
+            if (note != null) {
+                noteUpdateNoteImageUseCase(note, uri)
+            }
         }
     }
 

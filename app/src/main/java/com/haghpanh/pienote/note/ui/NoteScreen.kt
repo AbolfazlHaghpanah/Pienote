@@ -55,10 +55,9 @@ fun NoteScreen(
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     val pickMedia = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.PickVisualMedia()
-    ) { uri ->
-        viewModel.updateNoteImage(uri.toString())
-    }
+        contract = ActivityResultContracts.PickVisualMedia(),
+        onResult = viewModel::updateNoteImage
+    )
 
     BackHandler {
         viewModel.updateNote()
