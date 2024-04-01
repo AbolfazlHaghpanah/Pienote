@@ -1,7 +1,6 @@
 package com.haghpanh.pienote.note.utils
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
@@ -13,10 +12,10 @@ import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import kotlin.math.roundToInt
 
 class NoteNestedScrollConnection(
-    private val initialAlpha: Float = 1f,
-    private val initialScale: Float = 1f
+    initialAlpha: Float = 1f,
+    initialScale: Float = 1f
 ) : NestedScrollConnection {
-    private var allCondoms = 0
+    private var consomeds = 0
 
     var imageOffset by mutableIntStateOf(0)
     var imageScale by mutableFloatStateOf(initialScale)
@@ -29,12 +28,12 @@ class NoteNestedScrollConnection(
         available: Offset,
         source: NestedScrollSource
     ): Offset {
-        allCondoms += consumed.y.roundToInt()
+        consomeds += consumed.y.roundToInt()
         val delta = consumed.y / 300
 
         imageAlpha += delta
         imageScale -= delta / 10
-        imageOffset = -allCondoms
+        imageOffset = -consomeds
 
         return super.onPostScroll(consumed, available, source)
     }

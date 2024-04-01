@@ -128,7 +128,7 @@ fun HomeScreen(
                         .aspectRatio(1.6f)
                 ) {
                     AsyncImage(
-                        modifier = Modifier,
+                        modifier = Modifier.fillMaxSize(),
                         model = imageUri,
                         contentDescription = null,
                         contentScale = ContentScale.Crop
@@ -136,7 +136,7 @@ fun HomeScreen(
 
                     Box(
                         modifier = Modifier
-                            .fillMaxWidth()
+                            .fillMaxSize()
                             .background(
                                 Brush.verticalGradient(
                                     listOf(
