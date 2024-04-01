@@ -4,16 +4,11 @@ import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.offset
@@ -21,33 +16,27 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.Chip
+import androidx.compose.material.ChipDefaults
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
-import androidx.compose.material.TextButton
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import coil.compose.AsyncImage
 import com.haghpanh.pienote.R
 import com.haghpanh.pienote.baseui.theme.PienoteTheme
 import com.haghpanh.pienote.note.ui.component.ImageCoverSection
@@ -96,6 +85,7 @@ fun NoteScreen(
     )
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun HomeScreen(
     state: NoteViewState,
@@ -147,6 +137,27 @@ fun HomeScreen(
                     textStyle = PienoteTheme.typography.h1
                 )
 
+                state.category?.let { category ->
+                    val chipContentColor = PienoteTheme.colors.onBackground.copy(alpha = 0.7f)
+
+                    Chip(
+                        modifier = Modifier.padding(start = 14.dp),
+                        onClick = {
+                            //TODO navigate to category
+                        },
+                        colors = ChipDefaults.chipColors(
+                            backgroundColor = PienoteTheme.colors.background,
+                            contentColor = chipContentColor
+                        ),
+                        border = BorderStroke(1.dp, chipContentColor)
+                    ) {
+                        Text(
+                            text = category.name,
+                            style = PienoteTheme.typography.subtitle2
+                        )
+                    }
+                }
+
                 OutlinedTextField(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -167,7 +178,7 @@ fun HomeScreen(
                     textStyle = PienoteTheme.typography.body1
                 )
 
-                Spacer(modifier = Modifier.height(200.dp))
+                Spacer(modifier = Modifier.heightIn(200.dp))
             }
         }
     }

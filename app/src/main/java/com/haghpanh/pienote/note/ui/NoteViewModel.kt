@@ -37,6 +37,7 @@ class NoteViewModel @Inject constructor(
 
     init {
         getNoteInfo()
+        getCategories()
     }
 
     fun updateNote() {
@@ -56,6 +57,15 @@ class NoteViewModel @Inject constructor(
             if (note != null) {
                 noteUpdateNoteImageUseCase(note, uri)
             }
+        }
+    }
+
+    fun getCategories() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val categories = getCategoriesUseCase().map { it.toUiModel() }
+            val newState = getCurrentState().copy(categories = categories)
+
+            _state.emit(newState)
         }
     }
 

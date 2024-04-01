@@ -15,7 +15,7 @@ class NoteNestedScrollConnection(
     initialAlpha: Float = 1f,
     initialScale: Float = 1f
 ) : NestedScrollConnection {
-    private var consomeds = 0
+    private var consumedFromStart = 0
 
     var imageOffset by mutableIntStateOf(0)
     var imageScale by mutableFloatStateOf(initialScale)
@@ -28,12 +28,12 @@ class NoteNestedScrollConnection(
         available: Offset,
         source: NestedScrollSource
     ): Offset {
-        consomeds += consumed.y.roundToInt()
-        val delta = consumed.y / 300
+        consumedFromStart += consumed.y.roundToInt()
+        val delta = consumed.y / 800
 
         imageAlpha += delta
         imageScale -= delta / 10
-        imageOffset = -consomeds
+        imageOffset = -consumedFromStart
 
         return super.onPostScroll(consumed, available, source)
     }

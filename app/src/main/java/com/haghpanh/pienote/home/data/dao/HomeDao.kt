@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface HomeDao {
-    @Query("select * from notes where category_id is null order by id desc")
+    @Query("select * from notes order by id desc")
     fun observeNotes(): Flow<List<NoteEntity>>
 
     @Query("select * from categories order by id desc")

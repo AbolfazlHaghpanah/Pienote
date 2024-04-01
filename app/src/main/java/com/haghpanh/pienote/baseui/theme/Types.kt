@@ -51,7 +51,7 @@ data class Types(
 
     val body1: TextStyle = TextStyle(
         fontFamily = robotoRegularFont,
-        fontWeight = FontWeight.SemiBold,
+        fontWeight = FontWeight.Normal,
         fontSize = 16.sp,
         lineHeight = 20.sp
     ),
