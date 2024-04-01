@@ -22,7 +22,6 @@ fun HomeNoteItem(
 ) {
     Column(
         modifier = modifier
-            .clip(PienoteTheme.shapes.veryLarge)
             .background(
                 color = PienoteTheme.colors.surface,
                 shape = PienoteTheme.shapes.veryLarge

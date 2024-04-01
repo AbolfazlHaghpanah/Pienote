@@ -13,6 +13,7 @@ import javax.inject.Inject
 class NoteSaveImageUriInCacheUseCase @Inject constructor(
     @ApplicationContext private val context: Context
 ) {
+    //TODO Check for permission in lower apis
     suspend operator fun invoke(uri: Uri?): Uri? = withContext(Dispatchers.IO) {
         if (uri == null) return@withContext null
 

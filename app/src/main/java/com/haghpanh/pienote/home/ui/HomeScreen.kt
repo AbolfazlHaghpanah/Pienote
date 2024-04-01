@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Scaffold
@@ -18,11 +19,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.haghpanh.pienote.baseui.navigation.AppScreens.NoteScreen
+import com.haghpanh.pienote.baseui.theme.PienoteTheme
 import com.haghpanh.pienote.home.ui.component.HomeCategoryItem
 import com.haghpanh.pienote.home.ui.component.HomeNoteItem
 import com.haghpanh.pienote.home.ui.component.QuickNoteButton
@@ -52,7 +55,7 @@ private fun HomeScreen(
         onUpdateQuickNoteTitle = viewModel::setQuickNoteTitle,
         onQuickNoteClick = viewModel::reverseQuickNoteState,
         onQuickNoteDiscard = viewModel::reverseQuickNoteState,
-        navigateToNote = {route ->
+        navigateToNote = { route ->
             navController.navigate(route) {
                 launchSingleTop = true
             }
@@ -74,6 +77,7 @@ fun HomeScreen(
     Scaffold { paddingValues ->
         Box(
             modifier = Modifier
+                .statusBarsPadding()
                 .padding(paddingValues)
         ) {
             LazyColumn(
@@ -126,6 +130,7 @@ fun HomeScreen(
                 ) { note ->
                     HomeNoteItem(
                         modifier = Modifier
+                            .clip(PienoteTheme.shapes.veryLarge)
                             .animateItemPlacement(
                                 animationSpec = tween(300)
                             )

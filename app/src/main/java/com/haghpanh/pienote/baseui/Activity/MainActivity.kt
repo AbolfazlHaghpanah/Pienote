@@ -7,6 +7,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
@@ -44,9 +45,9 @@ fun MainScreen(
     Box(
         modifier = Modifier
             .background(PienoteTheme.colors.background)
-            .systemBarsPadding()
+            .navigationBarsPadding()
             .fillMaxSize()
-    ){
+    ) {
         NavHost(
             navController = navController,
             startDestination = AppScreens.HomeScreen.route

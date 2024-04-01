@@ -155,7 +155,8 @@ fun QuickNoteButton(
                 .aspectRatio(0.4f)
                 .fillMaxHeight(),
             imageVector = Icons.Rounded.Add,
-            contentDescription = stringResource(R.string.label_quick_note)
+            contentDescription = stringResource(R.string.label_quick_note),
+            tint = PienoteTheme.colors.onSecondary
         )
     }
 }

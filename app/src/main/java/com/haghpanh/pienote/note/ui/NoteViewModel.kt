@@ -59,7 +59,6 @@ class NoteViewModel @Inject constructor(
         }
     }
 
-
     fun updateNoteText(value: String) {
         viewModelScope.launch {
             val newNote = getCurrentState().note?.copy(note = value)
@@ -111,5 +110,4 @@ class NoteViewModel @Inject constructor(
             priority = priority,
             image = image
         )
-
 }
