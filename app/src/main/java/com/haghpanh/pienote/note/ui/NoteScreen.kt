@@ -39,6 +39,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
@@ -49,6 +50,7 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.haghpanh.pienote.R
 import com.haghpanh.pienote.baseui.theme.PienoteTheme
+import com.haghpanh.pienote.note.ui.component.ImageCoverSection
 import com.haghpanh.pienote.note.utils.rememberNoteNestedScrollConnection
 
 @Composable
@@ -115,54 +117,15 @@ fun HomeScreen(
                 .nestedScroll(nestedScrollConnection)
                 .verticalScroll(scrollState)
         ) {
-            state.note?.image?.let { imageUri ->
-                Box(
-                    modifier = Modifier
-                        .statusBarsPadding()
-                        .offset { IntOffset(0, nestedScrollConnection.imageOffset) }
-                        .scale(nestedScrollConnection.imageScale)
-                        .alpha(nestedScrollConnection.imageAlpha)
-                        .clip(PienoteTheme.shapes.large)
-                        .clickable(onClick = onRequestToPickImage)
-                        .fillMaxWidth()
-                        .aspectRatio(1.6f)
-                ) {
-                    AsyncImage(
-                        modifier = Modifier.fillMaxSize(),
-                        model = imageUri,
-                        contentDescription = null,
-                        contentScale = ContentScale.Crop
-                    )
-
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .background(
-                                Brush.verticalGradient(
-                                    listOf(
-                                        Color.Transparent,
-                                        PienoteTheme.colors.background
-                                    )
-                                )
-                            )
-                    )
-                }
-            } ?: Box(
+            ImageCoverSection(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .aspectRatio(5f)
-                    .alpha(nestedScrollConnection.imageAlpha)
-            ) {
-                TextButton(
-                    modifier = Modifier.align(Alignment.Center),
-                    onClick = onRequestToPickImage,
-                    colors = ButtonDefaults.textButtonColors(
-                        contentColor = PienoteTheme.colors.onBackground.copy(alpha = 0.3f)
-                    )
-                ) {
-                    Text(text = stringResource(R.string.add_cover_image))
-                }
-            }
+                    .statusBarsPadding()
+                    .offset { IntOffset(0, nestedScrollConnection.imageOffset) }
+                    .scale(nestedScrollConnection.imageScale)
+                    .alpha(nestedScrollConnection.imageAlpha),
+                image = state.note?.image,
+                onClick = onRequestToPickImage
+            )
 
             Column {
                 OutlinedTextField(
