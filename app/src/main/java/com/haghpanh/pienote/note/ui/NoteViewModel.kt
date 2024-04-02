@@ -40,6 +40,15 @@ class NoteViewModel @Inject constructor(
         getCategories()
     }
 
+    fun switchEditMode() {
+        viewModelScope.launch {
+            val state = getCurrentState()
+            val newState = state.copy(isEditing = !state.isEditing)
+
+            _state.emit(newState)
+        }
+    }
+
     fun updateNote() {
         viewModelScope.launch(Dispatchers.IO) {
             val note = getCurrentState().note?.toDomainModel()
