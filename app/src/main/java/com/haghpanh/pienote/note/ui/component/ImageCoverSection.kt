@@ -1,11 +1,17 @@
 package com.haghpanh.pienote.note.ui.component
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
@@ -17,6 +23,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.haghpanh.pienote.R
 import com.haghpanh.pienote.baseui.theme.PienoteTheme
@@ -24,50 +31,73 @@ import com.haghpanh.pienote.baseui.theme.PienoteTheme
 @Composable
 fun ImageCoverSection(
     image: String?,
+    isEditing: Boolean,
     modifier: Modifier = Modifier,
     onClick: () -> Unit
 ) {
-    image?.let { imageUri ->
+    AnimatedVisibility(visible = image != null) {
         Box(
             modifier = modifier
                 .clip(PienoteTheme.shapes.large)
-                .clickable(onClick = onClick)
+                .then(
+                    if (isEditing) {
+                        Modifier.clickable(onClick = onClick)
+                    } else {
+                        Modifier
+                    }
+                )
                 .fillMaxWidth()
                 .aspectRatio(1f)
         ) {
             AsyncImage(
                 modifier = Modifier.fillMaxSize(),
-                model = imageUri,
+                model = image,
                 contentDescription = null,
                 contentScale = ContentScale.Crop
             )
 
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(
-                        Brush.verticalGradient(
-                            listOf(
-                                Color.Transparent,
-                                PienoteTheme.colors.background
+            AnimatedVisibility(
+                visible = !isEditing,
+                enter = fadeIn(),
+                exit = fadeOut()
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(
+                            Brush.verticalGradient(
+                                listOf(
+                                    Color.Transparent,
+                                    PienoteTheme.colors.background
+                                )
                             )
                         )
-                    )
-            )
+                )
+            }
         }
-    } ?: Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .aspectRatio(5f)
-    ) {
-        TextButton(
-            modifier = modifier.align(Alignment.Center),
-            onClick = onClick,
-            colors = ButtonDefaults.textButtonColors(
-                contentColor = PienoteTheme.colors.onBackground.copy(alpha = 0.3f)
-            )
-        ) {
-            Text(text = stringResource(R.string.add_cover_image))
+    }
+    AnimatedContent(
+        targetState = isEditing && image == null,
+        label = "is editing and don have image"
+    ) { editing ->
+        if (editing) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .aspectRatio(5f)
+            ) {
+                TextButton(
+                    modifier = modifier.align(Alignment.Center),
+                    onClick = onClick,
+                    colors = ButtonDefaults.textButtonColors(
+                        contentColor = PienoteTheme.colors.onBackground.copy(alpha = 0.3f)
+                    )
+                ) {
+                    Text(text = stringResource(R.string.add_cover_image))
+                }
+            }
+        } else {
+            Spacer(modifier = Modifier.height(24.dp))
         }
     }
 }

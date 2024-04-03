@@ -4,7 +4,7 @@ import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.BorderStroke
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,13 +16,16 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Chip
-import androidx.compose.material.ChipDefaults
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.FloatingActionButton
+import androidx.compose.material.Icon
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Done
+import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
@@ -39,6 +42,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.haghpanh.pienote.R
 import com.haghpanh.pienote.baseui.theme.PienoteTheme
+import com.haghpanh.pienote.note.ui.component.CategoryChipSection
 import com.haghpanh.pienote.note.ui.component.ImageCoverSection
 import com.haghpanh.pienote.note.utils.rememberNoteNestedScrollConnection
 
@@ -81,7 +85,8 @@ fun NoteScreen(
         onUpdateTitle = viewModel::updateTitleText,
         onRequestToPickImage = {
             pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
-        }
+        },
+        onSwitchEditMode = viewModel::switchEditMode
     )
 }
 
@@ -91,92 +96,129 @@ fun HomeScreen(
     state: NoteViewState,
     onUpdateNote: (String) -> Unit,
     onUpdateTitle: (String) -> Unit,
-    onRequestToPickImage: () -> Unit
+    onRequestToPickImage: () -> Unit,
+    onSwitchEditMode: () -> Unit
 ) {
     val scrollState = rememberScrollState()
     val nestedScrollConnection = rememberNoteNestedScrollConnection()
 
     Scaffold(
-        modifier = Modifier.imePadding()
+        modifier = Modifier.imePadding(),
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = onSwitchEditMode
+            ) {
+                AnimatedContent(
+                    targetState = state.isEditing,
+                    label = "switch edit mode"
+                ) { isEditing ->
+                    if (isEditing) {
+                        Icon(
+                            imageVector = Icons.Rounded.Done,
+                            contentDescription = null
+                        )
+                    } else {
+                        Icon(
+                            imageVector = Icons.Rounded.Edit,
+                            contentDescription = null
+                        )
+                    }
+                }
+            }
+        }
     ) { paddingValue ->
         Column(
             modifier = Modifier
                 .padding(paddingValue)
                 .padding(top = 24.dp, start = 24.dp, end = 24.dp)
                 .fillMaxSize()
-                .nestedScroll(nestedScrollConnection)
+                .then(
+                    if (!state.isEditing) {
+                        Modifier.nestedScroll(nestedScrollConnection)
+                    } else {
+                        Modifier
+                    }
+                )
                 .verticalScroll(scrollState)
         ) {
             ImageCoverSection(
                 modifier = Modifier
                     .statusBarsPadding()
-                    .offset { IntOffset(0, nestedScrollConnection.imageOffset) }
-                    .scale(nestedScrollConnection.imageScale)
-                    .alpha(nestedScrollConnection.imageAlpha),
+                    .then(
+                        if (!state.isEditing) {
+                            Modifier
+                                .offset { IntOffset(0, nestedScrollConnection.imageOffset) }
+                                .scale(nestedScrollConnection.imageScale)
+                                .alpha(nestedScrollConnection.imageAlpha)
+                        } else {
+                            Modifier
+                        }
+                    ),
+                isEditing = state.isEditing,
                 image = state.note?.image,
                 onClick = onRequestToPickImage
             )
 
             Column {
-                OutlinedTextField(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    value = state.note?.title.orEmpty(),
-                    onValueChange = onUpdateTitle,
-                    placeholder = {
-                        Text(
-                            text = stringResource(R.string.label_untitled),
-                            style = PienoteTheme.typography.h1
-                        )
-                    },
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
-                        disabledBorderColor = Color.Transparent,
-                        focusedBorderColor = Color.Transparent,
-                        unfocusedBorderColor = Color.Transparent
-                    ),
-                    textStyle = PienoteTheme.typography.h1
-                )
-
-                state.category?.let { category ->
-                    val chipContentColor = PienoteTheme.colors.onBackground.copy(alpha = 0.7f)
-
-                    Chip(
-                        modifier = Modifier.padding(start = 14.dp),
-                        onClick = {
-                            //TODO navigate to category
+                if (state.isEditing) {
+                    OutlinedTextField(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        value = state.note?.title.orEmpty(),
+                        onValueChange = onUpdateTitle,
+                        placeholder = {
+                            Text(
+                                text = stringResource(R.string.label_untitled),
+                                style = PienoteTheme.typography.h1
+                            )
                         },
-                        colors = ChipDefaults.chipColors(
-                            backgroundColor = PienoteTheme.colors.background,
-                            contentColor = chipContentColor
+                        colors = TextFieldDefaults.outlinedTextFieldColors(
+                            disabledBorderColor = Color.Transparent,
+                            focusedBorderColor = Color.Transparent,
+                            unfocusedBorderColor = Color.Transparent
                         ),
-                        border = BorderStroke(1.dp, chipContentColor)
-                    ) {
-                        Text(
-                            text = category.name,
-                            style = PienoteTheme.typography.subtitle2
-                        )
-                    }
+                        textStyle = PienoteTheme.typography.h1
+                    )
+                } else {
+                    Text(
+                        modifier = Modifier.padding(16.dp),
+                        text = state.note?.title ?: stringResource(R.string.label_untitled),
+                        style = PienoteTheme.typography.h1
+                    )
                 }
 
-                OutlinedTextField(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .heightIn(min = 250.dp),
-                    value = state.note?.note.orEmpty(),
-                    onValueChange = onUpdateNote,
-                    placeholder = {
-                        Text(
-                            text = stringResource(R.string.label_write_here),
-                            style = PienoteTheme.typography.body2
-                        )
-                    },
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
-                        disabledBorderColor = Color.Transparent,
-                        focusedBorderColor = Color.Transparent,
-                        unfocusedBorderColor = Color.Transparent
-                    ),
-                    textStyle = PienoteTheme.typography.body1
+                CategoryChipSection(
+                    category = state.category,
+                    isEditing = state.isEditing
                 )
+
+                if (state.isEditing) {
+                    OutlinedTextField(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .heightIn(min = 250.dp),
+                        value = state.note?.note.orEmpty(),
+                        onValueChange = onUpdateNote,
+                        placeholder = {
+                            Text(
+                                text = stringResource(R.string.label_write_here),
+                                style = PienoteTheme.typography.body2
+                            )
+                        },
+                        colors = TextFieldDefaults.outlinedTextFieldColors(
+                            disabledBorderColor = Color.Transparent,
+                            focusedBorderColor = Color.Transparent,
+                            unfocusedBorderColor = Color.Transparent
+                        ),
+                        textStyle = PienoteTheme.typography.body1
+                    )
+                } else {
+                    Text(
+                        modifier = Modifier.padding(16.dp),
+                        text = state.note?.note ?: "",
+                        style = PienoteTheme.typography.body1
+                    )
+                }
 
                 Spacer(modifier = Modifier.heightIn(200.dp))
             }
