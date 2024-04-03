@@ -5,6 +5,8 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -26,10 +28,14 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Done
 import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
@@ -67,8 +73,12 @@ fun NoteScreen(
     )
 
     BackHandler {
-        viewModel.navigateBack()
-        navController.popBackStack()
+        if (state.isEditing) {
+            viewModel.switchEditMode()
+        } else {
+            viewModel.navigateBack()
+            navController.popBackStack()
+        }
     }
 
     HomeScreen(
@@ -88,16 +98,19 @@ fun HomeScreen(
     onUpdateNote: (String) -> Unit,
     onUpdateTitle: (String) -> Unit,
     onRequestToPickImage: () -> Unit,
-    onSwitchEditMode: () -> Unit
+    onSwitchEditMode: (Boolean?) -> Unit
 ) {
     val scrollState = rememberScrollState()
     val nestedScrollConnection = rememberNoteNestedScrollConnection()
+    val titleFocusRequester = remember { FocusRequester() }
+    val noteFocusRequester = remember { FocusRequester() }
+    val interactionSource = remember { MutableInteractionSource() }
 
     Scaffold(
         modifier = Modifier.imePadding(),
         floatingActionButton = {
             FloatingActionButton(
-                onClick = onSwitchEditMode
+                onClick = { onSwitchEditMode(null) }
             ) {
                 AnimatedContent(
                     targetState = state.isEditing,
@@ -152,9 +165,16 @@ fun HomeScreen(
 
             Column {
                 if (state.isEditing) {
+                    LaunchedEffect(state.shouldRequestFocusForTitle) {
+                        if (state.shouldRequestFocusForTitle) {
+                            titleFocusRequester.requestFocus()
+                        }
+                    }
+
                     OutlinedTextField(
                         modifier = Modifier
-                            .fillMaxWidth(),
+                            .fillMaxWidth()
+                            .focusRequester(titleFocusRequester),
                         value = state.note.title.orEmpty(),
                         onValueChange = onUpdateTitle,
                         placeholder = {
@@ -172,7 +192,14 @@ fun HomeScreen(
                     )
                 } else {
                     Text(
-                        modifier = Modifier.padding(16.dp),
+                        modifier = Modifier
+                            .clickable(
+                                interactionSource = interactionSource,
+                                indication = null
+                            ) {
+                                onSwitchEditMode(true)
+                            }
+                            .padding(16.dp),
                         text = state.note.title ?: stringResource(R.string.label_untitled),
                         style = PienoteTheme.typography.h1
                     )
@@ -184,10 +211,17 @@ fun HomeScreen(
                 )
 
                 if (state.isEditing) {
+                    LaunchedEffect(state.shouldRequestFocusForNote) {
+                        if (state.shouldRequestFocusForNote) {
+                            noteFocusRequester.requestFocus()
+                        }
+                    }
+
                     OutlinedTextField(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .heightIn(min = 250.dp),
+                            .heightIn(min = 250.dp)
+                            .focusRequester(noteFocusRequester),
                         value = state.note.note.orEmpty(),
                         onValueChange = onUpdateNote,
                         placeholder = {
@@ -205,7 +239,14 @@ fun HomeScreen(
                     )
                 } else {
                     Text(
-                        modifier = Modifier.padding(16.dp),
+                        modifier = Modifier
+                            .clickable(
+                                interactionSource = interactionSource,
+                                indication = null
+                            ) {
+                                onSwitchEditMode(false)
+                            }
+                            .padding(16.dp),
                         text = state.note.note ?: "",
                         style = PienoteTheme.typography.body1
                     )

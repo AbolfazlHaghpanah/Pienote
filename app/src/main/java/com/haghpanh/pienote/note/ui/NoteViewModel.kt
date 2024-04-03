@@ -1,6 +1,7 @@
 package com.haghpanh.pienote.note.ui
 
 import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -45,14 +46,23 @@ class NoteViewModel @Inject constructor(
         super.onCleared()
     }
 
-    fun switchEditMode() {
+    fun switchEditMode(isFromTitle: Boolean? = null) {
         if (!checkNotEmptyNote()) return
-
+        Log.d("mmd", "switchEditMode: 1 with $isFromTitle")
         viewModelScope.launch {
             val state = getCurrentState()
             val newState = state.copy(isEditing = !state.isEditing)
 
             _state.emit(newState)
+
+            if (isFromTitle != null) {
+                _state.emit(
+                    getCurrentState().copy(
+                        shouldRequestFocusForTitle = isFromTitle,
+                        shouldRequestFocusForNote = !isFromTitle
+                    )
+                )
+            }
         }
     }
 
