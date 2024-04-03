@@ -12,8 +12,8 @@ import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import kotlin.math.roundToInt
 
 class NoteNestedScrollConnection(
-    initialAlpha: Float = 1f,
-    initialScale: Float = 1f
+    private val initialAlpha: Float = 1f,
+    private val initialScale: Float = 1f
 ) : NestedScrollConnection {
     private var consumedFromStart = 0
 
@@ -22,6 +22,13 @@ class NoteNestedScrollConnection(
         private set
     var imageAlpha by mutableFloatStateOf(initialAlpha)
         private set
+
+    fun reset() {
+        imageOffset = 0
+        imageAlpha = initialAlpha
+        imageScale = initialScale
+        consumedFromStart = 0
+    }
 
     override fun onPostScroll(
         consumed: Offset,
@@ -42,7 +49,7 @@ class NoteNestedScrollConnection(
 @Composable
 fun rememberNoteNestedScrollConnection(
     initialAlpha: Float = 1f,
-    initialScale: Float = 1f
+    initialScale: Float = 1f,
 ): NoteNestedScrollConnection = remember {
     NoteNestedScrollConnection(
         initialAlpha = initialAlpha,

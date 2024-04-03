@@ -5,6 +5,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
@@ -38,6 +39,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
@@ -105,6 +107,18 @@ fun HomeScreen(
     val titleFocusRequester = remember { FocusRequester() }
     val noteFocusRequester = remember { FocusRequester() }
     val interactionSource = remember { MutableInteractionSource() }
+    val focusManager = LocalFocusManager.current
+
+    LaunchedEffect(state.isEditing) {
+        if (!state.isEditing) {
+            nestedScrollConnection.reset()
+            scrollState.animateScrollTo(
+                value = 0,
+                animationSpec = tween(300)
+            )
+            focusManager.clearFocus()
+        }
+    }
 
     Scaffold(
         modifier = Modifier.imePadding(),
@@ -199,7 +213,8 @@ fun HomeScreen(
                             ) {
                                 onSwitchEditMode(true)
                             }
-                            .padding(16.dp),
+                            .padding(16.dp)
+                            .fillMaxWidth(),
                         text = state.note.title ?: stringResource(R.string.label_untitled),
                         style = PienoteTheme.typography.h1
                     )
@@ -220,7 +235,7 @@ fun HomeScreen(
                     OutlinedTextField(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .heightIn(min = 250.dp)
+                            .heightIn(min = 500.dp)
                             .focusRequester(noteFocusRequester),
                         value = state.note.note.orEmpty(),
                         onValueChange = onUpdateNote,
@@ -246,7 +261,8 @@ fun HomeScreen(
                             ) {
                                 onSwitchEditMode(false)
                             }
-                            .padding(16.dp),
+                            .padding(16.dp)
+                            .fillMaxWidth(),
                         text = state.note.note ?: "",
                         style = PienoteTheme.typography.body1
                     )
