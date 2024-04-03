@@ -46,6 +46,8 @@ class NoteViewModel @Inject constructor(
     }
 
     fun switchEditMode() {
+        if (!checkNotEmptyNote()) return
+
         viewModelScope.launch {
             val state = getCurrentState()
             val newState = state.copy(isEditing = !state.isEditing)
@@ -67,8 +69,11 @@ class NoteViewModel @Inject constructor(
     fun updateNoteImage(uri: Uri?) {
         viewModelScope.launch {
             val note = getCurrentState().note.toDomainModel()
+            val newImage = noteUpdateNoteImageUseCase(note = note, uri = uri)
+            val newNote = getCurrentState().note.copy(image = newImage?.toString())
+            val newState = getCurrentState().copy(note = newNote)
 
-            noteUpdateNoteImageUseCase(note = note, uri = uri)
+            _state.emit(newState)
         }
     }
 
@@ -158,7 +163,7 @@ class NoteViewModel @Inject constructor(
             image = image
         )
 
-    fun checkNotEmptyNote():Boolean{
+    private fun checkNotEmptyNote(): Boolean {
         val note = getCurrentState().note
 
         return !note.title.isNullOrEmpty() || !note.note.isNullOrEmpty()
