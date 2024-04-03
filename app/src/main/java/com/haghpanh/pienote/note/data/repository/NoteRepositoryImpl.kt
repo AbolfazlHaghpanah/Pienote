@@ -20,7 +20,7 @@ class NoteRepositoryImpl @Inject constructor(
         noteLocalDataSource.getCategories().map { it.toDomainModel() }
 
     override suspend fun insertNote(note: NoteDomainModel) {
-        val mappedNote = note.toEntity()
+        val mappedNote = note.toEntity(true)
 
         noteLocalDataSource.insertNote(mappedNote)
     }

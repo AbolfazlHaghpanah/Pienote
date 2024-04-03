@@ -5,11 +5,11 @@ import com.haghpanh.pienote.commondomain.model.NoteDomainModel
 
 @Immutable
 data class Note(
-    val id: Int,
-    val title: String,
-    val note: String,
+    val id: Int = -1,
+    val title: String? = null,
+    val note: String? = null,
     val image: String? = null,
-    val addedTime: String,
+    val addedTime: String? = null,
     val lastChangedTime: String? = null,
     val categoryId: Int? = null,
     val priority: Int? = null
@@ -17,10 +17,10 @@ data class Note(
     fun toDomainModel(): NoteDomainModel =
         NoteDomainModel(
             id = id,
-            title = title,
-            note = note,
+            title = title.orEmpty(),
+            note = note.orEmpty(),
             image = image,
-            addedTime = addedTime,
+            addedTime = addedTime.orEmpty(),
             lastChangedTime = lastChangedTime,
             categoryId = categoryId,
             priority = priority
@@ -30,7 +30,7 @@ data class Note(
 @Immutable
 data class Category(
     val id: Int = 0,
-    val name: String,
-    val priority: Int?,
-    val image: String?
+    val name: String = "",
+    val priority: Int? = null,
+    val image: String? = null
 )

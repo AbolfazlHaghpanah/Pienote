@@ -13,14 +13,26 @@ fun CategoryDomainModel.toEntity(): CategoryEntity =
         image = image
     )
 
-fun NoteDomainModel.toEntity() :NoteEntity =
-    NoteEntity(
-        id = id,
-        title = title,
-        note = note,
-        image = image,
-        addedTime = addedTime,
-        lastChangedTime = lastChangedTime,
-        categoryId = categoryId,
-        priority = priority
-    )
+fun NoteDomainModel.toEntity(isNew: Boolean = false): NoteEntity =
+    if (isNew) {
+        NoteEntity(
+            title = title,
+            note = note,
+            image = image,
+            addedTime = addedTime,
+            lastChangedTime = lastChangedTime,
+            categoryId = categoryId,
+            priority = priority
+        )
+    } else {
+        NoteEntity(
+            id = id,
+            title = title,
+            note = note,
+            image = image,
+            addedTime = addedTime,
+            lastChangedTime = lastChangedTime,
+            categoryId = categoryId,
+            priority = priority
+        )
+    }

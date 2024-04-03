@@ -26,8 +26,8 @@ fun CategoryChipSection(
         AnimatedContent(
             targetState = isEditing,
             label = "select category chip"
-        ) {
-            if (it) {
+        ) { hasCategory ->
+            if (hasCategory) {
                 Chip(
                     modifier = Modifier.padding(start = 14.dp),
                     onClick = {

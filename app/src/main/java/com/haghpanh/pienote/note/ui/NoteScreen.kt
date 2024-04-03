@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
 import androidx.compose.material.OutlinedTextField
@@ -27,7 +26,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Done
 import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -69,14 +67,8 @@ fun NoteScreen(
     )
 
     BackHandler {
-        viewModel.updateNote()
+        viewModel.navigateBack()
         navController.popBackStack()
-    }
-
-    DisposableEffect(state) {
-        onDispose {
-            viewModel.updateNote()
-        }
     }
 
     HomeScreen(
@@ -90,7 +82,6 @@ fun NoteScreen(
     )
 }
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun HomeScreen(
     state: NoteViewState,
@@ -155,7 +146,7 @@ fun HomeScreen(
                         }
                     ),
                 isEditing = state.isEditing,
-                image = state.note?.image,
+                image = state.note.image,
                 onClick = onRequestToPickImage
             )
 
@@ -164,7 +155,7 @@ fun HomeScreen(
                     OutlinedTextField(
                         modifier = Modifier
                             .fillMaxWidth(),
-                        value = state.note?.title.orEmpty(),
+                        value = state.note.title.orEmpty(),
                         onValueChange = onUpdateTitle,
                         placeholder = {
                             Text(
@@ -182,7 +173,7 @@ fun HomeScreen(
                 } else {
                     Text(
                         modifier = Modifier.padding(16.dp),
-                        text = state.note?.title ?: stringResource(R.string.label_untitled),
+                        text = state.note.title ?: stringResource(R.string.label_untitled),
                         style = PienoteTheme.typography.h1
                     )
                 }
@@ -197,7 +188,7 @@ fun HomeScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .heightIn(min = 250.dp),
-                        value = state.note?.note.orEmpty(),
+                        value = state.note.note.orEmpty(),
                         onValueChange = onUpdateNote,
                         placeholder = {
                             Text(
@@ -215,7 +206,7 @@ fun HomeScreen(
                 } else {
                     Text(
                         modifier = Modifier.padding(16.dp),
-                        text = state.note?.note ?: "",
+                        text = state.note.note ?: "",
                         style = PienoteTheme.typography.body1
                     )
                 }

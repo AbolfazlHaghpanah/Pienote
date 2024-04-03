@@ -10,7 +10,7 @@ class NoteUpdateNoteImageUseCase @Inject constructor(
     private val noteSaveImageUriInCacheUseCase: NoteSaveImageUriInCacheUseCase
 ) {
     suspend operator fun invoke(note: NoteDomainModel, uri: Uri?) {
-        val newImage = noteSaveImageUriInCacheUseCase(uri).toString()
+        val newImage = noteSaveImageUriInCacheUseCase(uri)?.toString()
 
         noteRepository.updateNote(note.copy(image = newImage))
     }

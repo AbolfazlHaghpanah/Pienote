@@ -40,6 +40,11 @@ class NoteViewModel @Inject constructor(
         getCategories()
     }
 
+    override fun onCleared() {
+        navigateBack()
+        super.onCleared()
+    }
+
     fun switchEditMode() {
         viewModelScope.launch {
             val state = getCurrentState()
@@ -49,38 +54,27 @@ class NoteViewModel @Inject constructor(
         }
     }
 
-    fun updateNote() {
-        viewModelScope.launch(Dispatchers.IO) {
-            val note = getCurrentState().note?.toDomainModel()
+    fun navigateBack() {
+        if (!checkNotEmptyNote()) return
 
-            if (note != null) {
-                updateNoteUseCase(note)
-            }
+        if (isExist) {
+            updateNote()
+        } else {
+            insertNote()
         }
     }
 
     fun updateNoteImage(uri: Uri?) {
         viewModelScope.launch {
-            val note = getCurrentState().note?.toDomainModel()
+            val note = getCurrentState().note.toDomainModel()
 
-            if (note != null) {
-                noteUpdateNoteImageUseCase(note, uri)
-            }
-        }
-    }
-
-    fun getCategories() {
-        viewModelScope.launch(Dispatchers.IO) {
-            val categories = getCategoriesUseCase().map { it.toUiModel() }
-            val newState = getCurrentState().copy(categories = categories)
-
-            _state.emit(newState)
+            noteUpdateNoteImageUseCase(note = note, uri = uri)
         }
     }
 
     fun updateNoteText(value: String) {
         viewModelScope.launch {
-            val newNote = getCurrentState().note?.copy(note = value)
+            val newNote = getCurrentState().note.copy(note = value)
             val newState = getCurrentState().copy(note = newNote)
 
             _state.emit(newState)
@@ -89,10 +83,35 @@ class NoteViewModel @Inject constructor(
 
     fun updateTitleText(value: String) {
         viewModelScope.launch {
-            val newNote = getCurrentState().note?.copy(title = value)
+            val newNote = getCurrentState().note.copy(title = value)
             val newState = getCurrentState().copy(note = newNote)
 
             _state.emit(newState)
+        }
+    }
+
+    private fun getCategories() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val categories = getCategoriesUseCase().map { it.toUiModel() }
+            val newState = getCurrentState().copy(categories = categories)
+
+            _state.emit(newState)
+        }
+    }
+
+    private fun updateNote() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val note = getCurrentState().note.toDomainModel()
+
+            updateNoteUseCase(note)
+        }
+    }
+
+    private fun insertNote() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val note = getCurrentState().note.toDomainModel()
+
+            insertNoteUseCase(note)
         }
     }
 
@@ -107,6 +126,15 @@ class NoteViewModel @Inject constructor(
 
                     _state.emit(newState)
                 }
+            }
+        } else {
+            viewModelScope.launch {
+                val newState = getCurrentState().copy(
+                    isEditing = true,
+                    note = Note()
+                )
+
+                _state.emit(newState)
             }
         }
     }
@@ -129,4 +157,10 @@ class NoteViewModel @Inject constructor(
             priority = priority,
             image = image
         )
+
+    fun checkNotEmptyNote():Boolean{
+        val note = getCurrentState().note
+
+        return !note.title.isNullOrEmpty() || !note.note.isNullOrEmpty()
+    }
 }
