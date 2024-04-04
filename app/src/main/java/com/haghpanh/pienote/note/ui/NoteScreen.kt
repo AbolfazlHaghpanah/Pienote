@@ -89,6 +89,7 @@ fun NoteScreen(
         state = state,
         onUpdateNote = viewModel::updateNoteText,
         onUpdateTitle = viewModel::updateTitleText,
+        onUpdateCategory = viewModel::updateCategory,
         onRequestToPickImage = {
             pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
         },
@@ -101,6 +102,7 @@ fun NoteScreen(
     state: NoteViewState,
     onUpdateNote: (String) -> Unit,
     onUpdateTitle: (String) -> Unit,
+    onUpdateCategory: (Int?) -> Unit,
     onRequestToPickImage: () -> Unit,
     onSwitchEditMode: (FocusRequestType) -> Unit
 ) {
@@ -232,7 +234,9 @@ fun NoteScreen(
 
                 CategoryChipSection(
                     category = state.category,
-                    isEditing = state.isEditing
+                    isEditing = state.isEditing,
+                    categories = state.categories,
+                    onCategorySelect = onUpdateCategory
                 )
 
                 if (state.isEditing) {

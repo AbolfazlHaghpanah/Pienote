@@ -60,6 +60,16 @@ class NoteViewModel @Inject constructor(
         }
     }
 
+    fun updateCategory(value: Int?) {
+        viewModelScope.launch {
+            val newNote = getCurrentState().note.copy(categoryId = value)
+            val newState = getCurrentState().copy(note = newNote)
+
+            _state.emit(newState)
+            navigateBack()
+        }
+    }
+
     fun navigateBack() {
         if (!checkNotEmptyNote()) return
 
