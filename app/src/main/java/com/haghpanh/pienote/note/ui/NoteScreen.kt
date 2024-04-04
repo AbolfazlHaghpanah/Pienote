@@ -30,6 +30,7 @@ import androidx.compose.material.icons.rounded.Done
 import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -50,6 +51,7 @@ import com.haghpanh.pienote.R
 import com.haghpanh.pienote.baseui.theme.PienoteTheme
 import com.haghpanh.pienote.note.ui.component.CategoryChipSection
 import com.haghpanh.pienote.note.ui.component.ImageCoverSection
+import com.haghpanh.pienote.note.utils.FocusRequestType
 import com.haghpanh.pienote.note.utils.rememberNoteNestedScrollConnection
 
 @Composable
@@ -100,7 +102,7 @@ fun HomeScreen(
     onUpdateNote: (String) -> Unit,
     onUpdateTitle: (String) -> Unit,
     onRequestToPickImage: () -> Unit,
-    onSwitchEditMode: (Boolean?) -> Unit
+    onSwitchEditMode: (FocusRequestType) -> Unit
 ) {
     val scrollState = rememberScrollState()
     val nestedScrollConnection = rememberNoteNestedScrollConnection()
@@ -116,6 +118,9 @@ fun HomeScreen(
                 value = 0,
                 animationSpec = tween(300)
             )
+        }
+
+        if (state.focusRequestType is FocusRequestType.Non) {
             focusManager.clearFocus()
         }
     }
@@ -124,7 +129,7 @@ fun HomeScreen(
         modifier = Modifier.imePadding(),
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { onSwitchEditMode(null) }
+                onClick = { onSwitchEditMode(FocusRequestType.Non) }
             ) {
                 AnimatedContent(
                     targetState = state.isEditing,
@@ -179,8 +184,8 @@ fun HomeScreen(
 
             Column {
                 if (state.isEditing) {
-                    LaunchedEffect(state.shouldRequestFocusForTitle) {
-                        if (state.shouldRequestFocusForTitle) {
+                    SideEffect {
+                        if (state.focusRequestType is FocusRequestType.Title) {
                             titleFocusRequester.requestFocus()
                         }
                     }
@@ -211,7 +216,7 @@ fun HomeScreen(
                                 interactionSource = interactionSource,
                                 indication = null
                             ) {
-                                onSwitchEditMode(true)
+                                onSwitchEditMode(FocusRequestType.Title)
                             }
                             .padding(16.dp)
                             .fillMaxWidth(),
@@ -226,8 +231,8 @@ fun HomeScreen(
                 )
 
                 if (state.isEditing) {
-                    LaunchedEffect(state.shouldRequestFocusForNote) {
-                        if (state.shouldRequestFocusForNote) {
+                    SideEffect {
+                        if (state.focusRequestType is FocusRequestType.Note) {
                             noteFocusRequester.requestFocus()
                         }
                     }
@@ -259,7 +264,7 @@ fun HomeScreen(
                                 interactionSource = interactionSource,
                                 indication = null
                             ) {
-                                onSwitchEditMode(false)
+                                onSwitchEditMode(FocusRequestType.Note)
                             }
                             .padding(16.dp)
                             .fillMaxWidth(),

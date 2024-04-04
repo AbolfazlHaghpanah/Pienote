@@ -1,6 +1,7 @@
 package com.haghpanh.pienote.note.ui
 
 import androidx.compose.runtime.Immutable
+import com.haghpanh.pienote.note.utils.FocusRequestType
 
 @Immutable
 data class NoteViewState(
@@ -8,6 +9,6 @@ data class NoteViewState(
     val category: Category? = null,
     val isEditing: Boolean = false,
     val categories: List<Category> = emptyList(),
-    val shouldRequestFocusForTitle: Boolean = false,
-    val shouldRequestFocusForNote: Boolean = false
+    val focusRequestType: FocusRequestType = FocusRequestType.Non,
+    val wantsToSelectPriority: Boolean = false
 )

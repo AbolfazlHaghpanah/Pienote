@@ -8,4 +8,7 @@
     <string name="add_cover_image">Add Cover Image</string>
     <string name="label_untitled">Untitled</string>
     <string name="label_select_category">Select Category</string>
+    <string name="label_low">Low</string>
+    <string name="label_medium">Medium</string>
+    <string name="label_high">High</string>
 </resources>

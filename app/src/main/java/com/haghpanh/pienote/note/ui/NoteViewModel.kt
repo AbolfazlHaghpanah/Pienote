@@ -1,7 +1,6 @@
 package com.haghpanh.pienote.note.ui
 
 import android.net.Uri
-import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -12,6 +11,7 @@ import com.haghpanh.pienote.note.domain.usecase.NoteInsertNoteUseCase
 import com.haghpanh.pienote.note.domain.usecase.NoteObserveNoteInfoUseCase
 import com.haghpanh.pienote.note.domain.usecase.NoteUpdateNoteImageUseCase
 import com.haghpanh.pienote.note.domain.usecase.NoteUpdateNoteUseCase
+import com.haghpanh.pienote.note.utils.FocusRequestType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -46,23 +46,17 @@ class NoteViewModel @Inject constructor(
         super.onCleared()
     }
 
-    fun switchEditMode(isFromTitle: Boolean? = null) {
+    fun switchEditMode(focusRequestType: FocusRequestType = FocusRequestType.Non) {
         if (!checkNotEmptyNote()) return
-        Log.d("mmd", "switchEditMode: 1 with $isFromTitle")
+
         viewModelScope.launch {
             val state = getCurrentState()
-            val newState = state.copy(isEditing = !state.isEditing)
+            val newState = state.copy(
+                isEditing = !state.isEditing,
+                focusRequestType = focusRequestType
+            )
 
             _state.emit(newState)
-
-            if (isFromTitle != null) {
-                _state.emit(
-                    getCurrentState().copy(
-                        shouldRequestFocusForTitle = isFromTitle,
-                        shouldRequestFocusForNote = !isFromTitle
-                    )
-                )
-            }
         }
     }
 
