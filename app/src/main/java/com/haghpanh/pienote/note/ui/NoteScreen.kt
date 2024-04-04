@@ -9,10 +9,9 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
@@ -40,6 +39,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.IntOffset
@@ -85,7 +85,7 @@ fun NoteScreen(
         }
     }
 
-    HomeScreen(
+    NoteScreen(
         state = state,
         onUpdateNote = viewModel::updateNoteText,
         onUpdateTitle = viewModel::updateTitleText,
@@ -97,7 +97,7 @@ fun NoteScreen(
 }
 
 @Composable
-fun HomeScreen(
+fun NoteScreen(
     state: NoteViewState,
     onUpdateNote: (String) -> Unit,
     onUpdateTitle: (String) -> Unit,
@@ -110,6 +110,7 @@ fun HomeScreen(
     val noteFocusRequester = remember { FocusRequester() }
     val interactionSource = remember { MutableInteractionSource() }
     val focusManager = LocalFocusManager.current
+    val localConfig = LocalConfiguration.current
 
     LaunchedEffect(state.isEditing) {
         if (!state.isEditing) {
@@ -153,7 +154,6 @@ fun HomeScreen(
         Column(
             modifier = Modifier
                 .padding(paddingValue)
-                .padding(top = 24.dp, start = 24.dp, end = 24.dp)
                 .fillMaxSize()
                 .then(
                     if (!state.isEditing) {
@@ -167,6 +167,7 @@ fun HomeScreen(
             ImageCoverSection(
                 modifier = Modifier
                     .statusBarsPadding()
+                    .padding(top = 24.dp, start = 24.dp, end = 24.dp)
                     .then(
                         if (!state.isEditing) {
                             Modifier
@@ -182,7 +183,11 @@ fun HomeScreen(
                 onClick = onRequestToPickImage
             )
 
-            Column {
+            Column(
+                modifier = Modifier
+                    .padding(horizontal = 14.dp)
+                    .height(localConfig.screenHeightDp.dp - 24.dp)
+            ) {
                 if (state.isEditing) {
                     SideEffect {
                         if (state.focusRequestType is FocusRequestType.Title) {
@@ -240,7 +245,7 @@ fun HomeScreen(
                     OutlinedTextField(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .heightIn(min = 500.dp)
+                            .weight(1f)
                             .focusRequester(noteFocusRequester),
                         value = state.note.note.orEmpty(),
                         onValueChange = onUpdateNote,
@@ -272,8 +277,6 @@ fun HomeScreen(
                         style = PienoteTheme.typography.body1
                     )
                 }
-
-                Spacer(modifier = Modifier.heightIn(200.dp))
             }
         }
     }

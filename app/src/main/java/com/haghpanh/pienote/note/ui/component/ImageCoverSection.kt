@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
@@ -76,15 +77,14 @@ fun ImageCoverSection(
             }
         }
     }
+
     AnimatedContent(
         targetState = isEditing && image == null,
         label = "is editing and don have image"
     ) { editing ->
         if (editing) {
             Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .aspectRatio(5f)
+                modifier = Modifier.fillMaxWidth()
             ) {
                 TextButton(
                     modifier = modifier.align(Alignment.Center),
@@ -96,8 +96,8 @@ fun ImageCoverSection(
                     Text(text = stringResource(R.string.add_cover_image))
                 }
             }
-        } else {
-            Spacer(modifier = Modifier.height(24.dp))
+        } else if(image == null) {
+            Spacer(modifier = Modifier.height(48.dp))
         }
     }
 }
