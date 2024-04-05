@@ -77,10 +77,12 @@ fun NoteScreen(
     )
 
     BackHandler {
-        if (state.isEditing) {
+        if (state.isEditing && !state.isEmptyNote) {
             viewModel.switchEditMode()
+        } else if (!state.isEmptyNote) {
+            viewModel.updateOrInsertNote()
+            navController.popBackStack()
         } else {
-            viewModel.navigateBack()
             navController.popBackStack()
         }
     }

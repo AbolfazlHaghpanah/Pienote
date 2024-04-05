@@ -11,4 +11,6 @@ data class NoteViewState(
     val categories: List<Category> = emptyList(),
     val focusRequestType: FocusRequestType = FocusRequestType.Non,
     val wantsToSelectPriority: Boolean = false
-)
+) {
+    val isEmptyNote = note.title.isNullOrEmpty() && note.note.isNullOrEmpty()
+}

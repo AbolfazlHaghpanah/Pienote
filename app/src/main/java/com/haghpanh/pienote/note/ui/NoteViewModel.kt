@@ -42,12 +42,12 @@ class NoteViewModel @Inject constructor(
     }
 
     override fun onCleared() {
-        navigateBack()
+        updateOrInsertNote()
         super.onCleared()
     }
 
     fun switchEditMode(focusRequestType: FocusRequestType = FocusRequestType.Non) {
-        if (!checkNotEmptyNote()) return
+        if (getCurrentState().isEmptyNote) return
 
         viewModelScope.launch {
             val state = getCurrentState()
@@ -66,17 +66,17 @@ class NoteViewModel @Inject constructor(
             val newState = getCurrentState().copy(note = newNote)
 
             _state.emit(newState)
-            navigateBack()
+            updateOrInsertNote()
         }
     }
 
-    fun navigateBack() {
-        if (!checkNotEmptyNote()) return
+    fun updateOrInsertNote() {
+        if (getCurrentState().isEmptyNote) return
 
         if (isExist) {
-            updateNote()
+            updateCurrentNote()
         } else {
-            insertNote()
+            insertCurrentNote()
         }
     }
 
@@ -118,7 +118,7 @@ class NoteViewModel @Inject constructor(
         }
     }
 
-    private fun updateNote() {
+    private fun updateCurrentNote() {
         viewModelScope.launch(Dispatchers.IO) {
             val note = getCurrentState().note.toDomainModel()
 
@@ -126,7 +126,7 @@ class NoteViewModel @Inject constructor(
         }
     }
 
-    private fun insertNote() {
+    private fun insertCurrentNote() {
         viewModelScope.launch(Dispatchers.IO) {
             val note = getCurrentState().note.toDomainModel()
 
@@ -176,10 +176,4 @@ class NoteViewModel @Inject constructor(
             priority = priority,
             image = image
         )
-
-    private fun checkNotEmptyNote(): Boolean {
-        val note = getCurrentState().note
-
-        return !note.title.isNullOrEmpty() || !note.note.isNullOrEmpty()
-    }
 }
