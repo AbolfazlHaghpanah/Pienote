@@ -56,6 +56,13 @@ class HomeRepositoryImpl @Inject constructor(
         homeLocalDataSource.insertCategory(mappedCategory)
     }
 
+    override suspend fun deleteNote(note: NoteDomainModel) {
+        val mappedNote = note.toEntity()
+
+        homeLocalDataSource.deleteNote(mappedNote)
+    }
+
+
     private fun QuickNoteDomainModel.toNoteEntity(): NoteEntity =
         NoteEntity(
             title = title.orEmpty(),

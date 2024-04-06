@@ -11,4 +11,5 @@ interface HomeRepository {
     fun observeNotesByCategory(categoryId : Int): Flow<List<NoteDomainModel>>
     suspend fun insertNote(note: QuickNoteDomainModel)
     suspend fun insertCategory(category: CategoryDomainModel)
+    suspend fun deleteNote(note: NoteDomainModel)
 }

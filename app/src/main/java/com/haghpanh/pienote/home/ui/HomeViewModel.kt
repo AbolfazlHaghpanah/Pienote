@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.haghpanh.pienote.commondomain.model.CategoryDomainModel
 import com.haghpanh.pienote.commondomain.model.NoteDomainModel
 import com.haghpanh.pienote.home.domain.model.QuickNoteDomainModel
+import com.haghpanh.pienote.home.domain.usecase.HomeDeleteNoteUseCase
 import com.haghpanh.pienote.home.domain.usecase.HomeInsertCategoryUseCase
 import com.haghpanh.pienote.home.domain.usecase.HomeInsertQuickNoteUseCase
 import com.haghpanh.pienote.home.domain.usecase.HomeObserveCategories
@@ -24,7 +25,8 @@ class HomeViewModel @Inject constructor(
     private val homeObserveNotesUseCase: HomeObserveNotesUseCase,
     private val homeInsertCategoryUseCase: HomeInsertCategoryUseCase,
     private val homeObserveNotesByCategoryUseCase: HomeObserveNotesByCategoryUseCase,
-    private val homeObserveCategories: HomeObserveCategories
+    private val homeObserveCategories: HomeObserveCategories,
+    private val homeDeleteNoteUseCase: HomeDeleteNoteUseCase
 ) : ViewModel() {
     private val _state = MutableStateFlow(HomeViewState())
     val state = _state.asStateFlow()
@@ -59,6 +61,14 @@ class HomeViewModel @Inject constructor(
                     quickNoteTitle = null
                 )
             _state.emit(newState)
+        }
+    }
+
+    fun deleteNote(note: Note) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val mappedNote = note.toDomainModel()
+
+            homeDeleteNoteUseCase(mappedNote)
         }
     }
 

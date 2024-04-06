@@ -1,5 +1,6 @@
 package com.haghpanh.pienote.home.ui
 
+import android.util.Log
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -63,7 +64,8 @@ private fun HomeScreen(
             navController.navigate(route) {
                 launchSingleTop = true
             }
-        }
+        },
+        onDeleteNote = viewModel::deleteNote
     )
 }
 
@@ -76,7 +78,8 @@ fun HomeScreen(
     onUpdateQuickNoteNote: (String) -> Unit,
     onQuickNoteClick: () -> Unit,
     onQuickNoteDiscard: () -> Unit,
-    navigateToNote: (String) -> Unit
+    navigateToNote: (String) -> Unit,
+    onDeleteNote: (Note) -> Unit
 ) {
     Scaffold(
         floatingActionButton = {
@@ -158,7 +161,10 @@ fun HomeScreen(
                                 navigateToNote(NoteScreen.createRoute(note.id, true))
                             },
                         title = note.title,
-                        note = note.note
+                        note = note.note,
+                        onDelete = {
+                            onDeleteNote(note)
+                        }
                     )
                 }
             }

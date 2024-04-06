@@ -23,4 +23,8 @@ class HomeLocalDataSourceImpl @Inject constructor(
 
     override suspend fun insertCategory(category: CategoryEntity) =
         homeDao.insertCategory(category)
+
+    override suspend fun deleteNote(note: NoteEntity) {
+        homeDao.deleteNote(note)
+    }
 }
