@@ -2,7 +2,6 @@ package com.haghpanh.pienote.baseui.utils
 
 import android.content.Context
 import android.os.Vibrator
-import android.util.Log
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -15,14 +14,23 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
-import kotlin.math.log
 
+
+/**
+ * Class representing the state of a swipe gesture.
+ *
+ * @param threshold The threshold at which the swipe is considered to be completed.
+ * @param directionalSwipe The type of swipe (left to right, right to left, or both).
+ */
 class SwipeState(
     val threshold: Float,
     val directionalSwipe: Swipe
 ) {
     var currentOffsetX by mutableFloatStateOf(0f)
 
+    /**
+     * Interface defining properties and methods for a swipe gesture.
+     */
     sealed interface Swipe {
         var isSwiped: Boolean
         var isOffsetAchieveThreshold: Boolean
@@ -38,6 +46,7 @@ class SwipeState(
             }
         }
 
+        //todo implement action
         data object RightToLeft : Swipe {
             override var isSwiped: Boolean by mutableStateOf(false)
             override var isOffsetAchieveThreshold: Boolean by mutableStateOf(false)
@@ -48,6 +57,7 @@ class SwipeState(
             }
         }
 
+        //todo implement actions
         class Both : Swipe {
             var isSwipedRight by mutableStateOf(false)
             var isSwipedLeft by mutableStateOf(false)
@@ -75,6 +85,14 @@ class SwipeState(
     }
 }
 
+/**
+ * Adds swipe gesture detection to a Composable.
+ *
+ * @param state The SwipeState instance managing the swipe state.
+ * @param onSwipeRight A callback to be invoked when a right swipe is detected.
+ * @param onSwipeLeft A callback to be invoked when a left swipe is detected.
+ * @param shouldVibrateOnAchieveThreshold Whether to vibrate when the threshold is achieved.
+ */
 fun Modifier.swipeHandler(
     state: SwipeState,
     onSwipeRight: (() -> Unit)? = null,
@@ -96,12 +114,9 @@ fun Modifier.swipeHandler(
 
             this.pointerInput(null) {
                 detectHorizontalDragGestures(
-                    onDragStart = {
-                        state.directionalSwipe.isSwiped = it.x > 0
-                    },
                     onHorizontalDrag = { _, offset ->
                         state.currentOffsetX += offset
-
+                        state.directionalSwipe.isSwiped = state.currentOffsetX > 0
                         state.directionalSwipe.isOffsetAchieveThreshold =
                             state.currentOffsetX > state.threshold
                     },
@@ -122,7 +137,13 @@ fun Modifier.swipeHandler(
     }
 }
 
-
+/**
+ * Remembers the swipe state.
+ *
+ * @param threshold The threshold for the swipe gesture.
+ * @param swipeType The type of swipe gesture.
+ * @return The SwipeState instance.
+ */
 @Composable
 fun rememberSwipeState(
     threshold: Float,
