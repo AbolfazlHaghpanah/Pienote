@@ -19,16 +19,14 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.haghpanh.pienote.baseui.theme.PienoteTheme
-import com.haghpanh.pienote.baseui.utils.SwipeHandlerState.Swipe
-import com.haghpanh.pienote.baseui.utils.rememberSwipeHandlerState
+import com.haghpanh.pienote.baseui.utils.SwipeState.Swipe
+import com.haghpanh.pienote.baseui.utils.rememberSwipeState
 import com.haghpanh.pienote.baseui.utils.swipeHandler
 
 @Composable
@@ -38,14 +36,15 @@ fun HomeNoteItem(
     modifier: Modifier = Modifier,
     onDelete: () -> Unit
 ) {
-    val swipeHandlerState = rememberSwipeHandlerState(threshold = 240f)
-    val rightSwipe: Swipe by remember {
-        derivedStateOf { swipeHandlerState.rightSwipe }
-    }
+    val swipeState = rememberSwipeState(
+        threshold = 240f,
+        swipeType = Swipe.LeftToRight
+    )
+
     val animatedItemColor by animateColorAsState(
-        targetValue = if (rightSwipe.isSwiped && rightSwipe.isOffsetAchieveThreshold) {
+        targetValue = if (swipeState.directionalSwipe.isSwiped && swipeState.directionalSwipe.isOffsetAchieveThreshold) {
             PienoteTheme.colors.error
-        } else if (rightSwipe.isSwiped) {
+        } else if (swipeState.directionalSwipe.isSwiped) {
             PienoteTheme.colors.secondary
         } else {
             PienoteTheme.colors.surface
@@ -53,7 +52,7 @@ fun HomeNoteItem(
         label = "change color on delete"
     )
     val animatedRotation by animateFloatAsState(
-        targetValue = if (rightSwipe.isOffsetAchieveThreshold) 0f else 360f,
+        targetValue = if (swipeState.directionalSwipe.isOffsetAchieveThreshold) 0f else 360f,
         animationSpec = spring(Spring.DampingRatioMediumBouncy),
         label = "delete icon rotation Animation"
     )
@@ -67,14 +66,14 @@ fun HomeNoteItem(
             .fillMaxWidth()
             .aspectRatio(2.4f)
             .swipeHandler(
-                state = swipeHandlerState,
+                state = swipeState,
                 onSwipeRight = onDelete,
                 shouldVibrateOnAchieveThreshold = true
             )
 
     ) {
         AnimatedContent(
-            targetState = rightSwipe.isSwiped,
+            targetState = swipeState.directionalSwipe.isSwiped,
             label = "show delete Icon or item Text",
             transitionSpec = { fadeIn().togetherWith(fadeOut()) }
         ) {
