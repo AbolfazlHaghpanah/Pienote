@@ -31,51 +31,59 @@ class SwipeState(
     /**
      * Interface defining properties and methods for a swipe gesture.
      */
-    sealed interface Swipe {
+    interface Swipe {
         var isSwiped: Boolean
         var isOffsetAchieveThreshold: Boolean
 
         fun reset()
+    }
 
-        data object LeftToRight : Swipe {
-            override var isSwiped: Boolean by mutableStateOf(false)
-            override var isOffsetAchieveThreshold: Boolean by mutableStateOf(false)
-            override fun reset() {
-                isSwiped = false
-                isOffsetAchieveThreshold = false
-            }
+    /**
+     * Represents a left-to-right swipe.
+     */
+    class LeftToRight : Swipe {
+        override var isSwiped: Boolean by mutableStateOf(false)
+        override var isOffsetAchieveThreshold: Boolean by mutableStateOf(false)
+        override fun reset() {
+            isSwiped = false
+            isOffsetAchieveThreshold = false
         }
+    }
 
-        //TODO implement action
-        data object RightToLeft : Swipe {
-            override var isSwiped: Boolean by mutableStateOf(false)
-            override var isOffsetAchieveThreshold: Boolean by mutableStateOf(false)
-            override fun reset() {
-                isSwiped = false
-                isOffsetAchieveThreshold = false
-
-            }
+    //TODO implement action
+    /**
+     * Represents a right-to-left swipe.
+     */
+    class RightToLeft : Swipe {
+        override var isSwiped: Boolean by mutableStateOf(false)
+        override var isOffsetAchieveThreshold: Boolean by mutableStateOf(false)
+        override fun reset() {
+            isSwiped = false
+            isOffsetAchieveThreshold = false
         }
+    }
 
-        //TODO implement actions
-        class Both : Swipe {
-            var isSwipedRight by mutableStateOf(false)
-            var isSwipedLeft by mutableStateOf(false)
-            var isRightOffsetAchieveThreshold by mutableStateOf(false)
-            var isLeftOffsetAchieveThreshold by mutableStateOf(false)
+    //TODO implement actions
+    /**
+     * Represents a swipe gesture in both directions.
+     */
+    class Both : Swipe {
+        var isSwipedRight by mutableStateOf(false)
+        var isSwipedLeft by mutableStateOf(false)
+        var isRightOffsetAchieveThreshold by mutableStateOf(false)
+        var isLeftOffsetAchieveThreshold by mutableStateOf(false)
 
-            override var isSwiped: Boolean = isSwipedLeft || isSwipedRight
-            override var isOffsetAchieveThreshold: Boolean =
-                isLeftOffsetAchieveThreshold || isRightOffsetAchieveThreshold
+        override var isSwiped: Boolean = isSwipedLeft || isSwipedRight
+        override var isOffsetAchieveThreshold: Boolean =
+            isLeftOffsetAchieveThreshold || isRightOffsetAchieveThreshold
 
-            override fun reset() {
-                isSwipedRight = false
-                isSwipedLeft = false
-                isRightOffsetAchieveThreshold = false
-                isLeftOffsetAchieveThreshold = false
-                isSwiped = false
-                isOffsetAchieveThreshold = false
-            }
+        override fun reset() {
+            isSwipedRight = false
+            isSwipedLeft = false
+            isRightOffsetAchieveThreshold = false
+            isLeftOffsetAchieveThreshold = false
+            isSwiped = false
+            isOffsetAchieveThreshold = false
         }
     }
 
@@ -101,7 +109,7 @@ fun Modifier.swipeHandler(
 ): Modifier = composed {
 
     when (state.directionalSwipe) {
-        is SwipeState.Swipe.LeftToRight -> {
+        is SwipeState.LeftToRight -> {
             val context = LocalContext.current
 
             //TODO VIBRATOR_SERVICE is deprecated
