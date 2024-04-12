@@ -2,8 +2,8 @@ package com.haghpanh.pienote.note.ui
 
 import android.net.Uri
 import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.haghpanh.pienote.baseui.BaseViewModel
 import com.haghpanh.pienote.commondomain.model.CategoryDomainModel
 import com.haghpanh.pienote.commondomain.model.NoteDomainModel
 import com.haghpanh.pienote.note.domain.usecase.NoteGetCategoriesUseCase
@@ -14,8 +14,6 @@ import com.haghpanh.pienote.note.domain.usecase.NoteUpdateNoteUseCase
 import com.haghpanh.pienote.note.utils.FocusRequestType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -26,16 +24,12 @@ class NoteViewModel @Inject constructor(
     private val insertNoteUseCase: NoteInsertNoteUseCase,
     private val updateNoteUseCase: NoteUpdateNoteUseCase,
     private val noteUpdateNoteImageUseCase: NoteUpdateNoteImageUseCase,
-    savedStateHandle: SavedStateHandle
-) : ViewModel() {
-    private val isExist = savedStateHandle.get<Boolean>("isExist") ?: false
-    private val noteId = savedStateHandle.get<Int>("id") ?: -1
-
-    private val _state = MutableStateFlow(NoteViewState())
-    val state = _state.asStateFlow()
-
-    private fun getCurrentState(): NoteViewState = state.value
-
+    private val savedStateHandle: SavedStateHandle
+) : BaseViewModel<NoteViewState>(
+    NoteViewState(
+        isExist = savedStateHandle.get<Boolean>("isExist") ?: false
+    )
+) {
     init {
         getNoteInfo()
         getCategories()
@@ -49,31 +43,27 @@ class NoteViewModel @Inject constructor(
     fun switchEditMode(focusRequestType: FocusRequestType = FocusRequestType.Non) {
         if (getCurrentState().isEmptyNote) return
 
-        viewModelScope.launch {
-            val state = getCurrentState()
-            val newState = state.copy(
+        updateState { state ->
+            state.copy(
                 isEditing = !state.isEditing,
                 focusRequestType = focusRequestType
             )
-
-            _state.emit(newState)
         }
     }
 
     fun updateCategory(value: Int?) {
-        viewModelScope.launch {
-            val newNote = getCurrentState().note.copy(categoryId = value)
-            val newState = getCurrentState().copy(note = newNote)
-
-            _state.emit(newState)
-            updateOrInsertNote()
+        updateState(
+            onUpdated = ::updateOrInsertNote
+        ) { state ->
+            val newNote = state.note.copy(categoryId = value)
+            state.copy(note = newNote)
         }
     }
 
     fun updateOrInsertNote() {
         if (getCurrentState().isEmptyNote) return
 
-        if (isExist) {
+        if (getCurrentState().isExist) {
             updateCurrentNote()
         } else {
             insertCurrentNote()
@@ -81,40 +71,35 @@ class NoteViewModel @Inject constructor(
     }
 
     fun updateNoteImage(uri: Uri?) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             val note = getCurrentState().note.toDomainModel()
             val newImage = noteUpdateNoteImageUseCase(note = note, uri = uri)
             val newNote = getCurrentState().note.copy(image = newImage?.toString())
-            val newState = getCurrentState().copy(note = newNote)
 
-            _state.emit(newState)
+            updateState { state ->
+                state.copy(note = newNote)
+            }
         }
     }
 
     fun updateNoteText(value: String) {
-        viewModelScope.launch {
+        updateState { state ->
             val newNote = getCurrentState().note.copy(note = value)
-            val newState = getCurrentState().copy(note = newNote)
-
-            _state.emit(newState)
+            state.copy(note = newNote)
         }
     }
 
     fun updateTitleText(value: String) {
-        viewModelScope.launch {
+        updateState {
             val newNote = getCurrentState().note.copy(title = value)
-            val newState = getCurrentState().copy(note = newNote)
-
-            _state.emit(newState)
+            it.copy(note = newNote)
         }
     }
 
     private fun getCategories() {
-        viewModelScope.launch(Dispatchers.IO) {
+        updateState { state ->
             val categories = getCategoriesUseCase().map { it.toUiModel() }
-            val newState = getCurrentState().copy(categories = categories)
-
-            _state.emit(newState)
+            state.copy(categories = categories)
         }
     }
 
@@ -135,25 +120,25 @@ class NoteViewModel @Inject constructor(
     }
 
     private fun getNoteInfo() {
-        if (isExist) {
+        if (getCurrentState().isExist) {
             viewModelScope.launch(Dispatchers.IO) {
-                observeNoteInfoUseCase(noteId).collect {
-                    val newState = getCurrentState().copy(
-                        note = it.note.toUiModel(),
-                        category = it.category?.toUiModel()
-                    )
+                val noteId = savedStateHandle.get<Int>("id") ?: -1
 
-                    _state.emit(newState)
+                observeNoteInfoUseCase(noteId).collect { noteWithCat ->
+                    updateState { state ->
+                        state.copy(
+                            note = noteWithCat.note.toUiModel(),
+                            category = noteWithCat.category?.toUiModel()
+                        )
+                    }
                 }
             }
         } else {
-            viewModelScope.launch {
-                val newState = getCurrentState().copy(
+            updateState { state ->
+                state.copy(
                     isEditing = true,
                     note = Note()
                 )
-
-                _state.emit(newState)
             }
         }
     }

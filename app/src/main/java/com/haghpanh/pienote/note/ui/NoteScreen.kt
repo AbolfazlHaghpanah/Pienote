@@ -69,7 +69,7 @@ fun NoteScreen(
     navController: NavController,
     viewModel: NoteViewModel
 ) {
-    val state by viewModel.state.collectAsStateWithLifecycle()
+    val state by viewModel.collectAsStateWithLifecycle()
 
     val pickMedia = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia(),
@@ -131,7 +131,9 @@ fun NoteScreen(
     }
 
     Scaffold(
-        modifier = Modifier.imePadding(),
+        modifier = Modifier
+            .statusBarsPadding()
+            .imePadding(),
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { onSwitchEditMode(FocusRequestType.Non) }
@@ -170,7 +172,6 @@ fun NoteScreen(
         ) {
             ImageCoverSection(
                 modifier = Modifier
-                    .statusBarsPadding()
                     .padding(top = 24.dp, start = 24.dp, end = 24.dp)
                     .then(
                         if (!state.isEditing) {
