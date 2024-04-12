@@ -46,7 +46,7 @@ class SwipeState(
             }
         }
 
-        //todo implement action
+        //TODO implement action
         data object RightToLeft : Swipe {
             override var isSwiped: Boolean by mutableStateOf(false)
             override var isOffsetAchieveThreshold: Boolean by mutableStateOf(false)
@@ -57,7 +57,7 @@ class SwipeState(
             }
         }
 
-        //todo implement actions
+        //TODO implement actions
         class Both : Swipe {
             var isSwipedRight by mutableStateOf(false)
             var isSwipedLeft by mutableStateOf(false)
@@ -104,6 +104,7 @@ fun Modifier.swipeHandler(
         is SwipeState.Swipe.LeftToRight -> {
             val context = LocalContext.current
 
+            //TODO VIBRATOR_SERVICE is deprecated
             LaunchedEffect(state.directionalSwipe.isOffsetAchieveThreshold && shouldVibrateOnAchieveThreshold) {
                 if (state.directionalSwipe.isOffsetAchieveThreshold) {
                     (context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator?)?.apply {

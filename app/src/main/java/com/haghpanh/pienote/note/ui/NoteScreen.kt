@@ -11,7 +11,7 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
@@ -189,8 +189,7 @@ fun NoteScreen(
 
             Column(
                 modifier = Modifier
-                    .padding(horizontal = 14.dp)
-                    .height(localConfig.screenHeightDp.dp - 24.dp)
+                    .heightIn(min = localConfig.screenHeightDp.dp - 24.dp)
             ) {
                 if (state.isEditing) {
                     SideEffect {
@@ -201,6 +200,7 @@ fun NoteScreen(
 
                     OutlinedTextField(
                         modifier = Modifier
+                            .padding(horizontal = 14.dp)
                             .fillMaxWidth()
                             .focusRequester(titleFocusRequester),
                         value = state.note.title.orEmpty(),
@@ -227,7 +227,7 @@ fun NoteScreen(
                             ) {
                                 onSwitchEditMode(FocusRequestType.Title)
                             }
-                            .padding(16.dp)
+                            .padding(vertical = 16.dp, horizontal = 30.dp)
                             .fillMaxWidth(),
                         text = state.note.title ?: stringResource(R.string.label_untitled),
                         style = PienoteTheme.typography.h1
@@ -250,6 +250,7 @@ fun NoteScreen(
 
                     OutlinedTextField(
                         modifier = Modifier
+                            .padding(horizontal = 14.dp)
                             .fillMaxWidth()
                             .weight(1f)
                             .focusRequester(noteFocusRequester),
@@ -277,7 +278,7 @@ fun NoteScreen(
                             ) {
                                 onSwitchEditMode(FocusRequestType.Note)
                             }
-                            .padding(16.dp)
+                            .padding(vertical = 16.dp, horizontal = 30.dp)
                             .fillMaxWidth(),
                         text = state.note.note ?: "",
                         style = PienoteTheme.typography.body1

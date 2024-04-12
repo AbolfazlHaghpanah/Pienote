@@ -11,8 +11,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
@@ -24,7 +22,6 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.haghpanh.pienote.R
 import com.haghpanh.pienote.baseui.theme.PienoteTheme
@@ -97,7 +94,7 @@ fun ImageCoverSection(
                 }
             }
         } else if(image == null) {
-            Spacer(modifier = Modifier.height(48.dp))
+            Spacer(modifier = modifier)
         }
     }
 }
