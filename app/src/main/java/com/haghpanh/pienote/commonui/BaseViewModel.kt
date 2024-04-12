@@ -1,4 +1,4 @@
-package com.haghpanh.pienote.baseui
+package com.haghpanh.pienote.commonui
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State

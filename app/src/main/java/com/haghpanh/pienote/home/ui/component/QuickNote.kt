@@ -29,7 +29,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.haghpanh.pienote.R
-import com.haghpanh.pienote.baseui.theme.PienoteTheme
+import com.haghpanh.pienote.commonui.theme.PienoteTheme
 
 @Composable
 fun QuickNoteTextField(
@@ -53,7 +53,7 @@ fun QuickNoteTextField(
         verticalArrangement = Arrangement.Top
     ) {
         OutlinedTextField(
-            modifier = modifier
+            modifier = Modifier
                 .padding(top = 24.dp, start = 24.dp, end = 24.dp)
                 .fillMaxWidth(),
             value = title,
@@ -73,7 +73,7 @@ fun QuickNoteTextField(
         )
 
         OutlinedTextField(
-            modifier = modifier
+            modifier = Modifier
                 .padding(bottom = 24.dp, start = 24.dp, end = 24.dp)
                 .fillMaxWidth()
                 .heightIn(min = 250.dp),
@@ -109,7 +109,7 @@ fun QuickNoteTextField(
                 Text(text = stringResource(R.string.label_discard))
             }
 
-            Spacer(modifier = modifier.width(16.dp))
+            Spacer(modifier = Modifier.width(16.dp))
 
             TextButton(
                 onClick = onDone

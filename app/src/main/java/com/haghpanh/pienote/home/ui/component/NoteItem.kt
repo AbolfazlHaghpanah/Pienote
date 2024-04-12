@@ -24,11 +24,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.haghpanh.pienote.baseui.theme.PienoteTheme
-import com.haghpanh.pienote.baseui.utils.SwipeState
-import com.haghpanh.pienote.baseui.utils.SwipeState.Swipe
-import com.haghpanh.pienote.baseui.utils.rememberSwipeState
-import com.haghpanh.pienote.baseui.utils.swipeHandler
+import com.haghpanh.pienote.commonui.theme.PienoteTheme
+import com.haghpanh.pienote.commonui.utils.SwipeState
+import com.haghpanh.pienote.commonui.utils.rememberSwipeState
+import com.haghpanh.pienote.commonui.utils.swipeHandler
 
 @Composable
 fun HomeNoteItem(

@@ -16,7 +16,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.haghpanh.pienote.baseui.theme.PienoteTheme
+import com.haghpanh.pienote.commonui.theme.PienoteTheme
 
 @Composable
 fun HomeCategoryItem(

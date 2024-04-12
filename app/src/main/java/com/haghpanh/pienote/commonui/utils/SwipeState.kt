@@ -1,4 +1,4 @@
-package com.haghpanh.pienote.baseui.utils
+package com.haghpanh.pienote.commonui.utils
 
 import android.content.Context
 import android.os.Vibrator

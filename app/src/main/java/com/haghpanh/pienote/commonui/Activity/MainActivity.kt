@@ -1,4 +1,4 @@
-package com.haghpanh.pienote.baseui.Activity
+package com.haghpanh.pienote.commonui.Activity
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -8,16 +8,15 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBarsPadding
-import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
-import com.haghpanh.pienote.baseui.navigation.AppScreens
-import com.haghpanh.pienote.baseui.navigation.mainNavGraph
-import com.haghpanh.pienote.baseui.theme.PienoteTheme
+import com.haghpanh.pienote.commonui.navigation.AppScreens
+import com.haghpanh.pienote.commonui.navigation.mainNavGraph
+import com.haghpanh.pienote.commonui.theme.PienoteTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

@@ -2,7 +2,7 @@ package com.haghpanh.pienote.home.ui
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
-import com.haghpanh.pienote.baseui.theme.PienoteTheme
+import com.haghpanh.pienote.commonui.theme.PienoteTheme
 
 @Preview(showBackground = true)
 @Composable

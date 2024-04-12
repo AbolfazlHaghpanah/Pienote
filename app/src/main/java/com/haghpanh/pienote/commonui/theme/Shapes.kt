@@ -1,4 +1,4 @@
-package com.haghpanh.pienote.baseui.theme
+package com.haghpanh.pienote.commonui.theme
 
 import androidx.compose.foundation.shape.CornerBasedShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -27,5 +27,5 @@ data class Shapes(
 }
 
 val LocalShapes = staticCompositionLocalOf {
-    com.haghpanh.pienote.baseui.theme.Shapes()
+    com.haghpanh.pienote.commonui.theme.Shapes()
 }

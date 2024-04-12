@@ -24,7 +24,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import coil.compose.AsyncImage
 import com.haghpanh.pienote.R
-import com.haghpanh.pienote.baseui.theme.PienoteTheme
+import com.haghpanh.pienote.commonui.theme.PienoteTheme
 
 @Composable
 fun ImageCoverSection(

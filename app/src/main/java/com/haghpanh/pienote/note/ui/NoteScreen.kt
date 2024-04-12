@@ -45,10 +45,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.haghpanh.pienote.R
-import com.haghpanh.pienote.baseui.theme.PienoteTheme
+import com.haghpanh.pienote.commonui.theme.PienoteTheme
 import com.haghpanh.pienote.note.ui.component.CategoryChipSection
 import com.haghpanh.pienote.note.ui.component.ImageCoverSection
 import com.haghpanh.pienote.note.utils.FocusRequestType

@@ -1,4 +1,4 @@
-package com.haghpanh.pienote.baseui.navigation
+package com.haghpanh.pienote.commonui.navigation
 
 sealed class AppScreens(val route: String) {
     data object HomeScreen : AppScreens("home-screen")

@@ -1,4 +1,4 @@
-package com.haghpanh.pienote.baseui.theme
+package com.haghpanh.pienote.commonui.theme
 
 import androidx.compose.material.Typography
 import androidx.compose.runtime.Composable

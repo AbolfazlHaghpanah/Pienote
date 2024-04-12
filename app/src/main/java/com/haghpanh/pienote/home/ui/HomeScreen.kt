@@ -1,6 +1,5 @@
 package com.haghpanh.pienote.home.ui
 
-import android.util.Log
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -29,8 +28,10 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import com.haghpanh.pienote.baseui.navigation.AppScreens.NoteScreen
-import com.haghpanh.pienote.baseui.theme.PienoteTheme
+import com.haghpanh.pienote.R
+import com.haghpanh.pienote.commonui.component.PienoteTopBar
+import com.haghpanh.pienote.commonui.navigation.AppScreens.NoteScreen
+import com.haghpanh.pienote.commonui.theme.PienoteTheme
 import com.haghpanh.pienote.home.ui.component.HomeCategoryItem
 import com.haghpanh.pienote.home.ui.component.HomeNoteItem
 import com.haghpanh.pienote.home.ui.component.QuickNoteButton
@@ -104,10 +105,17 @@ fun HomeScreen(
                 .padding(paddingValues)
         ) {
             LazyColumn(
-                contentPadding = PaddingValues(24.dp),
+                contentPadding = PaddingValues(vertical = 24.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(24.dp)
             ) {
+                item {
+                    PienoteTopBar(
+                        title = "Home",
+                        icon = R.drawable.home
+                    )
+                }
+
                 item {
                     AnimatedContent(
                         targetState = state.hasClickedOnQuickNote,
@@ -119,6 +127,7 @@ fun HomeScreen(
                     ) { wantsToAddQuickNote ->
                         if (wantsToAddQuickNote) {
                             QuickNoteTextField(
+                                modifier = Modifier.padding(horizontal = 24.dp),
                                 title = state.quickNoteTitle.orEmpty(),
                                 note = state.quickNoteNote.orEmpty(),
                                 onDone = onInsertQuickNote,
@@ -127,7 +136,9 @@ fun HomeScreen(
                                 onDiscard = onQuickNoteDiscard
                             )
                         } else {
-                            QuickNoteButton {
+                            QuickNoteButton(
+                                modifier = Modifier.padding(horizontal = 24.dp)
+                            ) {
                                 onQuickNoteClick()
                             }
                         }
@@ -139,9 +150,11 @@ fun HomeScreen(
                     key = { item -> item.id }
                 ) { category ->
                     HomeCategoryItem(
-                        modifier = Modifier.animateItemPlacement(
-                            animationSpec = tween(300)
-                        ),
+                        modifier = Modifier
+                            .padding(horizontal = 24.dp)
+                            .animateItemPlacement(
+                                animationSpec = tween(300)
+                            ),
                         name = category.name,
                         priority = category.priority
                     )
@@ -153,6 +166,7 @@ fun HomeScreen(
                 ) { note ->
                     HomeNoteItem(
                         modifier = Modifier
+                            .padding(horizontal = 24.dp)
                             .clip(PienoteTheme.shapes.veryLarge)
                             .animateItemPlacement(
                                 animationSpec = tween(300)

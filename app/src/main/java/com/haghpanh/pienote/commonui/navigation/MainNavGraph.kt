@@ -1,4 +1,4 @@
-package com.haghpanh.pienote.baseui.navigation
+package com.haghpanh.pienote.commonui.navigation
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder

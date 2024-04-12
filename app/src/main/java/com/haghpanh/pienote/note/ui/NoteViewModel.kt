@@ -3,7 +3,7 @@ package com.haghpanh.pienote.note.ui
 import android.net.Uri
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
-import com.haghpanh.pienote.baseui.BaseViewModel
+import com.haghpanh.pienote.commonui.BaseViewModel
 import com.haghpanh.pienote.commondomain.model.CategoryDomainModel
 import com.haghpanh.pienote.commondomain.model.NoteDomainModel
 import com.haghpanh.pienote.note.domain.usecase.NoteGetCategoriesUseCase
