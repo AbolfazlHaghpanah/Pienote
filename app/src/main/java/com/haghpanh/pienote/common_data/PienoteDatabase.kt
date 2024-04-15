@@ -5,7 +5,7 @@ import androidx.room.RoomDatabase
 import com.haghpanh.pienote.common_data.entity.CategoryEntity
 import com.haghpanh.pienote.common_data.entity.NoteEntity
 import com.haghpanh.pienote.feature_category.data.dao.CategoryDao
-import com.haghpanh.pienote.feature_category.data.databasviews.NotesWithCategory
+import com.haghpanh.pienote.feature_category.data.databasviews.NotesWithCategoryView
 import com.haghpanh.pienote.feature_home.data.dao.HomeDao
 import com.haghpanh.pienote.feature_note.data.dao.NoteDao
 
@@ -15,7 +15,7 @@ import com.haghpanh.pienote.feature_note.data.dao.NoteDao
         CategoryEntity::class
     ],
     version = 1,
-    views = [NotesWithCategory::class]
+    views = [NotesWithCategoryView::class]
 )
 abstract class PienoteDatabase : RoomDatabase() {
     abstract fun HomeDao(): HomeDao

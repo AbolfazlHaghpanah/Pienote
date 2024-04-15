@@ -29,7 +29,6 @@ class HomeViewModel @Inject constructor(
     private val homeObserveNotesByCategoryUseCase: HomeObserveNotesByCategoryUseCase,
     private val homeObserveCategories: HomeObserveCategories,
     private val homeDeleteNoteUseCase: HomeDeleteNoteUseCase,
-    private val categoryDao: CategoryDao
 ) : ViewModel() {
     private val _state = MutableStateFlow(HomeViewState())
     val state = _state.asStateFlow()
@@ -39,11 +38,6 @@ class HomeViewModel @Inject constructor(
     init {
         observeCategories()
         observeNotes()
-        viewModelScope.launch(Dispatchers.IO) {
-            categoryDao.getCategoryWithNotes(1).collect {
-                Log.d("mmd", "${it.notes.joinToString { it.title }} ")
-            }
-        }
     }
 
     fun setQuickNoteTitle(value: String?) {
