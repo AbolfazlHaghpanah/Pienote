@@ -33,7 +33,8 @@ fun CategoryChipSection(
     category: Category?,
     isEditing: Boolean,
     categories: List<Category>,
-    onCategorySelect: (Int?) -> Unit
+    onCategorySelect: (Int?) -> Unit,
+    onClickCategory: (Int) -> Unit
 ) {
     var isWantToSelect by remember { mutableStateOf(false) }
     val chipContentColor by animateColorAsState(
@@ -53,8 +54,9 @@ fun CategoryChipSection(
             if (!isWantToSelect) "Select Category" else "Cancel"
         }
     }
-    val onChipSelect = {
+    val onChipSelect: (Int?) -> Unit = {
         if (isEditing) isWantToSelect = !isWantToSelect
+        else onClickCategory(it ?: -1)
     }
 
     LaunchedEffect(isEditing) {
@@ -73,7 +75,7 @@ fun CategoryChipSection(
         category?.let { cat ->
             Chip(
                 modifier = Modifier.padding(start = 30.dp),
-                onClick = onChipSelect,
+                onClick = { onChipSelect(cat.id) },
                 colors = ChipDefaults.chipColors(
                     backgroundColor = PienoteTheme.colors.background,
                     contentColor = chipContentColor
@@ -90,7 +92,7 @@ fun CategoryChipSection(
         AnimatedVisibility(visible = category == null && isEditing) {
             Chip(
                 modifier = Modifier.padding(start = 30.dp),
-                onClick = onChipSelect,
+                onClick = { onChipSelect(null) },
                 colors = ChipDefaults.chipColors(
                     backgroundColor = PienoteTheme.colors.background,
                     contentColor = chipContentColor
@@ -113,7 +115,7 @@ fun CategoryChipSection(
                 categories.forEach { cat ->
                     Chip(
                         onClick = {
-                            onChipSelect()
+                            onChipSelect(cat.id)
                             onCategorySelect(cat.id)
                         },
                         colors = ChipDefaults.chipColors(

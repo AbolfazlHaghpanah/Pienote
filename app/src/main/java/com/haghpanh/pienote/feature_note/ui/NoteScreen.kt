@@ -47,6 +47,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.haghpanh.pienote.R
+import com.haghpanh.pienote.common_ui.navigation.AppScreens
 import com.haghpanh.pienote.common_ui.theme.PienoteTheme
 import com.haghpanh.pienote.feature_note.ui.component.CategoryChipSection
 import com.haghpanh.pienote.feature_note.ui.component.ImageCoverSection
@@ -94,7 +95,8 @@ fun NoteScreen(
         onRequestToPickImage = {
             pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
         },
-        onSwitchEditMode = viewModel::switchEditMode
+        onSwitchEditMode = viewModel::switchEditMode,
+        navigateToRoute = { route -> navController.navigate(route) }
     )
 }
 
@@ -105,7 +107,8 @@ fun NoteScreen(
     onUpdateTitle: (String) -> Unit,
     onUpdateCategory: (Int?) -> Unit,
     onRequestToPickImage: () -> Unit,
-    onSwitchEditMode: (FocusRequestType) -> Unit
+    onSwitchEditMode: (FocusRequestType) -> Unit,
+    navigateToRoute: (String) -> Unit
 ) {
     val scrollState = rememberScrollState()
     val nestedScrollConnection = rememberNoteNestedScrollConnection()
@@ -238,7 +241,10 @@ fun NoteScreen(
                     category = state.category,
                     isEditing = state.isEditing,
                     categories = state.categories,
-                    onCategorySelect = onUpdateCategory
+                    onCategorySelect = onUpdateCategory,
+                    onClickCategory = {
+                        navigateToRoute(AppScreens.CategoryScreen.createRoute(it))
+                    }
                 )
 
                 if (state.isEditing) {
