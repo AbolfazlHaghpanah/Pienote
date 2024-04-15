@@ -6,5 +6,7 @@ sealed class AppScreens(val route: String) {
         fun createRoute(id: Int, isExist: Boolean): String = "note-screen/$id/$isExist"
     }
 
-    data object CategoryScreen : AppScreens("category-screen")
+    data object CategoryScreen : AppScreens("category-screen/{id}") {
+        fun createRoute(id : Int) = "category-screen/$id"
+    }
 }

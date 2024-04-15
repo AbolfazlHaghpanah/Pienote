@@ -1,4 +1,8 @@
 package com.haghpanh.pienote.feature_category.domain.repository
 
-class CategoryRepository {
+import com.haghpanh.pienote.feature_category.domain.model.CategoryDomainModel
+import kotlinx.coroutines.flow.Flow
+
+interface CategoryRepository {
+    fun getCategory(id: Int): Flow<CategoryDomainModel>
 }

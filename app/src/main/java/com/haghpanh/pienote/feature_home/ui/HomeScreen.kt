@@ -14,11 +14,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
-import androidx.compose.material.TextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.runtime.Composable
@@ -32,6 +30,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.haghpanh.pienote.R
 import com.haghpanh.pienote.common_ui.component.PienoteTopBar
+import com.haghpanh.pienote.common_ui.navigation.AppScreens
 import com.haghpanh.pienote.common_ui.navigation.AppScreens.NoteScreen
 import com.haghpanh.pienote.common_ui.theme.PienoteTheme
 import com.haghpanh.pienote.feature_home.ui.component.HomeCategoryItem
@@ -153,6 +152,9 @@ fun HomeScreen(
                 ) { category ->
                     HomeCategoryItem(
                         modifier = Modifier
+                            .clickable {
+                                navigateToNote(AppScreens.CategoryScreen.createRoute(category.id))
+                            }
                             .padding(horizontal = 24.dp)
                             .animateItemPlacement(
                                 animationSpec = tween(300)

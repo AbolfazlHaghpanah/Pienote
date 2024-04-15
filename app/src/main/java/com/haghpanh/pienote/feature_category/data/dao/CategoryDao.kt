@@ -22,8 +22,6 @@ interface CategoryDao {
     """)
     fun getCategoryWithNotes(categoryId: Int): Flow<List<NotesWithCategoryView>>
 
-
-
     @Query("SELECT * FROM notes WHERE category_id = :categoryId")
     fun observeCategoriesNotes(categoryId: Int): Flow<List<NoteEntity>>
 }
