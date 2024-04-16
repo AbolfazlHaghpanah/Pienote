@@ -15,14 +15,14 @@ import com.haghpanh.pienote.common_data.entity.NoteEntity
             categories.name as categoryName,
             categories.image as categoryImage,
             categories.priority as categoryPriority
-            from notes left join categories on notes.category_id = categories.id 
+            from categories left join notes on notes.category_id = categories.id 
         ) where categoryId not null
         """
 )
 data class NotesWithCategoryView(
-    val noteId: Int,
-    val noteTitle: String,
-    val content: String,
+    val noteId: Int?,
+    val noteTitle: String?,
+    val content: String?,
     val categoryId: Int,
     val categoryName: String,
     val categoryImage: String?,

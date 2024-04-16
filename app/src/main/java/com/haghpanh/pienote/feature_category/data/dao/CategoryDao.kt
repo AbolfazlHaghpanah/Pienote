@@ -17,7 +17,7 @@ interface CategoryDao {
         categories.name as categoryName,
         categories.image as categoryImage,
         categories.priority as categoryPriority
-        from notes left join categories on notes.category_id = categories.id 
+        from categories left join notes on notes.category_id = categories.id 
         where categoryId = :categoryId
     """)
     fun getCategoryWithNotes(categoryId: Int): Flow<List<NotesWithCategoryView>>
