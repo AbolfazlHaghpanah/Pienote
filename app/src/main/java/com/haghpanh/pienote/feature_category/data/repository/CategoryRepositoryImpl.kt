@@ -1,6 +1,5 @@
 package com.haghpanh.pienote.feature_category.data.repository
 
-import com.haghpanh.pienote.common_domain.model.NoteDomainModel
 import com.haghpanh.pienote.feature_category.data.datasource.CategoryLocalDataSource
 import com.haghpanh.pienote.feature_category.domain.model.CategoryDomainModel
 import com.haghpanh.pienote.feature_category.domain.repository.CategoryRepository
@@ -11,27 +10,18 @@ import javax.inject.Inject
 class CategoryRepositoryImpl @Inject constructor(
     private val categoryLocalDataSource: CategoryLocalDataSource
 ) : CategoryRepository {
-    override fun getCategory(id: Int): Flow<CategoryDomainModel> {
-        val category = categoryLocalDataSource.getCategoryWithNotes(id)
+    override fun observeCategory(id: Int): Flow<CategoryDomainModel> {
+        val result = categoryLocalDataSource.observeCategory(id)
 
-        return category.map { noteWithCategory ->
-            val first = noteWithCategory.first()
+        return result.map { categoryWithNotes ->
+            val category = categoryWithNotes.category
 
             CategoryDomainModel(
-                id = first.categoryId,
-                name = first.categoryName,
-                priority = first.categoryPriority,
-                image = first.categoryImage,
-                notes = noteWithCategory.filter {
-                    it.noteId != null
-                }.map {
-                    NoteDomainModel(
-                        id = it.noteId ?: -1,
-                        title = it.noteTitle.orEmpty(),
-                        note = it.content.orEmpty(),
-                        addedTime = ""
-                    )
-                }
+                id = category.id,
+                name = category.name,
+                priority = category.priority,
+                image = category.image,
+                notes = categoryWithNotes.notes.map { entity -> entity.toDomainModel() }
             )
         }
     }

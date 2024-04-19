@@ -5,9 +5,9 @@ import com.haghpanh.pienote.feature_category.domain.repository.CategoryRepositor
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
-class CategoryGetCategoryUseCase @Inject constructor(
+class CategoryObserveCategoryUseCase @Inject constructor(
     private val categoryRepository: CategoryRepository
 ) {
     operator fun invoke(id: Int): Flow<CategoryDomainModel> =
-        categoryRepository.getCategory(id)
+        categoryRepository.observeCategory(id)
 }

@@ -4,5 +4,5 @@ import com.haghpanh.pienote.feature_category.domain.model.CategoryDomainModel
 import kotlinx.coroutines.flow.Flow
 
 interface CategoryRepository {
-    fun getCategory(id: Int): Flow<CategoryDomainModel>
+    fun observeCategory(id: Int): Flow<CategoryDomainModel>
 }

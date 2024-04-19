@@ -4,7 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.haghpanh.pienote.common_domain.model.NoteDomainModel
 import com.haghpanh.pienote.common_ui.BaseViewModel
-import com.haghpanh.pienote.feature_category.domain.usecase.CategoryGetCategoryUseCase
+import com.haghpanh.pienote.feature_category.domain.usecase.CategoryObserveCategoryUseCase
 import com.haghpanh.pienote.feature_note.ui.Note
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -12,7 +12,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CategoryViewModel @Inject constructor(
-    private val getCategoryUseCase: CategoryGetCategoryUseCase,
+    private val getCategoryUseCase: CategoryObserveCategoryUseCase,
     savedStateHandle: SavedStateHandle
 ) : BaseViewModel<CategoryViewState>(
     CategoryViewState(

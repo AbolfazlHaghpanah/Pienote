@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.dp
@@ -20,7 +21,9 @@ fun PienoteChip(
     content: @Composable () -> Unit
 ) {
     Surface(
-        modifier = modifier.clickable(onClick = onClick),
+        modifier = modifier
+            .clip(PienoteTheme.shapes.rounded)
+            .clickable(onClick = onClick),
         color = backgroundColor,
         shape = shape,
         border = border,

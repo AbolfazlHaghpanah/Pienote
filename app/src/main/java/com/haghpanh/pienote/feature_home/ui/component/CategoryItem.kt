@@ -1,6 +1,7 @@
 package com.haghpanh.pienote.feature_home.ui.component
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -22,7 +23,8 @@ import com.haghpanh.pienote.common_ui.theme.PienoteTheme
 fun HomeCategoryItem(
     modifier: Modifier = Modifier,
     name: String,
-    priority: Int?
+    priority: Int?,
+    onClick: () -> Unit
 ) {
     val priorityIcon = when (priority) {
         in 1..3 -> PienoteTheme.icon.highPriority
@@ -38,6 +40,7 @@ fun HomeCategoryItem(
                 color = PienoteTheme.colors.surface,
                 shape = PienoteTheme.shapes.veryLarge
             )
+            .clickable(onClick = onClick)
             .fillMaxWidth()
             .aspectRatio(2.4f),
     ) {

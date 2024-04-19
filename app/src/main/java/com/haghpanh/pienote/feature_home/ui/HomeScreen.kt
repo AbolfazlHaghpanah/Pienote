@@ -152,16 +152,15 @@ fun HomeScreen(
                 ) { category ->
                     HomeCategoryItem(
                         modifier = Modifier
-                            .clickable {
-                                navigateToNote(AppScreens.CategoryScreen.createRoute(category.id))
-                            }
                             .padding(horizontal = 24.dp)
                             .animateItemPlacement(
                                 animationSpec = tween(300)
                             ),
                         name = category.name,
                         priority = category.priority
-                    )
+                    ) {
+                        navigateToNote(AppScreens.CategoryScreen.createRoute(category.id))
+                    }
                 }
 
                 items(
