@@ -22,17 +22,15 @@ class CategoryRepositoryImpl @Inject constructor(
                 name = first.categoryName,
                 priority = first.categoryPriority,
                 image = first.categoryImage,
-                notes = if (first.noteId == null) {
-                    emptyList()
-                } else {
-                    noteWithCategory.map {
-                        NoteDomainModel(
-                            id = it.noteId ?: -1,
-                            title = it.noteTitle.orEmpty(),
-                            note = it.content.orEmpty(),
-                            addedTime = ""
-                        )
-                    }
+                notes = noteWithCategory.filter {
+                    it.noteId != null
+                }.map {
+                    NoteDomainModel(
+                        id = it.noteId ?: -1,
+                        title = it.noteTitle.orEmpty(),
+                        note = it.content.orEmpty(),
+                        addedTime = ""
+                    )
                 }
             )
         }

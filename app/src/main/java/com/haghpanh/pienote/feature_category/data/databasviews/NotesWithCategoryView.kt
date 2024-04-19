@@ -28,8 +28,3 @@ data class NotesWithCategoryView(
     val categoryImage: String?,
     val categoryPriority: Int?
 )
-
-data class NoteWithCategory(
-    val category: CategoryEntity,
-    val notes : List<NoteEntity>
-)
