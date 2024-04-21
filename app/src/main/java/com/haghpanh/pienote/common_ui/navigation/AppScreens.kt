@@ -9,4 +9,6 @@ sealed class AppScreens(val route: String) {
     data object CategoryScreen : AppScreens("category-screen/{id}") {
         fun createRoute(id : Int) = "category-screen/$id"
     }
+
+    data object LibraryScreen : AppScreens("library-screen")
 }

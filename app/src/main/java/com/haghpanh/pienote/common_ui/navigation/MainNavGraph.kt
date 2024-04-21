@@ -7,6 +7,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.haghpanh.pienote.feature_category.ui.CategoryScreen
 import com.haghpanh.pienote.feature_home.ui.HomeScreen
+import com.haghpanh.pienote.feature_library.ui.LibraryScreen
 import com.haghpanh.pienote.feature_note.ui.NoteScreen
 
 fun NavGraphBuilder.mainNavGraph(
@@ -34,5 +35,9 @@ fun NavGraphBuilder.mainNavGraph(
 
     composable(route = AppScreens.CategoryScreen.route) {
         CategoryScreen(navController = navController)
+    }
+
+    composable(route = AppScreens.LibraryScreen.route) {
+        LibraryScreen(navController = navController)
     }
 }

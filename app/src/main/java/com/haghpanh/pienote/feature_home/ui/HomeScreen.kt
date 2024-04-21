@@ -7,6 +7,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -24,6 +25,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -84,6 +86,16 @@ fun HomeScreen(
     onDeleteNote: (Note) -> Unit
 ) {
     Scaffold(
+        modifier = Modifier
+            .pointerInput(null) {
+                detectHorizontalDragGestures(
+                    onHorizontalDrag = { _, delta ->
+                        if(delta > 0) {
+                            navigateToNote(AppScreens.LibraryScreen.route)
+                        }
+                    }
+                )
+            },
         floatingActionButton = {
             FloatingActionButton(onClick = {
                 navigateToNote(
