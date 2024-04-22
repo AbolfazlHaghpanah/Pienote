@@ -11,8 +11,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
@@ -99,13 +97,6 @@ fun PienoteTopBar(
     onBack: () -> Unit,
     action: (() -> Unit)? = null
 ) {
-//    TopAppBar(
-//        modifier = Modifier
-//            .wrapContentHeight(),
-//        backgroundColor = PienoteTheme.colors.background,
-//        contentColor = PienoteTheme.colors.onBackground,
-//        elevation = 0.dp,
-//    ) {
     Column(
         modifier = Modifier
             .padding(horizontal = 16.dp)
@@ -116,7 +107,7 @@ fun PienoteTopBar(
             onClick = onBack
         ) {
             Row(
-                modifier = Modifier.padding(8.dp),
+                modifier = Modifier.padding(6.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {

@@ -1,6 +1,7 @@
 package com.haghpanh.pienote.feature_category.ui
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -18,6 +19,8 @@ import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.ArrowBack
+import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -54,17 +57,22 @@ fun CategoryScreen(
     viewModel: CategoryViewModel
 ) {
     val state by viewModel.collectAsStateWithLifecycle()
+    val parentScreen = viewModel.savedStateHandler<String>("parent")
 
     CategoryScreen(
         state = state,
-        navigateToRoute = { route -> navController.navigate(route) }
+        parentScreen = parentScreen,
+        navigateToRoute = { route -> navController.navigate(route) },
+        onBack = { navController.popBackStack() }
     )
 }
 
 @Composable
 fun CategoryScreen(
     state: CategoryViewState,
-    navigateToRoute: (String) -> Unit
+    parentScreen: String?,
+    navigateToRoute: (String) -> Unit,
+    onBack: () -> Unit
 ) {
     var showDialog by remember { mutableStateOf(false) }
 
@@ -114,6 +122,34 @@ fun CategoryScreen(
                 .statusBarsPadding()
                 .padding(paddingValues)
         ) {
+            item {
+                if (parentScreen != null) {
+                    AnimatedVisibility(visible = !showDialog) {
+                        PienoteChip(
+                            modifier = Modifier.padding(start = 16.dp, top = 16.dp),
+                            onClick = onBack
+                        ) {
+                            Row(
+                                modifier = Modifier.padding(6.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceEvenly
+                            ) {
+                                Icon(
+                                    imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
+                                    contentDescription = "back"
+                                )
+
+                                Text(
+                                    modifier = Modifier.padding(end = 4.dp),
+                                    text = parentScreen,
+                                    style = PienoteTheme.typography.subtitle1
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+
             item {
                 AnimatedContent(
                     targetState = showDialog,
