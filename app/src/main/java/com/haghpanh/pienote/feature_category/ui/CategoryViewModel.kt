@@ -15,9 +15,10 @@ class CategoryViewModel @Inject constructor(
     private val getCategoryUseCase: CategoryObserveCategoryUseCase,
     savedStateHandle: SavedStateHandle
 ) : BaseViewModel<CategoryViewState>(
-    CategoryViewState(
+    initialState = CategoryViewState(
         id = savedStateHandle.get<String>("id")?.toInt() ?: -1
-    )
+    ),
+    savedStateHandle = savedStateHandle
 ) {
     init {
         getCategoryInfo()

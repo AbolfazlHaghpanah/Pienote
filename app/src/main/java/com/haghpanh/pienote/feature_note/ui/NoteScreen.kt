@@ -243,7 +243,12 @@ fun NoteScreen(
                     categories = state.categories,
                     onCategorySelect = onUpdateCategory,
                     onClickCategory = {
-                        navigateToRoute(AppScreens.CategoryScreen.createRoute(it))
+                        navigateToRoute(
+                            AppScreens.CategoryScreen.createRoute(
+                                it,
+                                state.note.title ?: ""
+                            )
+                        )
                     }
                 )
 

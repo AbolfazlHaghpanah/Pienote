@@ -83,7 +83,7 @@ fun CategoryScreen(
                 },
                 image = state.notes.firstOrNull()?.image?.toUri(),
                 content = {
-                    repeat(3){
+                    repeat(3) {
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -169,7 +169,13 @@ fun CategoryScreen(
                         title = it.title.orEmpty(),
                         note = it.note.orEmpty()
                     ) {
-                        navigateToRoute(AppScreens.NoteScreen.createRoute(it.id, true))
+                        navigateToRoute(
+                            AppScreens.NoteScreen.createRoute(
+                                id = it.id,
+                                isExist = true,
+                                parent = state.name
+                            )
+                        )
                     }
                 }
             } else {

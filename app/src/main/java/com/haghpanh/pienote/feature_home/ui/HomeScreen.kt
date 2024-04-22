@@ -1,5 +1,6 @@
 package com.haghpanh.pienote.feature_home.ui
 
+import android.util.Log
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -21,7 +22,12 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -30,6 +36,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import androidx.navigation.NavOptions
+import androidx.navigation.compose.currentBackStackEntryAsState
 import com.haghpanh.pienote.R
 import com.haghpanh.pienote.common_ui.component.PienoteTopBar
 import com.haghpanh.pienote.common_ui.navigation.AppScreens
@@ -39,6 +47,8 @@ import com.haghpanh.pienote.feature_home.ui.component.HomeCategoryItem
 import com.haghpanh.pienote.feature_home.ui.component.HomeNoteItem
 import com.haghpanh.pienote.feature_home.ui.component.QuickNoteButton
 import com.haghpanh.pienote.feature_home.ui.component.QuickNoteTextField
+
+const val HOME_SCREEN_NAME = "Home"
 
 @Composable
 fun HomeScreen(
@@ -56,20 +66,28 @@ private fun HomeScreen(
     viewModel: HomeViewModel
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val parent = viewModel.savedStateHandle<String>("parent")
 
     HomeScreen(
         state = state,
+        parent = parent,
         onInsertQuickNote = viewModel::insertNotes,
         onUpdateQuickNoteNote = viewModel::setQuickNoteNote,
         onUpdateQuickNoteTitle = viewModel::setQuickNoteTitle,
         onQuickNoteClick = viewModel::reverseQuickNoteState,
         onQuickNoteDiscard = viewModel::reverseQuickNoteState,
         navigateToNote = { route ->
-            navController.navigate(route) {
+            navController.navigate(route = route) {
+                popUpTo(route) {
+                    inclusive = true
+                }
                 launchSingleTop = true
             }
         },
-        onDeleteNote = viewModel::deleteNote
+        onDeleteNote = viewModel::deleteNote,
+        navigateBack = {
+            navController.popBackStack()
+        }
     )
 }
 
@@ -77,20 +95,22 @@ private fun HomeScreen(
 @Composable
 fun HomeScreen(
     state: HomeViewState,
+    parent: String?,
     onInsertQuickNote: () -> Unit,
     onUpdateQuickNoteTitle: (String) -> Unit,
     onUpdateQuickNoteNote: (String) -> Unit,
     onQuickNoteClick: () -> Unit,
     onQuickNoteDiscard: () -> Unit,
     navigateToNote: (String) -> Unit,
-    onDeleteNote: (Note) -> Unit
+    onDeleteNote: (Note) -> Unit,
+    navigateBack: () -> Unit
 ) {
     Scaffold(
         modifier = Modifier
             .pointerInput(null) {
                 detectHorizontalDragGestures(
                     onHorizontalDrag = { _, delta ->
-                        if(delta > 0) {
+                        if (delta > 0) {
                             navigateToNote(AppScreens.LibraryScreen.route)
                         }
                     }
@@ -100,8 +120,9 @@ fun HomeScreen(
             FloatingActionButton(onClick = {
                 navigateToNote(
                     NoteScreen.createRoute(
-                        -1,
-                        false
+                        id = -1,
+                        isExist = false,
+                        parent = HOME_SCREEN_NAME
                     )
                 )
             }) {
@@ -123,10 +144,19 @@ fun HomeScreen(
                 verticalArrangement = Arrangement.spacedBy(24.dp)
             ) {
                 item {
-                    PienoteTopBar(
-                        title = "Home",
-                        icon = R.drawable.home
-                    )
+                    if (parent != null) {
+                        PienoteTopBar(
+                            title = "Home",
+                            icon = R.drawable.home,
+                            parent = parent,
+                            onBack = navigateBack
+                        )
+                    } else {
+                        PienoteTopBar(
+                            title = "Home",
+                            icon = R.drawable.home,
+                        )
+                    }
                 }
 
                 item {
@@ -171,7 +201,12 @@ fun HomeScreen(
                         name = category.name,
                         priority = category.priority
                     ) {
-                        navigateToNote(AppScreens.CategoryScreen.createRoute(category.id))
+                        navigateToNote(
+                            AppScreens.CategoryScreen.createRoute(
+                                category.id,
+                                parent = HOME_SCREEN_NAME
+                            )
+                        )
                     }
                 }
 
@@ -187,7 +222,13 @@ fun HomeScreen(
                                 animationSpec = tween(300)
                             )
                             .clickable {
-                                navigateToNote(NoteScreen.createRoute(note.id, true))
+                                navigateToNote(
+                                    NoteScreen.createRoute(
+                                        id = note.id,
+                                        isExist = true,
+                                        parent = HOME_SCREEN_NAME
+                                    )
+                                )
                             },
                         title = note.title,
                         note = note.note,

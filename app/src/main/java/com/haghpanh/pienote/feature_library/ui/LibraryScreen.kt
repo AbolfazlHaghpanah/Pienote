@@ -1,5 +1,6 @@
 package com.haghpanh.pienote.feature_library.ui
 
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -35,8 +36,12 @@ fun LibraryScreen(
     navController: NavController
 ) {
     LibraryScreen {
+        Log.d("mmd", "LibraryScreen: ${navController.currentBackStackEntry?.savedStateHandle}")
         navController.navigate(it) {
             launchSingleTop = true
+            popUpTo(it) {
+                inclusive = true
+            }
         }
     }
 }
@@ -76,21 +81,27 @@ data class LibsItem(
     val route: String
 )
 
+const val LIBRARY_SCREEN_NAME = "Library"
+
 val libsItems = listOf(
     LibsItem(
         title = "Home",
         iconId = R.drawable.home,
-        route = AppScreens.HomeScreen.route
+        route = AppScreens.HomeScreen.createRoute(LIBRARY_SCREEN_NAME)
     ),
     LibsItem(
         title = "Categories",
         iconId = R.drawable.folder,
-        route = AppScreens.HomeScreen.route
+        route = AppScreens.HomeScreen.createRoute(LIBRARY_SCREEN_NAME)
     ),
     LibsItem(
         title = "Notes",
         iconId = R.drawable.description,
-        route = AppScreens.NoteScreen.createRoute(-1, false)
+        route = AppScreens.NoteScreen.createRoute(
+            id = -1,
+            isExist = false,
+            parent = LIBRARY_SCREEN_NAME
+        )
     ),
 )
 
