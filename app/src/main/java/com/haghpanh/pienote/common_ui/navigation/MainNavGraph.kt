@@ -13,8 +13,24 @@ import com.haghpanh.pienote.feature_note.ui.NoteScreen
 fun NavGraphBuilder.mainNavGraph(
     navController: NavController
 ) {
+    composable(route = AppScreens.LibraryScreen.route) {
+        LibraryScreen(navController = navController)
+    }
+
     composable(AppScreens.HomeScreen.route) {
         HomeScreen(navController = navController)
+    }
+
+    composable(
+        route = AppScreens.CategoryScreen.route,
+        arguments = listOf(
+            navArgument(name = "id") {
+                type = NavType.IntType
+                nullable = false
+            }
+        )
+    ) {
+        CategoryScreen(navController = navController)
     }
 
     composable(
@@ -31,13 +47,5 @@ fun NavGraphBuilder.mainNavGraph(
         )
     ) {
         NoteScreen(navController = navController)
-    }
-
-    composable(route = AppScreens.CategoryScreen.route) {
-        CategoryScreen(navController = navController)
-    }
-
-    composable(route = AppScreens.LibraryScreen.route) {
-        LibraryScreen(navController = navController)
     }
 }

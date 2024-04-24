@@ -49,7 +49,7 @@ fun MainScreen(
     ) {
         NavHost(
             navController = navController,
-            startDestination = AppScreens.HomeScreen.route
+            startDestination = AppScreens.LibraryScreen.route
         ) {
             mainNavGraph(navController)
         }

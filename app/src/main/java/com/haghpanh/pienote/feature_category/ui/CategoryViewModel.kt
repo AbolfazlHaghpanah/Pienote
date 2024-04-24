@@ -16,7 +16,7 @@ class CategoryViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ) : BaseViewModel<CategoryViewState>(
     initialState = CategoryViewState(
-        id = savedStateHandle.get<String>("id")?.toInt() ?: -1
+        id = savedStateHandle.get<Int>("id") ?: -1
     ),
     savedStateHandle = savedStateHandle
 ) {
