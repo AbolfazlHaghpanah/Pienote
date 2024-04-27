@@ -4,6 +4,7 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
@@ -20,7 +21,6 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
-import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -29,7 +29,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -39,6 +39,8 @@ import com.haghpanh.pienote.common_ui.component.PienoteChip
 import com.haghpanh.pienote.common_ui.component.PienoteDialog
 import com.haghpanh.pienote.common_ui.navigation.AppScreens
 import com.haghpanh.pienote.common_ui.theme.PienoteTheme
+import com.haghpanh.pienote.feature_category.ui.components.CategoryDialogItem
+import com.haghpanh.pienote.feature_category.ui.utils.categoryDialogItems
 import com.haghpanh.pienote.feature_home.ui.component.HomeNoteItem
 
 @Composable
@@ -80,36 +82,34 @@ fun CategoryScreen(
         if (showDialog) {
             PienoteDialog(
                 titleSection = {
-                    Text(
-                        modifier = Modifier
-                            .padding(start = 14.dp)
-                            .fillMaxWidth(),
-                        text = state.name,
-                        style = PienoteTheme.typography.h6,
-                        color = PienoteTheme.colors.onSurface
-                    )
+                    Column {
+                        Text(
+                            modifier = Modifier
+                                .padding(start = 14.dp)
+                                .fillMaxWidth(),
+                            text = state.name,
+                            style = PienoteTheme.typography.h6,
+                            color = PienoteTheme.colors.onSurface
+                        )
+
+                        Text(
+                            modifier = Modifier
+                                .padding(start = 14.dp, top = 8.dp)
+                                .fillMaxWidth(),
+                            text = stringResource(R.string.notes, state.notes.size),
+                            style = PienoteTheme.typography.subtitle2,
+                            color = PienoteTheme.colors.onSurface
+                        )
+                    }
                 },
                 image = state.notes.firstOrNull()?.image?.toUri(),
                 content = {
-                    repeat(3) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 14.dp, vertical = 10.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(16.dp)
+                    categoryDialogItems.forEach {
+                        CategoryDialogItem(
+                            title = it.title,
+                            icon = it.icon
                         ) {
-                            Icon(
-                                modifier = Modifier.size(22.dp),
-                                painter = painterResource(id = R.drawable.edit),
-                                contentDescription = "edit"
-                            )
 
-                            Text(
-                                text = "Edit",
-                                style = PienoteTheme.typography.subtitle1,
-                                color = PienoteTheme.colors.onSurface
-                            )
                         }
                     }
                 },
