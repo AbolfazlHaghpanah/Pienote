@@ -14,5 +14,9 @@ sealed class AppScreens(val route: String) {
         fun createRoute(id: Int, parent: String) = "category-screen/$id/$parent"
     }
 
+    data object FavoriteScreen : AppScreens("favorite-screen/{parent}") {
+        fun createRoute(parent: String) = "favorite-screen/$parent"
+    }
+
     data object LibraryScreen : AppScreens("library-screen")
 }

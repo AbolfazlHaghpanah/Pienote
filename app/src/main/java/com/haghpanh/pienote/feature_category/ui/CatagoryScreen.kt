@@ -238,16 +238,18 @@ fun CategoryScreen(
                     HomeNoteItem(
                         modifier = Modifier.padding(horizontal = 24.dp, vertical = 14.dp),
                         title = it.title.orEmpty(),
-                        note = it.note.orEmpty()
-                    ) {
-                        navigateToRoute(
-                            AppScreens.NoteScreen.createRoute(
-                                id = it.id,
-                                isExist = true,
-                                parent = state.name
+                        note = it.note.orEmpty(),
+                        onClick = {
+                            navigateToRoute(
+                                AppScreens.NoteScreen.createRoute(
+                                    id = it.id,
+                                    isExist = true,
+                                    parent = state.name
+                                )
                             )
-                        )
-                    }
+                        },
+                        onDelete = {}
+                    )
                 }
             } else {
                 item {

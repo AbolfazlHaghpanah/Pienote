@@ -36,7 +36,6 @@ fun LibraryScreen(
     navController: NavController
 ) {
     LibraryScreen {
-        Log.d("mmd", "LibraryScreen: ${navController.currentBackStackEntry?.savedStateHandle}")
         navController.navigate(it) {
             launchSingleTop = true
             popUpTo(it) {
@@ -102,6 +101,11 @@ val libsItems = listOf(
             isExist = false,
             parent = LIBRARY_SCREEN_NAME
         )
+    ),
+    LibsItem(
+        title = "Favorite",
+        iconId = R.drawable.high_priority,
+        route = AppScreens.FavoriteScreen.createRoute(LIBRARY_SCREEN_NAME)
     ),
 )
 

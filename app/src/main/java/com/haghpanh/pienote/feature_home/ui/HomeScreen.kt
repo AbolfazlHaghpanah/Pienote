@@ -220,20 +220,20 @@ fun HomeScreen(
                             .clip(PienoteTheme.shapes.veryLarge)
                             .animateItemPlacement(
                                 animationSpec = tween(300)
-                            )
-                            .clickable {
-                                navigateToNote(
-                                    NoteScreen.createRoute(
-                                        id = note.id,
-                                        isExist = true,
-                                        parent = HOME_SCREEN_NAME
-                                    )
-                                )
-                            },
+                            ),
                         title = note.title,
                         note = note.note,
                         onDelete = {
                             onDeleteNote(note)
+                        },
+                        onClick = {
+                            navigateToNote(
+                                NoteScreen.createRoute(
+                                    id = note.id,
+                                    isExist = true,
+                                    parent = HOME_SCREEN_NAME
+                                )
+                            )
                         }
                     )
                 }
