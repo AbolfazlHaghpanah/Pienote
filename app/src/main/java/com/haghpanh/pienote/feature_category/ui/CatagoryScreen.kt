@@ -17,8 +17,10 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Icon
+import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
+import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.MoreVert
@@ -40,6 +42,7 @@ import com.haghpanh.pienote.common_ui.component.PienoteDialog
 import com.haghpanh.pienote.common_ui.navigation.AppScreens
 import com.haghpanh.pienote.common_ui.theme.PienoteTheme
 import com.haghpanh.pienote.feature_category.ui.components.CategoryDialogItem
+import com.haghpanh.pienote.feature_category.ui.utils.CATEGORY_DIALOG_ITEM_EDIT_NAME_ID
 import com.haghpanh.pienote.feature_category.ui.utils.categoryDialogItems
 import com.haghpanh.pienote.feature_home.ui.component.HomeNoteItem
 
@@ -77,8 +80,40 @@ fun CategoryScreen(
     onBack: () -> Unit
 ) {
     var showDialog by remember { mutableStateOf(false) }
+    var shouldShowChangeName by remember { mutableStateOf(false) }
+    var categoryName by remember { mutableStateOf(state.name) }
+
+    val dialogItemsAction: (Int) -> Unit = {
+        when (it) {
+            CATEGORY_DIALOG_ITEM_EDIT_NAME_ID -> {
+                shouldShowChangeName = true
+            }
+        }
+    }
 
     Scaffold { paddingValues ->
+
+        if (shouldShowChangeName) {
+            PienoteDialog(onDismissRequest = { shouldShowChangeName = false }) {
+                Column {
+                    OutlinedTextField(
+                        modifier = Modifier
+                            .padding(16.dp)
+                            .fillMaxWidth(),
+                        value = categoryName,
+                        onValueChange = { categoryName = it },
+                        label = { Text(text = "Category Name") }
+                    )
+
+                    Spacer(modifier = Modifier.weight(1f))
+
+                    TextButton(onClick = { /*TODO*/ }) {
+                        Text(text = "Discard")
+                    }
+                }
+            }
+        }
+
         if (showDialog) {
             PienoteDialog(
                 titleSection = {
@@ -109,7 +144,7 @@ fun CategoryScreen(
                             title = it.title,
                             icon = it.icon
                         ) {
-
+                            dialogItemsAction(it.id)
                         }
                     }
                 },

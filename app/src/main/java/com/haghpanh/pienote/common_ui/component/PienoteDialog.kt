@@ -86,3 +86,27 @@ fun PienoteDialog(
         }
     }
 }
+
+
+@Composable
+fun PienoteDialog(
+    onDismissRequest: () -> Unit,
+    content: @Composable ColumnScope.() -> Unit
+) {
+    Dialog(onDismissRequest = onDismissRequest) {
+        Column(
+            modifier = Modifier
+                .aspectRatio(0.8f)
+                .background(
+                    shape = PienoteTheme.shapes.huge,
+                    color = PienoteTheme.colors.surface
+                )
+                .fillMaxWidth()
+                .padding(14.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Top
+        ) {
+            content()
+        }
+    }
+}
