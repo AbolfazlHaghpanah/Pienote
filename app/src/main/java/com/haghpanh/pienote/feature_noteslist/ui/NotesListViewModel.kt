@@ -2,9 +2,11 @@ package com.haghpanh.pienote.feature_noteslist.ui
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import androidx.paging.cachedIn
 import com.haghpanh.pienote.common_domain.model.NoteDomainModel
 import com.haghpanh.pienote.common_ui.BaseViewModel
 import com.haghpanh.pienote.feature_note.ui.Note
+import com.haghpanh.pienote.feature_noteslist.domain.repository.NotesListRepository
 import com.haghpanh.pienote.feature_noteslist.domain.usecases.NotesListObserveNotesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -14,11 +16,16 @@ import javax.inject.Inject
 @HiltViewModel
 class NotesListViewModel @Inject constructor(
     private val observeNotesUseCase: NotesListObserveNotesUseCase,
-    savedStateHandle: SavedStateHandle
+    savedStateHandle: SavedStateHandle,
+    private val notesListRepository: NotesListRepository
 ) : BaseViewModel<NotesListViewState>(
     initialState = NotesListViewState(),
     savedStateHandle = savedStateHandle
 ) {
+
+    val gf = notesListRepository
+        .getPagedNoteList()
+        .cachedIn(viewModelScope)
 
     init {
         getNotes()

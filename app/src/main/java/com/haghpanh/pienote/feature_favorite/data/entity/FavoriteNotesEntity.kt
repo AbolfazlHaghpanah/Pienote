@@ -13,13 +13,12 @@ data class FavoriteNotesEntity(
     val title: String,
     val note: String,
     val image: String?,
-    @ColumnInfo(name = "added_time")
-    val addedTime: String,
     @ColumnInfo(name = "last_changed_time")
     val lastChangedTime: String?,
     @ColumnInfo(name = "category_id")
     val categoryId: Int?,
-    val priority: Int?
+    @ColumnInfo(name = "favorite_type")
+    val favoriteType : String
 ) : BaseEntity<NoteDomainModel> {
     override fun toDomainModel(): NoteDomainModel =
         NoteDomainModel(
@@ -27,7 +26,7 @@ data class FavoriteNotesEntity(
             title = title,
             note = note,
             image = image,
-            addedTime = addedTime,
+            addedTime = "addedTime",
             lastChangedTime = lastChangedTime,
             categoryId = categoryId
         )

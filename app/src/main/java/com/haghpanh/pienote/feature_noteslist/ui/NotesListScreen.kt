@@ -1,10 +1,14 @@
 package com.haghpanh.pienote.feature_noteslist.ui
 
 import android.util.Log
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.paging.compose.collectAsLazyPagingItems
+import com.haghpanh.pienote.feature_home.ui.component.HomeNoteItem
 
 @Composable
 fun NotesListScreen(
@@ -23,6 +27,17 @@ fun NotesListScreen(
 ) {
     val state by viewModel.collectAsStateWithLifecycle()
 
+    val sdsds = viewModel.gf.collectAsLazyPagingItems()
+    LazyColumn {
+        items(sdsds.itemCount) {
+            HomeNoteItem(
+                title = sdsds[it]?.genrNotes?.title ?: "",
+                note = sdsds[it]?.spcfFavorite?.favorite_type ?: "",
+                onDelete = { /*TODO*/ }) {
+
+            }
+        }
+    }
     NotesListScreen(
         state = state,
         parentScreenName = viewModel.savedStateHandler<String>("parent"),
@@ -36,5 +51,5 @@ fun NotesListScreen(
     parentScreenName: String?,
     onBack: () -> Unit
 ) {
-    Log.d("mmd", "NotesListScreen: ${state.notes.joinToString { it.title?:"null" }}")
+    Log.d("mmd", "NotesListScreen: ${state.notes.joinToString { it.title ?: "null" }}")
 }

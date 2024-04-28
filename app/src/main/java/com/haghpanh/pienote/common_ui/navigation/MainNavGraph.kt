@@ -10,6 +10,7 @@ import com.haghpanh.pienote.feature_favorite.ui.FavoriteScreen
 import com.haghpanh.pienote.feature_home.ui.HomeScreen
 import com.haghpanh.pienote.feature_library.ui.LibraryScreen
 import com.haghpanh.pienote.feature_note.ui.NoteScreen
+import com.haghpanh.pienote.feature_noteslist.ui.NotesListScreen
 
 fun NavGraphBuilder.mainNavGraph(
     navController: NavController
@@ -52,5 +53,9 @@ fun NavGraphBuilder.mainNavGraph(
         )
     ) {
         NoteScreen(navController = navController)
+    }
+
+    composable(AppScreens.NotesListScreen.route) {
+        NotesListScreen(navController = navController)
     }
 }
