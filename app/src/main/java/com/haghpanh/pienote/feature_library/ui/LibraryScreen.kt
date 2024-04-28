@@ -107,7 +107,12 @@ val libsItems = listOf(
         iconId = R.drawable.high_priority,
         route = AppScreens.FavoriteScreen.createRoute(LIBRARY_SCREEN_NAME)
     ),
-)
+    LibsItem(
+        title = "Notes List",
+        iconId = R.drawable.density_medium,
+        route = AppScreens.NotesListScreen.createRoute(LIBRARY_SCREEN_NAME)
+    )
+    )
 
 @Composable
 fun LibsItem(

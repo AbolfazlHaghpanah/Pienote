@@ -18,5 +18,9 @@ sealed class AppScreens(val route: String) {
         fun createRoute(parent: String) = "favorite-screen/$parent"
     }
 
+    data object NotesListScreen : AppScreens("notes-list-screen/{parent}"){
+        fun createRoute(parent: String) = "notes-list-screen/$parent"
+    }
+
     data object LibraryScreen : AppScreens("library-screen")
 }

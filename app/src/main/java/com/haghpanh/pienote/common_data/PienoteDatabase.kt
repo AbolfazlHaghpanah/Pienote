@@ -9,6 +9,7 @@ import com.haghpanh.pienote.feature_favorite.data.dao.FavoriteDao
 import com.haghpanh.pienote.feature_favorite.data.entity.FavoriteNotesEntity
 import com.haghpanh.pienote.feature_home.data.dao.HomeDao
 import com.haghpanh.pienote.feature_note.data.dao.NoteDao
+import com.haghpanh.pienote.feature_noteslist.data.dao.NotesListDao
 
 @Database(
     entities = [
@@ -24,4 +25,5 @@ abstract class PienoteDatabase : RoomDatabase() {
     abstract fun NoteDao(): NoteDao
     abstract fun CategoryDao(): CategoryDao
     abstract fun FavoriteNotesDao(): FavoriteDao
+    abstract fun NotesListDao() : NotesListDao
 }

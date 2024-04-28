@@ -36,7 +36,6 @@ fun FavoriteScreen(
     )
 }
 
-
 @Composable
 fun FavoriteScreen(
     navController: NavController,
@@ -51,7 +50,6 @@ fun FavoriteScreen(
         navigateToRoute = { navController.navigate(it) }
     )
 }
-
 
 @Composable
 fun FavoriteScreen(
