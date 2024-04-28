@@ -98,16 +98,20 @@ fun NoteScreen(
         onResult = viewModel::updateNoteImage
     )
 
-    BackHandler {
-        if (state.isEditing && !state.isEmptyNote) {
-            viewModel.switchEditMode()
-        } else if (!state.isEmptyNote) {
-            viewModel.updateOrInsertNote()
-            navController.popBackStack()
-        } else {
-            navController.popBackStack()
+    val onNavigateBack: () -> Unit = remember {
+        {
+            if (state.isEditing && !state.isEmptyNote) {
+                viewModel.switchEditMode()
+            } else if (!state.isEmptyNote) {
+                viewModel.updateOrInsertNote()
+                navController.popBackStack()
+            } else {
+                navController.popBackStack()
+            }
         }
     }
+
+    BackHandler(onBack = onNavigateBack)
 
     NoteScreen(
         state = state,
@@ -120,9 +124,7 @@ fun NoteScreen(
         },
         onSwitchEditMode = viewModel::switchEditMode,
         navigateToRoute = { route -> navController.navigate(route) },
-        onBack = {
-            navController.popBackStack()
-        }
+        onBack = onNavigateBack
     )
 }
 

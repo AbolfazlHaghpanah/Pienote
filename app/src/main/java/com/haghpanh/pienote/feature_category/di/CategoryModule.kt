@@ -19,7 +19,6 @@ abstract class CategoryModule {
         categoryRepositoryImpl: CategoryRepositoryImpl
     ): CategoryRepository
 
-
     companion object {
         @Provides
         fun provideCategoryDao(pienoteDatabase: PienoteDatabase): CategoryDao {

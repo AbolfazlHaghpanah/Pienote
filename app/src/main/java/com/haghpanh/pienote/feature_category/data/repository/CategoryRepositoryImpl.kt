@@ -1,22 +1,24 @@
 package com.haghpanh.pienote.feature_category.data.repository
 
-import com.haghpanh.pienote.feature_category.data.datasource.CategoryLocalDataSource
-import com.haghpanh.pienote.feature_category.domain.model.CategoryDomainModel
+import com.haghpanh.pienote.common_data.entity.CategoryEntity
+import com.haghpanh.pienote.common_domain.model.CategoryDomainModel
+import com.haghpanh.pienote.feature_category.data.dao.CategoryDao
+import com.haghpanh.pienote.feature_category.domain.model.CategoryWithNotesDomainModel
 import com.haghpanh.pienote.feature_category.domain.repository.CategoryRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class CategoryRepositoryImpl @Inject constructor(
-    private val categoryLocalDataSource: CategoryLocalDataSource
+    private val categoryDao: CategoryDao
 ) : CategoryRepository {
-    override fun observeCategory(id: Int): Flow<CategoryDomainModel> {
-        val result = categoryLocalDataSource.observeCategory(id)
+    override fun observeCategory(id: Int): Flow<CategoryWithNotesDomainModel> {
+        val result = categoryDao.observeCategory(id)
 
         return result.map { categoryWithNotes ->
             val category = categoryWithNotes.category
 
-            CategoryDomainModel(
+            CategoryWithNotesDomainModel(
                 id = category.id,
                 name = category.name,
                 priority = category.priority,
@@ -25,4 +27,21 @@ class CategoryRepositoryImpl @Inject constructor(
             )
         }
     }
+
+    override suspend fun deleteNoteFromCategory(noteId: Int) {
+        categoryDao.deleteNoteFromCategory(noteId)
+    }
+
+    override suspend fun updateCategory(categoryDomainModel: CategoryDomainModel) {
+        val mappedCategory = categoryDomainModel.toEntity()
+
+        categoryDao.updateCategory(mappedCategory)
+    }
+
+    private fun CategoryDomainModel.toEntity() =
+        CategoryEntity(
+            name = name,
+            priority = priority,
+            image = image
+        )
 }

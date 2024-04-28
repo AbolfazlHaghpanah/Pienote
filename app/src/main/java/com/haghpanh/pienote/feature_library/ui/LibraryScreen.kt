@@ -57,7 +57,7 @@ fun LibraryScreen(
                 .verticalScroll(rememberScrollState())
                 .fillMaxSize()
                 .padding(paddingValues),
-            verticalArrangement = Arrangement.spacedBy(18.dp)
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             PienoteTopBar(title = "Library")
 
@@ -112,7 +112,7 @@ val libsItems = listOf(
         iconId = R.drawable.density_medium,
         route = AppScreens.NotesListScreen.createRoute(LIBRARY_SCREEN_NAME)
     )
-    )
+)
 
 @Composable
 fun LibsItem(
@@ -124,7 +124,7 @@ fun LibsItem(
         modifier = Modifier
             .clip(PienoteTheme.shapes.medium)
             .clickable(onClick = onClick)
-            .padding(horizontal = 24.dp)
+            .padding(horizontal = 24.dp, vertical = 6.dp)
             .fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
     ) {

@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.haghpanh.pienote.R
 import com.haghpanh.pienote.common_ui.component.PienoteChip
 import com.haghpanh.pienote.common_ui.component.PienoteTopBar
 import com.haghpanh.pienote.common_ui.navigation.AppScreens
@@ -91,7 +92,7 @@ fun FavoriteScreen(
                         }
                     }
 
-                    PienoteTopBar(title = "Favorites")
+                    PienoteTopBar(title = "Favorites",icon = R.drawable.high_priority)
                 }
             }
 

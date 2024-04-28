@@ -1,5 +1,7 @@
 package com.haghpanh.pienote.feature_category.ui
 
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
@@ -64,9 +66,15 @@ fun CategoryScreen(
     val state by viewModel.collectAsStateWithLifecycle()
     val parentScreen = viewModel.savedStateHandler<String>("parent")
 
+    val pickMedia = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickVisualMedia(),
+        onResult = {  }
+    )
+
     CategoryScreen(
         state = state,
         parentScreen = parentScreen,
+        onDeleteNoteFromCategory = viewModel::deleteNoteFromCategory,
         navigateToRoute = { route -> navController.navigate(route) },
         onBack = { navController.popBackStack() }
     )
@@ -76,6 +84,7 @@ fun CategoryScreen(
 fun CategoryScreen(
     state: CategoryViewState,
     parentScreen: String?,
+    onDeleteNoteFromCategory: (Int) -> Unit,
     navigateToRoute: (String) -> Unit,
     onBack: () -> Unit
 ) {
@@ -129,7 +138,7 @@ fun CategoryScreen(
 
                         Text(
                             modifier = Modifier
-                                .padding(start = 14.dp, top = 8.dp)
+                                .padding(horizontal = 14.dp, vertical = 8.dp)
                                 .fillMaxWidth(),
                             text = stringResource(R.string.notes, state.notes.size),
                             style = PienoteTheme.typography.subtitle2,
@@ -228,27 +237,28 @@ fun CategoryScreen(
                                 )
                             }
                         }
-
                     }
                 }
             }
 
             if (state.notes.isNotEmpty()) {
-                items(state.notes) {
+                items(state.notes) { note ->
                     HomeNoteItem(
                         modifier = Modifier.padding(horizontal = 24.dp, vertical = 14.dp),
-                        title = it.title.orEmpty(),
-                        note = it.note.orEmpty(),
+                        title = note.title.orEmpty(),
+                        note = note.note.orEmpty(),
                         onClick = {
                             navigateToRoute(
                                 AppScreens.NoteScreen.createRoute(
-                                    id = it.id,
+                                    id = note.id,
                                     isExist = true,
                                     parent = state.name
                                 )
                             )
                         },
-                        onDelete = {}
+                        onDelete = {
+                            onDeleteNoteFromCategory(note.id)
+                        }
                     )
                 }
             } else {

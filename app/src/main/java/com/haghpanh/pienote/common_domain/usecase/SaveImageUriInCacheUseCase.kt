@@ -1,4 +1,4 @@
-package com.haghpanh.pienote.feature_note.domain.usecase
+package com.haghpanh.pienote.common_domain.usecase
 
 import android.content.Context
 import android.net.Uri
@@ -10,7 +10,7 @@ import kotlinx.coroutines.withContext
 import java.io.File
 import javax.inject.Inject
 
-class NoteSaveImageUriInCacheUseCase @Inject constructor(
+class SaveImageUriInCacheUseCase @Inject constructor(
     @ApplicationContext private val context: Context
 ) {
     //TODO Check for permission in lower apis

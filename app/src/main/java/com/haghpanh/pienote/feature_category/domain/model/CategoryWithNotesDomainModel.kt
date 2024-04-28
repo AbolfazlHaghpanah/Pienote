@@ -2,7 +2,7 @@ package com.haghpanh.pienote.feature_category.domain.model
 
 import com.haghpanh.pienote.common_domain.model.NoteDomainModel
 
-data class CategoryDomainModel(
+data class CategoryWithNotesDomainModel(
     val id : Int,
     val name : String,
     val priority : Int?,
