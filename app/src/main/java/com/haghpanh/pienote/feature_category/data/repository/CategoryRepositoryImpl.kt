@@ -40,6 +40,7 @@ class CategoryRepositoryImpl @Inject constructor(
 
     private fun CategoryDomainModel.toEntity() =
         CategoryEntity(
+            id = id,
             name = name,
             priority = priority,
             image = image

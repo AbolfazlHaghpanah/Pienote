@@ -5,11 +5,11 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.haghpanh.pienote.common_domain.model.CategoryDomainModel
 import com.haghpanh.pienote.common_domain.model.NoteDomainModel
-import com.haghpanh.pienote.common_domain.usecase.SaveImageUriInCacheUseCase
 import com.haghpanh.pienote.common_ui.BaseViewModel
 import com.haghpanh.pienote.feature_category.domain.usecase.CategoryDeleteNoteFromCategoryUseCase
 import com.haghpanh.pienote.feature_category.domain.usecase.CategoryObserveCategoryUseCase
 import com.haghpanh.pienote.feature_category.domain.usecase.CategoryUpdateCategoryUseCase
+import com.haghpanh.pienote.feature_category.domain.usecase.CategoryUpdateImageUseCase
 import com.haghpanh.pienote.feature_note.ui.Note
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -21,6 +21,7 @@ class CategoryViewModel @Inject constructor(
     private val getCategoryUseCase: CategoryObserveCategoryUseCase,
     private val updateCategoryUseCase: CategoryUpdateCategoryUseCase,
     private val deleteNoteFromCategoryUseCase: CategoryDeleteNoteFromCategoryUseCase,
+    private val updateImageUseCase: CategoryUpdateImageUseCase,
     savedStateHandle: SavedStateHandle
 ) : BaseViewModel<CategoryViewState>(
     initialState = CategoryViewState(
@@ -55,9 +56,20 @@ class CategoryViewModel @Inject constructor(
         }
     }
 
-    fun updateCategory(uri: Uri?) {
+    fun updateCategoryImage(uri: Uri?) {
         viewModelScope.launch(Dispatchers.IO) {
+            val currentState = getCurrentState()
+            val currentCategory = CategoryDomainModel(
+                id = currentState.id,
+                name = currentState.name,
+                priority = currentState.priority,
+                image = currentState.image
+            )
 
+            updateImageUseCase(
+                currentCategory = currentCategory,
+                uri = uri
+            )
         }
     }
 
