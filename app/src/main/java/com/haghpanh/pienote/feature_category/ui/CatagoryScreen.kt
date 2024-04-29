@@ -5,6 +5,8 @@ import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,6 +22,7 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Scaffold
@@ -35,12 +38,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
 import com.haghpanh.pienote.R
 import com.haghpanh.pienote.common_ui.component.PienoteChip
 import com.haghpanh.pienote.common_ui.component.PienoteDialog
@@ -89,6 +95,7 @@ fun CategoryScreen(
     )
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun CategoryScreen(
     state: CategoryViewState,
@@ -100,6 +107,7 @@ fun CategoryScreen(
     onUpdateCategoryName: (String) -> Unit
 ) {
     var dialogState: DialogState by remember { mutableStateOf(DialogState.Dismiss) }
+    val image = state.image ?: state.notes.firstOrNull()?.image
 
     val dialogItemsAction: (Int) -> Unit = { id ->
         when (id) {
@@ -201,38 +209,8 @@ fun CategoryScreen(
         }
 
         LazyColumn(
-            modifier = Modifier
-                .statusBarsPadding()
-                .padding(paddingValues)
+            modifier = Modifier.padding(paddingValues)
         ) {
-            item {
-                if (parentScreen != null) {
-                    AnimatedVisibility(visible = dialogState is DialogState.Dismiss) {
-                        PienoteChip(
-                            modifier = Modifier.padding(start = 16.dp, top = 16.dp),
-                            onClick = onBack
-                        ) {
-                            Row(
-                                modifier = Modifier.padding(6.dp),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.SpaceEvenly
-                            ) {
-                                Icon(
-                                    imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
-                                    contentDescription = "back"
-                                )
-
-                                Text(
-                                    modifier = Modifier.padding(end = 4.dp),
-                                    text = parentScreen,
-                                    style = PienoteTheme.typography.subtitle1
-                                )
-                            }
-                        }
-                    }
-                }
-            }
-
             item {
                 AnimatedContent(
                     targetState = dialogState !is DialogState.Dismiss,
@@ -245,37 +223,127 @@ fun CategoryScreen(
                                 .height(32.dp)
                         )
                     } else {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceBetween
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .then(
+                                    if (image != null)
+                                        Modifier.aspectRatio(1f) else Modifier.height(180.dp)
+                                )
                         ) {
-                            Text(
-                                modifier = Modifier.padding(32.dp),
-                                text = state.name,
-                                style = PienoteTheme.typography.h1
-                            )
-
-                            PienoteChip(
-                                modifier = Modifier
-                                    .padding(horizontal = 24.dp)
-                                    .size(42.dp)
-                                    .aspectRatio(1f),
-                                shape = PienoteTheme.shapes.rounded,
-                                onClick = {
-                                    dialogState = DialogState.MainDialog
-                                },
-                            ) {
-                                Icon(
+                            if (image != null) {
+                                AsyncImage(
                                     modifier = Modifier
-                                        .padding(6.dp)
                                         .fillMaxSize(),
-                                    imageVector = Icons.Rounded.MoreVert,
-                                    contentDescription = null,
-                                    tint = PienoteTheme.colors.onBackground
+                                    model = state.image ?: state.notes.firstOrNull()?.image,
+                                    contentDescription = "image",
+                                    contentScale = ContentScale.Crop
+                                )
+
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .background(
+                                            Brush.verticalGradient(
+                                                listOf(
+                                                    Color.Transparent,
+                                                    PienoteTheme.colors.background
+                                                )
+                                            )
+                                        )
                                 )
                             }
+
+                            if (parentScreen != null) {
+                                AnimatedVisibility(visible = dialogState is DialogState.Dismiss) {
+                                    PienoteChip(
+                                        modifier = Modifier
+                                            .statusBarsPadding()
+                                            .align(Alignment.TopStart)
+                                            .padding(start = 16.dp, top = 16.dp),
+                                        onClick = onBack,
+                                        backgroundColor = if (image != null) {
+                                            PienoteTheme.colors.background.copy(alpha = 0.3f)
+                                        } else {
+                                            PienoteTheme.colors.background
+                                        },
+                                        border = if (image != null) {
+                                            null
+                                        } else {
+                                            BorderStroke(
+                                                1.dp,
+                                                PienoteTheme.colors.onBackground.copy(alpha = 0.5f)
+                                            )
+                                        }
+                                    ) {
+                                        Row(
+                                            modifier = Modifier.padding(6.dp),
+                                            verticalAlignment = Alignment.CenterVertically,
+                                            horizontalArrangement = Arrangement.SpaceEvenly
+                                        ) {
+                                            Icon(
+                                                imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
+                                                contentDescription = "back"
+                                            )
+
+                                            Text(
+                                                modifier = Modifier.padding(end = 4.dp),
+                                                text = parentScreen,
+                                                style = PienoteTheme.typography.subtitle1
+                                            )
+                                        }
+                                    }
+                                }
+                            }
+
+                            Row(
+                                modifier = Modifier
+                                    .align(Alignment.BottomCenter)
+                                    .fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Text(
+                                    modifier = Modifier.padding(32.dp),
+                                    text = state.name,
+                                    style = PienoteTheme.typography.h1
+                                )
+
+                                PienoteChip(
+                                    modifier = Modifier
+                                        .padding(horizontal = 24.dp)
+                                        .size(42.dp)
+                                        .aspectRatio(1f),
+                                    shape = PienoteTheme.shapes.rounded,
+                                    onClick = {
+                                        dialogState = DialogState.MainDialog
+                                    },
+                                    backgroundColor = if (image != null) {
+                                        PienoteTheme.colors.background.copy(alpha = 0.3f)
+                                    } else {
+                                        PienoteTheme.colors.background
+                                    },
+                                    border = if (image != null) {
+                                        null
+                                    } else {
+                                        BorderStroke(
+                                            1.dp,
+                                            PienoteTheme.colors.onBackground.copy(alpha = 0.5f)
+                                        )
+                                    }
+                                ) {
+                                    Icon(
+                                        modifier = Modifier
+                                            .padding(6.dp)
+                                            .fillMaxSize(),
+                                        imageVector = Icons.Rounded.MoreVert,
+                                        contentDescription = null,
+                                        tint = PienoteTheme.colors.onBackground
+                                    )
+                                }
+                            }
                         }
+
                     }
                 }
             }
