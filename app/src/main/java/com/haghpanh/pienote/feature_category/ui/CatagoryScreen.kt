@@ -99,11 +99,7 @@ fun CategoryScreen(
     onRequestToPickMedia: () -> Unit,
     onUpdateCategoryName: (String) -> Unit
 ) {
-    var categoryNameText by remember { mutableStateOf(state.name) }
-
-    var dialogState: DialogState by remember {
-        mutableStateOf(DialogState.Dismiss)
-    }
+    var dialogState: DialogState by remember { mutableStateOf(DialogState.Dismiss) }
 
     val dialogItemsAction: (Int) -> Unit = { id ->
         when (id) {
@@ -159,6 +155,8 @@ fun CategoryScreen(
 
             DialogState.ChangeName -> {
                 PienoteDialog(onDismissRequest = { dialogState = DialogState.Dismiss }) {
+                    var categoryNameText by remember { mutableStateOf(state.name) }
+
                     Column {
                         OutlinedTextField(
                             modifier = Modifier
