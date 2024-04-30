@@ -1,7 +1,6 @@
 package com.haghpanh.pienote.feature_category.data.dao
 
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
@@ -25,6 +24,19 @@ interface CategoryDao {
     )
     suspend fun deleteNoteFromCategory(noteId: Int)
 
+    @Query(
+        """
+        UPDATE notes
+        SET category_id = :categoryId
+        WHERE id = :noteId
+        """
+    )
+    suspend fun addNoteToCategory(noteId: Int, categoryId: Int)
+
+
     @Update
     suspend fun updateCategory(categoryEntity: CategoryEntity)
+
+    @Query("SELECT * FROM NOTES")
+    fun observeAvailableNotes() : Flow<List<NoteEntity>>
 }

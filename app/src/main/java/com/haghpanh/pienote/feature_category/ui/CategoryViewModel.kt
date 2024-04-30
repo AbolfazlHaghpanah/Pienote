@@ -6,7 +6,9 @@ import androidx.lifecycle.viewModelScope
 import com.haghpanh.pienote.common_domain.model.CategoryDomainModel
 import com.haghpanh.pienote.common_domain.model.NoteDomainModel
 import com.haghpanh.pienote.common_ui.BaseViewModel
+import com.haghpanh.pienote.feature_category.domain.usecase.CategoryAddNoteToCategoryUseCase
 import com.haghpanh.pienote.feature_category.domain.usecase.CategoryDeleteNoteFromCategoryUseCase
+import com.haghpanh.pienote.feature_category.domain.usecase.CategoryObserveAvailableNotesUseCase
 import com.haghpanh.pienote.feature_category.domain.usecase.CategoryObserveCategoryUseCase
 import com.haghpanh.pienote.feature_category.domain.usecase.CategoryUpdateCategoryUseCase
 import com.haghpanh.pienote.feature_category.domain.usecase.CategoryUpdateImageUseCase
@@ -22,6 +24,8 @@ class CategoryViewModel @Inject constructor(
     private val updateCategoryUseCase: CategoryUpdateCategoryUseCase,
     private val deleteNoteFromCategoryUseCase: CategoryDeleteNoteFromCategoryUseCase,
     private val updateImageUseCase: CategoryUpdateImageUseCase,
+    private val observeAvailableNotesUseCase: CategoryObserveAvailableNotesUseCase,
+    private val addNoteToCategoryUseCase: CategoryAddNoteToCategoryUseCase,
     savedStateHandle: SavedStateHandle
 ) : BaseViewModel<CategoryViewState>(
     initialState = CategoryViewState(
@@ -31,6 +35,21 @@ class CategoryViewModel @Inject constructor(
 ) {
     init {
         getCategoryInfo()
+        getAvailableNotes()
+    }
+
+    private fun getAvailableNotes() {
+        val availableNotes = observeAvailableNotesUseCase()
+
+        viewModelScope.launch {
+            availableNotes.collect { notes ->
+                updateState { state ->
+                    state.copy(
+                        availableNotesToAdd = notes.map { note -> note.toUiModel() }
+                    )
+                }
+            }
+        }
     }
 
     private fun getCategoryInfo() {
@@ -47,6 +66,15 @@ class CategoryViewModel @Inject constructor(
                     )
                 }
             }
+        }
+    }
+
+    fun addNoteToCategory(noteId: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            addNoteToCategoryUseCase(
+                noteId = noteId,
+                categoryId = getCurrentState().id
+            )
         }
     }
 

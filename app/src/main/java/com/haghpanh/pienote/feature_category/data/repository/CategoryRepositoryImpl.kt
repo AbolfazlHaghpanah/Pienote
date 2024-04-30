@@ -2,6 +2,7 @@ package com.haghpanh.pienote.feature_category.data.repository
 
 import com.haghpanh.pienote.common_data.entity.CategoryEntity
 import com.haghpanh.pienote.common_domain.model.CategoryDomainModel
+import com.haghpanh.pienote.common_domain.model.NoteDomainModel
 import com.haghpanh.pienote.feature_category.data.dao.CategoryDao
 import com.haghpanh.pienote.feature_category.domain.model.CategoryWithNotesDomainModel
 import com.haghpanh.pienote.feature_category.domain.repository.CategoryRepository
@@ -28,6 +29,10 @@ class CategoryRepositoryImpl @Inject constructor(
         }
     }
 
+    override fun observeAvailableNotes(): Flow<List<NoteDomainModel>> =
+        categoryDao.observeAvailableNotes().map { note -> note.map { it.toDomainModel() } }
+
+
     override suspend fun deleteNoteFromCategory(noteId: Int) {
         categoryDao.deleteNoteFromCategory(noteId)
     }
@@ -36,6 +41,10 @@ class CategoryRepositoryImpl @Inject constructor(
         val mappedCategory = categoryDomainModel.toEntity()
 
         categoryDao.updateCategory(mappedCategory)
+    }
+
+    override suspend fun addNoteToCategory(noteId: Int, categoryId: Int) {
+        categoryDao.addNoteToCategory(noteId, categoryId)
     }
 
     private fun CategoryDomainModel.toEntity() =

@@ -53,6 +53,7 @@ import com.haghpanh.pienote.common_ui.component.PienoteDialog
 import com.haghpanh.pienote.common_ui.navigation.AppScreens
 import com.haghpanh.pienote.common_ui.theme.PienoteTheme
 import com.haghpanh.pienote.feature_category.ui.components.CategoryDialogItem
+import com.haghpanh.pienote.feature_category.ui.utils.CATEGORY_DIALOG_ITEM_ADD_NOTE_ID
 import com.haghpanh.pienote.feature_category.ui.utils.CATEGORY_DIALOG_ITEM_CHANGE_COVER_ID
 import com.haghpanh.pienote.feature_category.ui.utils.CATEGORY_DIALOG_ITEM_EDIT_NAME_ID
 import com.haghpanh.pienote.feature_category.ui.utils.DialogState
@@ -95,7 +96,6 @@ fun CategoryScreen(
     )
 }
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun CategoryScreen(
     state: CategoryViewState,
@@ -117,6 +117,10 @@ fun CategoryScreen(
 
             CATEGORY_DIALOG_ITEM_CHANGE_COVER_ID -> {
                 onRequestToPickMedia()
+            }
+
+            CATEGORY_DIALOG_ITEM_ADD_NOTE_ID -> {
+                dialogState = DialogState.AddNote
             }
         }
     }
@@ -200,6 +204,32 @@ fun CategoryScreen(
                             ) {
                                 Text(text = stringResource(id = R.string.label_done))
                             }
+                        }
+                    }
+                }
+            }
+
+            DialogState.AddNote -> {
+                PienoteDialog(onDismissRequest = { dialogState = DialogState.Dismiss }) {
+                    LazyColumn(
+                        modifier = Modifier
+                            .padding(14.dp)
+                            .fillMaxWidth()
+                    ) {
+                        item {
+                            Text(
+                                modifier = Modifier.padding(vertical = 8.dp),
+                                text = "Select Note To Add",
+                                style = PienoteTheme.typography.h6
+                            )
+                        }
+
+                        items(state.availableNotesToAdd) {
+                            Text(
+                                modifier = Modifier.padding(vertical = 8.dp),
+                                text = it.title.orEmpty(),
+                                style = PienoteTheme.typography.body1
+                            )
                         }
                     }
                 }
