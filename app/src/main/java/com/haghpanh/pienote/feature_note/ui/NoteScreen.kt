@@ -1,14 +1,18 @@
 package com.haghpanh.pienote.feature_note.ui
 
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
@@ -18,6 +22,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
 import androidx.compose.material.OutlinedTextField
@@ -25,13 +30,17 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Done
 import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.scale
@@ -42,12 +51,25 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.OffsetMapping
+import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.haghpanh.pienote.R
+import com.haghpanh.pienote.common_ui.component.PienoteChip
+import com.haghpanh.pienote.common_ui.component.TextInputHandler
+import com.haghpanh.pienote.common_ui.component.TextInputHandler.createAnnotatedText
+import com.haghpanh.pienote.common_ui.navigation.AppScreens
 import com.haghpanh.pienote.common_ui.theme.PienoteTheme
+import com.haghpanh.pienote.common_ui.theme.robotoBoldFont
 import com.haghpanh.pienote.feature_note.ui.component.CategoryChipSection
 import com.haghpanh.pienote.feature_note.ui.component.ImageCoverSection
 import com.haghpanh.pienote.feature_note.utils.FocusRequestType
@@ -69,43 +91,55 @@ fun NoteScreen(
     viewModel: NoteViewModel
 ) {
     val state by viewModel.collectAsStateWithLifecycle()
+    val parentScreen = viewModel.savedStateHandler<String>("parent")
 
     val pickMedia = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia(),
         onResult = viewModel::updateNoteImage
     )
 
-    BackHandler {
-        if (state.isEditing && !state.isEmptyNote) {
-            viewModel.switchEditMode()
-        } else if (!state.isEmptyNote) {
-            viewModel.updateOrInsertNote()
-            navController.popBackStack()
-        } else {
-            navController.popBackStack()
+    val onNavigateBack: () -> Unit = remember {
+        {
+            if (state.isEditing && !state.isEmptyNote) {
+                viewModel.switchEditMode()
+            } else if (!state.isEmptyNote) {
+                viewModel.updateOrInsertNote()
+                navController.popBackStack()
+            } else {
+                navController.popBackStack()
+            }
         }
     }
 
+    BackHandler(onBack = onNavigateBack)
+
     NoteScreen(
         state = state,
+        parentScreen = parentScreen,
         onUpdateNote = viewModel::updateNoteText,
         onUpdateTitle = viewModel::updateTitleText,
         onUpdateCategory = viewModel::updateCategory,
         onRequestToPickImage = {
             pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
         },
-        onSwitchEditMode = viewModel::switchEditMode
+        onSwitchEditMode = viewModel::switchEditMode,
+        navigateToRoute = { route -> navController.navigate(route) },
+        onBack = onNavigateBack
     )
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun NoteScreen(
     state: NoteViewState,
+    parentScreen: String?,
     onUpdateNote: (String) -> Unit,
     onUpdateTitle: (String) -> Unit,
     onUpdateCategory: (Int?) -> Unit,
     onRequestToPickImage: () -> Unit,
-    onSwitchEditMode: (FocusRequestType) -> Unit
+    onSwitchEditMode: (FocusRequestType) -> Unit,
+    navigateToRoute: (String) -> Unit,
+    onBack: () -> Unit
 ) {
     val scrollState = rememberScrollState()
     val nestedScrollConnection = rememberNoteNestedScrollConnection()
@@ -114,6 +148,14 @@ fun NoteScreen(
     val interactionSource = remember { MutableInteractionSource() }
     val focusManager = LocalFocusManager.current
     val localConfig = LocalConfiguration.current
+    var noteTitle by remember {
+        mutableStateOf(state.note.title.orEmpty())
+    }
+    var noteText by remember {
+        mutableStateOf(state.note.note.orEmpty())
+    }
+
+
 
     LaunchedEffect(state.isEditing) {
         if (!state.isEditing) {
@@ -122,6 +164,7 @@ fun NoteScreen(
                 value = 0,
                 animationSpec = tween(300)
             )
+
         }
 
         if (state.focusRequestType is FocusRequestType.Non) {
@@ -169,9 +212,36 @@ fun NoteScreen(
                 )
                 .verticalScroll(scrollState)
         ) {
+
+            if (parentScreen != null) {
+                AnimatedVisibility(visible = !state.isEditing) {
+                    PienoteChip(
+                        modifier = Modifier.padding(start = 16.dp, top = 16.dp),
+                        onClick = onBack
+                    ) {
+                        Row(
+                            modifier = Modifier.padding(6.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceEvenly
+                        ) {
+                            Icon(
+                                imageVector = Icons.Rounded.ArrowBack,
+                                contentDescription = "back"
+                            )
+
+                            Text(
+                                modifier = Modifier.padding(end = 4.dp),
+                                text = parentScreen,
+                                style = PienoteTheme.typography.subtitle1
+                            )
+                        }
+                    }
+                }
+            }
+
             ImageCoverSection(
                 modifier = Modifier
-                    .padding(top = 24.dp, start = 24.dp, end = 24.dp)
+                    .padding(top = 14.dp, start = 24.dp, end = 24.dp)
                     .then(
                         if (!state.isEditing) {
                             Modifier
@@ -234,12 +304,22 @@ fun NoteScreen(
                     )
                 }
 
-                CategoryChipSection(
-                    category = state.category,
-                    isEditing = state.isEditing,
-                    categories = state.categories,
-                    onCategorySelect = onUpdateCategory
-                )
+                AnimatedVisibility(visible = state.isEditing || state.category != null) {
+                    CategoryChipSection(
+                        category = state.category,
+                        isEditing = state.isEditing,
+                        categories = state.categories,
+                        onCategorySelect = onUpdateCategory,
+                        onClickCategory = {
+                            navigateToRoute(
+                                AppScreens.CategoryScreen.createRoute(
+                                    it,
+                                    state.note.title ?: ""
+                                )
+                            )
+                        }
+                    )
+                }
 
                 if (state.isEditing) {
                     SideEffect {
@@ -254,7 +334,7 @@ fun NoteScreen(
                             .fillMaxWidth()
                             .weight(1f)
                             .focusRequester(noteFocusRequester),
-                        value = state.note.note.orEmpty(),
+                        value = TextInputHandler.incBold(state.note.note.orEmpty()),
                         onValueChange = onUpdateNote,
                         placeholder = {
                             Text(
@@ -267,7 +347,14 @@ fun NoteScreen(
                             focusedBorderColor = Color.Transparent,
                             unfocusedBorderColor = Color.Transparent
                         ),
-                        textStyle = PienoteTheme.typography.body1
+                        textStyle = PienoteTheme.typography.body1,
+                        visualTransformation = {
+                            TransformedText(
+                                text = createAnnotatedText(it.toString()),
+                                offsetMapping = OffsetMapping.Identity
+                            )
+                        }
+
                     )
                 } else {
                     Text(

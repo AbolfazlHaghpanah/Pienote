@@ -3,9 +3,9 @@ package com.haghpanh.pienote.feature_note.ui
 import android.net.Uri
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
-import com.haghpanh.pienote.common_ui.BaseViewModel
 import com.haghpanh.pienote.common_domain.model.CategoryDomainModel
 import com.haghpanh.pienote.common_domain.model.NoteDomainModel
+import com.haghpanh.pienote.common_ui.BaseViewModel
 import com.haghpanh.pienote.feature_note.domain.usecase.NoteGetCategoriesUseCase
 import com.haghpanh.pienote.feature_note.domain.usecase.NoteInsertNoteUseCase
 import com.haghpanh.pienote.feature_note.domain.usecase.NoteObserveNoteInfoUseCase
@@ -24,11 +24,12 @@ class NoteViewModel @Inject constructor(
     private val insertNoteUseCase: NoteInsertNoteUseCase,
     private val updateNoteUseCase: NoteUpdateNoteUseCase,
     private val noteUpdateNoteImageUseCase: NoteUpdateNoteImageUseCase,
-    private val savedStateHandle: SavedStateHandle
+    savedStateHandle: SavedStateHandle
 ) : BaseViewModel<NoteViewState>(
-    NoteViewState(
+    initialState = NoteViewState(
         isExist = savedStateHandle.get<Boolean>("isExist") ?: false
-    )
+    ),
+    savedStateHandle = savedStateHandle
 ) {
     init {
         getNoteInfo()
@@ -122,7 +123,7 @@ class NoteViewModel @Inject constructor(
     private fun getNoteInfo() {
         if (getCurrentState().isExist) {
             viewModelScope.launch(Dispatchers.IO) {
-                val noteId = savedStateHandle.get<Int>("id") ?: -1
+                val noteId = savedStateHandler<Int>("id") ?: -1
 
                 observeNoteInfoUseCase(noteId).collect { noteWithCat ->
                     updateState { state ->

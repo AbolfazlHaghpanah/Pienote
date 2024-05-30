@@ -74,6 +74,8 @@ dependencies {
     debugImplementation(libs.ui.test.manifest)
     implementation(libs.bundles.compose)
     implementation(libs.coil)
+    implementation(libs.pagingCommon)
+    implementation(libs.pagingCompose)
 
     //hilt
     implementation(libs.hilt)
@@ -84,6 +86,8 @@ dependencies {
     implementation(libs.bundles.room)
     annotationProcessor(libs.roomCompiler)
     ksp(libs.roomCompilerKsp)
+    implementation(libs.paging)
+    implementation(libs.room.paging)
 
     //lifecycle
     implementation(libs.bundles.lifecycle)

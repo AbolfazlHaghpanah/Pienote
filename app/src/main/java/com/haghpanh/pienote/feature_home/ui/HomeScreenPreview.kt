@@ -46,13 +46,15 @@ fun HomeScreenPreview() {
                 null,
                 null
             ),
+            "Parent",
             {},
             {},
             {},
             {},
             {},
             {},
-            {}
+            {},
+            {},
         )
     }
 }

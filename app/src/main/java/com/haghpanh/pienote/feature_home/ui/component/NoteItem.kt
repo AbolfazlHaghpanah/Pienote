@@ -9,6 +9,7 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -21,6 +22,7 @@ import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -34,7 +36,8 @@ fun HomeNoteItem(
     title: String,
     note: String,
     modifier: Modifier = Modifier,
-    onDelete: () -> Unit
+    onDelete: () -> Unit,
+    onClick: () -> Unit
 ) {
     val swipeState = rememberSwipeState(
         threshold = 240f,
@@ -59,6 +62,8 @@ fun HomeNoteItem(
 
     Column(
         modifier = modifier
+            .clip(PienoteTheme.shapes.veryLarge)
+            .clickable(onClick = onClick)
             .background(
                 color = animatedItemColor,
                 shape = PienoteTheme.shapes.veryLarge

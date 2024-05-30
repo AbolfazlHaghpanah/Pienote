@@ -2,10 +2,13 @@ package com.haghpanh.pienote.common_data.entity
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import com.haghpanh.pienote.common_domain.model.NoteDomainModel
 
-@Entity(tableName = "notes")
+@Entity(
+    tableName = "notes"
+)
 data class NoteEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,

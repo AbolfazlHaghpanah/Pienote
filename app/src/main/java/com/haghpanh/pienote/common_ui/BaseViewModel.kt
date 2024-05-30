@@ -2,6 +2,7 @@ package com.haghpanh.pienote.common_ui
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
@@ -19,7 +20,8 @@ import kotlin.reflect.KProperty
  * @param initialState The initial state of the ViewModel.
  */
 abstract class BaseViewModel<ViewState>(
-    initialState: ViewState
+    initialState: ViewState,
+    private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(initialState)
@@ -83,6 +85,15 @@ abstract class BaseViewModel<ViewState>(
             onUpdated?.invoke()
         }
     }
+
+    /**
+     *gives access to SavedStateHandle in compose Screen or viewModels that needs instance of it.
+     *
+     * @param key the key of value in savedStateHandle
+     * @return get value with given key from savedStateHandle
+     */
+    fun <T> savedStateHandler(key: String): T? =
+        savedStateHandle.get<T>(key)
 
     /**
      * Collect the state as a Compose [State] with lifecycle awareness.

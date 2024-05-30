@@ -11,4 +11,5 @@
     <string name="label_low">Low</string>
     <string name="label_medium">Medium</string>
     <string name="label_high">High</string>
+    <string name="notes">%1$s Notes</string>
 </resources>

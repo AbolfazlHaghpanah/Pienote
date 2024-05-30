@@ -1,9 +1,12 @@
 package com.haghpanh.pienote.feature_home.ui
 
+import android.util.Log
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.haghpanh.pienote.common_domain.model.CategoryDomainModel
 import com.haghpanh.pienote.common_domain.model.NoteDomainModel
+import com.haghpanh.pienote.feature_category.data.dao.CategoryDao
 import com.haghpanh.pienote.feature_home.domain.model.QuickNoteDomainModel
 import com.haghpanh.pienote.feature_home.domain.usecase.HomeDeleteNoteUseCase
 import com.haghpanh.pienote.feature_home.domain.usecase.HomeInsertCategoryUseCase
@@ -26,7 +29,8 @@ class HomeViewModel @Inject constructor(
     private val homeInsertCategoryUseCase: HomeInsertCategoryUseCase,
     private val homeObserveNotesByCategoryUseCase: HomeObserveNotesByCategoryUseCase,
     private val homeObserveCategories: HomeObserveCategories,
-    private val homeDeleteNoteUseCase: HomeDeleteNoteUseCase
+    private val homeDeleteNoteUseCase: HomeDeleteNoteUseCase,
+    private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     private val _state = MutableStateFlow(HomeViewState())
     val state = _state.asStateFlow()
@@ -37,6 +41,10 @@ class HomeViewModel @Inject constructor(
         observeCategories()
         observeNotes()
     }
+
+    fun <T> savedStateHandle(key: String): T? =
+        savedStateHandle.get<T>(key)
+
 
     fun setQuickNoteTitle(value: String?) {
         viewModelScope.launch {
