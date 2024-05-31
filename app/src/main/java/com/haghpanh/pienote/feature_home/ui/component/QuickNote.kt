@@ -1,32 +1,38 @@
 package com.haghpanh.pienote.feature_home.ui.component
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.Icon
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.material.TextFieldDefaults
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Add
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import com.haghpanh.pienote.R
 import com.haghpanh.pienote.common_ui.theme.PienoteTheme
@@ -39,7 +45,7 @@ fun QuickNoteTextField(
     onUpdateTitle: (String) -> Unit,
     onUpdateNote: (String) -> Unit,
     onDone: () -> Unit,
-    onDiscard: () -> Unit
+    onDiscard: () -> Unit,
 ) {
     Column(
         modifier = modifier
@@ -52,9 +58,22 @@ fun QuickNoteTextField(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ) {
+        val focusManager = LocalFocusManager.current
+        val focusRequester = remember { FocusRequester() }
+        var isFocusedOnNote by remember {
+            mutableStateOf(false)
+        }
+
+        SideEffect {
+            if (!isFocusedOnNote) {
+                focusRequester.requestFocus()
+            }
+        }
+
         OutlinedTextField(
             modifier = Modifier
                 .padding(top = 24.dp, start = 24.dp, end = 24.dp)
+                .focusRequester(focusRequester)
                 .fillMaxWidth(),
             value = title,
             onValueChange = onUpdateTitle,
@@ -69,14 +88,21 @@ fun QuickNoteTextField(
                 focusedBorderColor = Color.Transparent,
                 unfocusedBorderColor = Color.Transparent
             ),
-            textStyle = PienoteTheme.typography.h2
+            textStyle = PienoteTheme.typography.h2,
+            keyboardActions = KeyboardActions(
+                onNext = { focusManager.moveFocus(FocusDirection.Down) }
+            ),
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next)
         )
 
         OutlinedTextField(
             modifier = Modifier
                 .padding(bottom = 24.dp, start = 24.dp, end = 24.dp)
                 .fillMaxWidth()
-                .heightIn(min = 250.dp),
+                .heightIn(min = 250.dp)
+                .onFocusChanged {
+                    isFocusedOnNote = it.isFocused
+                },
             value = note,
             onValueChange = onUpdateNote,
             placeholder = {
@@ -90,7 +116,11 @@ fun QuickNoteTextField(
                 focusedBorderColor = Color.Transparent,
                 unfocusedBorderColor = Color.Transparent
             ),
-            textStyle = PienoteTheme.typography.body1
+            textStyle = PienoteTheme.typography.body1,
+            keyboardActions = KeyboardActions(
+                onDone = { onDone() }
+            ),
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done)
         )
 
         Spacer(modifier = Modifier.weight(1f))
@@ -116,47 +146,6 @@ fun QuickNoteTextField(
             ) {
                 Text(text = stringResource(R.string.label_done))
             }
-
         }
-    }
-}
-
-@Composable
-fun QuickNoteButton(
-    modifier: Modifier = Modifier,
-    onClick: () -> Unit
-) {
-    Row(
-        modifier
-            .clip(PienoteTheme.shapes.veryLarge)
-            .background(
-                color = PienoteTheme.colors.secondary,
-                shape = PienoteTheme.shapes.veryLarge
-            )
-            .fillMaxWidth()
-            .aspectRatio(2.4f)
-            .clickable(onClick = onClick),
-        horizontalArrangement = Arrangement.Center,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(
-            modifier = Modifier,
-            text = "Quick Note",
-            style = PienoteTheme.typography.h2,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-            color = PienoteTheme.colors.onSecondary
-        )
-
-        Spacer(modifier = Modifier.width(8.dp))
-
-        Icon(
-            modifier = Modifier
-                .aspectRatio(0.4f)
-                .fillMaxHeight(),
-            imageVector = Icons.Rounded.Add,
-            contentDescription = stringResource(R.string.label_quick_note),
-            tint = PienoteTheme.colors.onSecondary
-        )
     }
 }
