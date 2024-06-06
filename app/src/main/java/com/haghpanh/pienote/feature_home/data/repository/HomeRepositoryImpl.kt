@@ -4,7 +4,7 @@ import com.haghpanh.pienote.common_data.entity.NoteEntity
 import com.haghpanh.pienote.common_domain.model.CategoryDomainModel
 import com.haghpanh.pienote.common_domain.model.NoteDomainModel
 import com.haghpanh.pienote.feature_home.data.localdatasource.HomeLocalDataSource
-import com.haghpanh.pienote.feature_home.domain.model.QuickNoteDomainModel
+import com.haghpanh.pienote.feature_library.domain.model.QuickNoteDomainModel
 import com.haghpanh.pienote.feature_home.domain.repository.HomeRepository
 import com.haghpanh.pienote.common_data.utils.toEntity
 import kotlinx.coroutines.flow.Flow
@@ -44,12 +44,6 @@ class HomeRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun insertNote(note: QuickNoteDomainModel) {
-        val mappedNote = note.toNoteEntity()
-
-        homeLocalDataSource.insertNote(mappedNote)
-    }
-
     override suspend fun insertCategory(category: CategoryDomainModel) {
         val mappedCategory = category.toEntity()
 
@@ -61,16 +55,4 @@ class HomeRepositoryImpl @Inject constructor(
 
         homeLocalDataSource.deleteNote(mappedNote)
     }
-
-
-    private fun QuickNoteDomainModel.toNoteEntity(): NoteEntity =
-        NoteEntity(
-            title = title.orEmpty(),
-            note = note.orEmpty(),
-            image = null,
-            addedTime = addedTime,
-            lastChangedTime = null,
-            categoryId = null,
-            priority = null
-        )
 }

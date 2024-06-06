@@ -1,16 +1,14 @@
 package com.haghpanh.pienote.feature_home.ui
 
-import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.haghpanh.pienote.common_domain.model.CategoryDomainModel
 import com.haghpanh.pienote.common_domain.model.NoteDomainModel
-import com.haghpanh.pienote.feature_category.data.dao.CategoryDao
-import com.haghpanh.pienote.feature_home.domain.model.QuickNoteDomainModel
+import com.haghpanh.pienote.feature_library.domain.model.QuickNoteDomainModel
 import com.haghpanh.pienote.feature_home.domain.usecase.HomeDeleteNoteUseCase
 import com.haghpanh.pienote.feature_home.domain.usecase.HomeInsertCategoryUseCase
-import com.haghpanh.pienote.feature_home.domain.usecase.HomeInsertQuickNoteUseCase
+import com.haghpanh.pienote.feature_library.domain.usecase.LibraryInsertQuickNoteUseCase
 import com.haghpanh.pienote.feature_home.domain.usecase.HomeObserveCategories
 import com.haghpanh.pienote.feature_home.domain.usecase.HomeObserveNotesByCategoryUseCase
 import com.haghpanh.pienote.feature_home.domain.usecase.HomeObserveNotesUseCase
@@ -24,7 +22,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val homeInsertQuickNoteUseCase: HomeInsertQuickNoteUseCase,
+    private val libraryInsertQuickNoteUseCase: LibraryInsertQuickNoteUseCase,
     private val homeObserveNotesUseCase: HomeObserveNotesUseCase,
     private val homeInsertCategoryUseCase: HomeInsertCategoryUseCase,
     private val homeObserveNotesByCategoryUseCase: HomeObserveNotesByCategoryUseCase,
@@ -90,7 +88,7 @@ class HomeViewModel @Inject constructor(
                 addedTime = Calendar.getInstance().time.toString(),
             )
 
-            homeInsertQuickNoteUseCase(note)
+            libraryInsertQuickNoteUseCase(note)
 
             setQuickNoteTitle(null)
             setQuickNoteNote(null)
