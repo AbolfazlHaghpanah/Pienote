@@ -1,4 +1,4 @@
-package com.haghpanh.pienote.feature_home.domain.model
+package com.haghpanh.pienote.feature_library.domain.model
 
 data class QuickNoteDomainModel(
     val title : String?,

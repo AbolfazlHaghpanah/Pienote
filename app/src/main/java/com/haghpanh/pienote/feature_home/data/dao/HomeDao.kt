@@ -11,11 +11,13 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface HomeDao {
-    @Query("""
+    @Query(
+        """
         select * from notes
         where category_id is null 
         order by id desc
-    """)
+    """
+    )
     fun observeNotes(): Flow<List<NoteEntity>>
 
     @Query("select * from categories order by id desc")
@@ -31,5 +33,5 @@ interface HomeDao {
     suspend fun insertCategory(category: CategoryEntity)
 
     @Delete
-    suspend fun deleteNote(note : NoteEntity)
+    suspend fun deleteNote(note: NoteEntity)
 }

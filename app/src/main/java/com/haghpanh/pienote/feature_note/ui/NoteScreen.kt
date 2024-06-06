@@ -1,6 +1,5 @@
 package com.haghpanh.pienote.feature_note.ui
 
-import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
@@ -51,16 +50,10 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.OffsetMapping
 import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.haghpanh.pienote.R
@@ -69,7 +62,6 @@ import com.haghpanh.pienote.common_ui.component.TextInputHandler
 import com.haghpanh.pienote.common_ui.component.TextInputHandler.createAnnotatedText
 import com.haghpanh.pienote.common_ui.navigation.AppScreens
 import com.haghpanh.pienote.common_ui.theme.PienoteTheme
-import com.haghpanh.pienote.common_ui.theme.robotoBoldFont
 import com.haghpanh.pienote.feature_note.ui.component.CategoryChipSection
 import com.haghpanh.pienote.feature_note.ui.component.ImageCoverSection
 import com.haghpanh.pienote.feature_note.utils.FocusRequestType
@@ -148,14 +140,6 @@ fun NoteScreen(
     val interactionSource = remember { MutableInteractionSource() }
     val focusManager = LocalFocusManager.current
     val localConfig = LocalConfiguration.current
-    var noteTitle by remember {
-        mutableStateOf(state.note.title.orEmpty())
-    }
-    var noteText by remember {
-        mutableStateOf(state.note.note.orEmpty())
-    }
-
-
 
     LaunchedEffect(state.isEditing) {
         if (!state.isEditing) {

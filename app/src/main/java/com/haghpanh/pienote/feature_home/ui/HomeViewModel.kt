@@ -1,16 +1,12 @@
 package com.haghpanh.pienote.feature_home.ui
 
-import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.haghpanh.pienote.common_domain.model.CategoryDomainModel
 import com.haghpanh.pienote.common_domain.model.NoteDomainModel
-import com.haghpanh.pienote.feature_category.data.dao.CategoryDao
-import com.haghpanh.pienote.feature_home.domain.model.QuickNoteDomainModel
 import com.haghpanh.pienote.feature_home.domain.usecase.HomeDeleteNoteUseCase
 import com.haghpanh.pienote.feature_home.domain.usecase.HomeInsertCategoryUseCase
-import com.haghpanh.pienote.feature_home.domain.usecase.HomeInsertQuickNoteUseCase
 import com.haghpanh.pienote.feature_home.domain.usecase.HomeObserveCategories
 import com.haghpanh.pienote.feature_home.domain.usecase.HomeObserveNotesByCategoryUseCase
 import com.haghpanh.pienote.feature_home.domain.usecase.HomeObserveNotesUseCase
@@ -19,12 +15,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import java.util.Calendar
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val homeInsertQuickNoteUseCase: HomeInsertQuickNoteUseCase,
     private val homeObserveNotesUseCase: HomeObserveNotesUseCase,
     private val homeInsertCategoryUseCase: HomeInsertCategoryUseCase,
     private val homeObserveNotesByCategoryUseCase: HomeObserveNotesByCategoryUseCase,
@@ -77,25 +71,6 @@ class HomeViewModel @Inject constructor(
             val mappedNote = note.toDomainModel()
 
             homeDeleteNoteUseCase(mappedNote)
-        }
-    }
-
-    fun insertNotes() {
-        viewModelScope.launch(Dispatchers.IO) {
-            val title = getCurrentState().quickNoteTitle
-            val noteText = getCurrentState().quickNoteNote
-            val note = QuickNoteDomainModel(
-                title = title,
-                note = noteText,
-                addedTime = Calendar.getInstance().time.toString(),
-            )
-
-            homeInsertQuickNoteUseCase(note)
-
-            setQuickNoteTitle(null)
-            setQuickNoteNote(null)
-
-            reverseQuickNoteState()
         }
     }
 
