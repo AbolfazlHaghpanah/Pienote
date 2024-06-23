@@ -126,8 +126,7 @@ fun QuickNoteTextField(
         Spacer(modifier = Modifier.weight(1f))
 
         Row(
-            modifier = Modifier
-                .padding(24.dp),
+            modifier = Modifier.padding(24.dp),
         ) {
             TextButton(
                 onClick = onDiscard,

@@ -87,30 +87,23 @@ private fun LibraryScreen(
             AnimatedVisibility(visible = !shouldShowQuickNoteTextField) {
                 FloatingActionButton(
                     onClick = { shouldShowQuickNoteTextField = true },
-                    shape = PienoteTheme.shapes.veryLarge
+                    shape = PienoteTheme.shapes.rounded
                 ) {
-                    Row(
-                        modifier = Modifier.padding(14.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        Text(text = "Quick Note")
-
-                        Icon(imageVector = Icons.Rounded.Add, contentDescription = "")
-                    }
+                    Icon(imageVector = Icons.Rounded.Add, contentDescription = "")
                 }
             }
         }
     ) { paddingValues ->
         Column(
             modifier = Modifier
+                .verticalScroll(rememberScrollState())
                 .statusBarsPadding()
                 .imePadding()
                 .padding(top = 14.dp)
-                .verticalScroll(rememberScrollState())
                 .fillMaxSize()
                 .padding(paddingValues),
         ) {
-            PienoteTopBar(title = "Library")
+            PienoteTopBar(title = LIBRARY_SCREEN_NAME)
 
             AnimatedContent(
                 targetState = shouldShowQuickNoteTextField,
@@ -137,8 +130,7 @@ private fun LibraryScreen(
                     }
 
                     QuickNoteTextField(
-                        modifier = Modifier
-                            .padding(horizontal = 24.dp, vertical = 6.dp),
+                        modifier = Modifier.padding(horizontal = 24.dp, vertical = 6.dp),
                         title = quickNoteTitle,
                         note = quickNoteNote,
                         onUpdateTitle = { quickNoteTitle = it },
