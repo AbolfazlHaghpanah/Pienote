@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardActions
@@ -99,7 +98,7 @@ fun QuickNoteTextField(
             modifier = Modifier
                 .padding(bottom = 24.dp, start = 24.dp, end = 24.dp)
                 .fillMaxWidth()
-                .heightIn(min = 250.dp)
+                .weight(1f)
                 .onFocusChanged {
                     isFocusedOnNote = it.isFocused
                 },
@@ -126,8 +125,7 @@ fun QuickNoteTextField(
         Spacer(modifier = Modifier.weight(1f))
 
         Row(
-            modifier = Modifier
-                .padding(24.dp),
+            modifier = Modifier.padding(24.dp),
         ) {
             TextButton(
                 onClick = onDiscard,
