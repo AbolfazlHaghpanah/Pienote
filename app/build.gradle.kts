@@ -28,10 +28,10 @@ tasks.withType<Detekt>().configureEach {
 }
 
 tasks.withType<Detekt>().configureEach {
-    jvmTarget = "1.8"
+    jvmTarget = "21"
 }
 tasks.withType<DetektCreateBaselineTask>().configureEach {
-    jvmTarget = "1.8"
+    jvmTarget = "21"
 }
 
 android {
@@ -62,11 +62,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "21"
     }
     buildFeatures {
         compose = true
