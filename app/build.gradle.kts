@@ -111,8 +111,7 @@ dependencies {
 
     //room
     implementation(libs.bundles.room)
-    annotationProcessor(libs.roomCompiler)
-    ksp(libs.roomCompilerKsp)
+    ksp(libs.roomCompiler)
     implementation(libs.paging)
     implementation(libs.room.paging)
 

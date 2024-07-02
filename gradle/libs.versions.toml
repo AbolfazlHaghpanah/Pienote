@@ -55,7 +55,6 @@ hiltNavigationCompose = { module = "androidx.hilt:hilt-navigation-compose", vers
 hiltCompiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hilt" }
 room = { module = "androidx.room:room-runtime", version.ref = "room" }
 roomCompiler = { module = "androidx.room:room-compiler", version.ref = "room" }
-roomCompilerKsp = { module = "androidx.room:room-compiler", version.ref = "room" }
 roomKtx = { module = "androidx.room:room-ktx", version.ref = "room" }
 coil = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
 paging = { module = "androidx.paging:paging-runtime", version.ref = "paging" }
