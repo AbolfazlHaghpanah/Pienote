@@ -55,8 +55,11 @@ fun CategoryChipSection(
         }
     }
     val onChipSelect: (Int?) -> Unit = {
-        if (isEditing) isWantToSelect = !isWantToSelect
-        else onClickCategory(it ?: -1)
+        if (isEditing) {
+            isWantToSelect = !isWantToSelect
+        } else {
+            onClickCategory(it ?: -1)
+        }
     }
 
     LaunchedEffect(isEditing) {

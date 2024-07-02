@@ -17,7 +17,6 @@ class NotesListRepositoryImpl @Inject constructor(
     private val notesListDao: NotesListDao
 ) : NotesListRepository {
     override fun observeNoteList(): Flow<List<NoteDomainModel>> {
-
         notesListDao.getPagedNotes()
         return notesListDao.observeNotes()
             .onEach { Log.d("Jai", "observeNoteList: ${it.joinToString()}") }

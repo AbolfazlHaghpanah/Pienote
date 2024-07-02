@@ -5,5 +5,5 @@ import javax.annotation.concurrent.Immutable
 
 @Immutable
 data class FavoriteViewState(
-    val notes : List<Note> = emptyList()
+    val notes: List<Note> = emptyList()
 )

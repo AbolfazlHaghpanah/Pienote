@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import com.haghpanh.pienote.commonui.theme.PienoteTheme
 
+@Suppress("MaximumLineLength", "MaxLineLength")
 @Preview(showBackground = true)
 @Composable
 fun HomeScreenPreview() {
@@ -42,7 +43,7 @@ fun HomeScreenPreview() {
                         addedTime = ""
                     ),
 
-                    ),
+                ),
                 null,
                 null
             ),

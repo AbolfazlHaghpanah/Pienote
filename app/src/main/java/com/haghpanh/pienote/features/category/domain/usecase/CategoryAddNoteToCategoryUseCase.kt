@@ -10,4 +10,3 @@ class CategoryAddNoteToCategoryUseCase @Inject constructor(
         return categoryRepository.addNoteToCategory(noteId, categoryId)
     }
 }
-

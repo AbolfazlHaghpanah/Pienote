@@ -125,7 +125,6 @@ private fun LibraryScreen(
                             shouldShowQuickNoteTextField = false
                             quickNoteNote = ""
                             quickNoteTitle = ""
-
                         }
                     }
 
@@ -160,7 +159,6 @@ private fun LibraryScreen(
         }
     }
 }
-
 
 @Immutable
 data class LibsItem(

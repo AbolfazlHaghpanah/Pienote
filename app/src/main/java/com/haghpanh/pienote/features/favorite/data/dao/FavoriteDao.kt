@@ -9,5 +9,5 @@ import kotlinx.coroutines.flow.Flow
 interface FavoriteDao {
 
     @Query("SELECT * FROM FAVORITE_NOTES")
-    fun observeFavoriteNotes () : Flow<List<FavoriteNotesEntity>>
+    fun observeFavoriteNotes(): Flow<List<FavoriteNotesEntity>>
 }

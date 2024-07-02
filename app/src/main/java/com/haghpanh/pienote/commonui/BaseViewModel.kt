@@ -67,7 +67,8 @@ abstract class BaseViewModel<ViewState>(
     }
 
     /**
-     * Update the state of the ViewModel based on a transformation function and invoke a callback when the state is updated.
+     * Update the state of the ViewModel based on a transformation function and
+     * invoke a callback when the state is updated.
      *
      * @param dispatcher The coroutine dispatcher to use for the update operation. Default is [Dispatchers.IO].
      * @param onUpdated A callback function to invoke after the state is updated.

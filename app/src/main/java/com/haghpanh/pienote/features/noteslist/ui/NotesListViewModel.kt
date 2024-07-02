@@ -53,5 +53,4 @@ class NotesListViewModel @Inject constructor(
             lastChangedTime = lastChangedTime,
             categoryId = categoryId
         )
-
 }

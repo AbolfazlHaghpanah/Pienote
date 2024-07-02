@@ -93,7 +93,7 @@ fun ImageCoverSection(
                     Text(text = stringResource(R.string.add_cover_image))
                 }
             }
-        } else if(image == null) {
+        } else if (image == null) {
             Spacer(modifier = modifier)
         }
     }

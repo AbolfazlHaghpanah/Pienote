@@ -10,7 +10,7 @@ import com.haghpanh.pienote.commonui.theme.robotoBoldFont
 
 object TextInputHandler {
 
-    fun incBold (value: String) : String =
+    fun incBold(value: String): String =
         "<div class = BOLD>$value</div>"
 
     fun extractTextAndType(string: String): Pair<String?, String?> {

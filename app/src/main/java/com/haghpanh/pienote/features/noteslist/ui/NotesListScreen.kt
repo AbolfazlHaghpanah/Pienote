@@ -2,7 +2,6 @@ package com.haghpanh.pienote.features.noteslist.ui
 
 import android.util.Log
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -32,9 +31,9 @@ fun NotesListScreen(
         items(sdsds.itemCount) {
             HomeNoteItem(
                 title = sdsds[it]?.genrNotes?.title ?: "",
-                note = sdsds[it]?.spcfFavorite?.favorite_type ?: "",
-                onDelete = { /*TODO*/ }) {
-
+                note = sdsds[it]?.spcfFavorite?.favoriteType ?: "",
+                onDelete = { /*TODO*/ }
+            ) {
             }
         }
     }

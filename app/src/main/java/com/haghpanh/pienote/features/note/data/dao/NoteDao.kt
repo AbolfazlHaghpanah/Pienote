@@ -21,7 +21,7 @@ interface NoteDao {
     fun getCategories(): List<CategoryEntity>
 
     @Insert
-    suspend fun insertNote(note : NoteEntity)
+    suspend fun insertNote(note: NoteEntity)
 
     @Update
     suspend fun updateNote(note: NoteEntity)

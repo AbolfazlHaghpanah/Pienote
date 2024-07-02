@@ -26,19 +26,17 @@ interface NotesListDao {
         """
     )
     fun getPagedNotes(): PagingSource<Int, NotesResult>
-
 }
 
-data class spcfFavorite(
-    val favorite_type: String?
+data class SpcfFavorite(
+    val favoriteType: String?
 )
 
-
-data class spcfNotes(
+data class SpcfNotes(
     val addedTime: String?
 )
 
-data class genrNotes(
+data class GenrNotes(
     val id: Int,
     val note: String,
     val title: String,
@@ -46,17 +44,17 @@ data class genrNotes(
 
 data class NotesResult(
     @Embedded
-    val genrNotes: genrNotes,
+    val genrNotes: GenrNotes,
     @Embedded
-    val spcfNotes: spcfNotes?,
+    val spcfNotes: SpcfNotes?,
     @Embedded
-    val spcfFavorite: spcfFavorite?
+    val spcfFavorite: SpcfFavorite?
 ) {
     fun toDomainModel() =
         NoteDomainModel(
             id = genrNotes.id,
             title = genrNotes.title,
             note = genrNotes.note,
-            addedTime = spcfNotes?.addedTime ?: spcfFavorite?.favorite_type ?: "null"
+            addedTime = spcfNotes?.addedTime ?: spcfFavorite?.favoriteType ?: "null"
         )
 }

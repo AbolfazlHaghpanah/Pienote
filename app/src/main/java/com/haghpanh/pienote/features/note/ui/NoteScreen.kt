@@ -146,7 +146,6 @@ fun NoteScreen(
                 value = 0,
                 animationSpec = tween(300)
             )
-
         }
 
         if (state.focusRequestType is FocusRequestType.Non) {
@@ -194,7 +193,6 @@ fun NoteScreen(
                 )
                 .verticalScroll(scrollState)
         ) {
-
             if (parentScreen != null) {
                 AnimatedVisibility(visible = !state.isEditing) {
                     PienoteChip(

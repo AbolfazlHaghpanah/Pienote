@@ -8,6 +8,6 @@ import kotlinx.coroutines.flow.Flow
 interface NoteLocalDataSource {
     fun observeNote(id: Int): Flow<NoteWithCategory>
     fun getCategories(): List<CategoryEntity>
-    suspend fun insertNote(note : NoteEntity)
+    suspend fun insertNote(note: NoteEntity)
     suspend fun updateNote(note: NoteEntity)
 }

@@ -1,4 +1,4 @@
-package com.haghpanh.pienote.commonui.Activity
+package com.haghpanh.pienote.commonui.activity
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity

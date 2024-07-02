@@ -25,7 +25,7 @@ abstract class PienoteDatabase : RoomDatabase() {
     abstract fun HomeDao(): HomeDao
     abstract fun NoteDao(): NoteDao
     abstract fun CategoryDao(): CategoryDao
-    abstract fun FavoriteNotesDao(): FavoriteDao
+    abstract fun FavoriteDao(): FavoriteDao
     abstract fun NotesListDao(): NotesListDao
     abstract fun CommonDao(): CommonDao
 }

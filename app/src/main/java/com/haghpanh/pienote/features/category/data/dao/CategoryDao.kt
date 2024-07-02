@@ -33,10 +33,9 @@ interface CategoryDao {
     )
     suspend fun addNoteToCategory(noteId: Int, categoryId: Int)
 
-
     @Update
     suspend fun updateCategory(categoryEntity: CategoryEntity)
 
     @Query("SELECT * FROM NOTES")
-    fun observeAvailableNotes() : Flow<List<NoteEntity>>
+    fun observeAvailableNotes(): Flow<List<NoteEntity>>
 }

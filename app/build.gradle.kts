@@ -1,10 +1,37 @@
-@Suppress("DSL_SCOPE_VIOLATION") // TODO: Remove once KTIJ-19369 is fixed
+import io.gitlab.arturbosch.detekt.Detekt
+import io.gitlab.arturbosch.detekt.DetektCreateBaselineTask
+
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.kotlinAndroid)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
+    alias(libs.plugins.detekt)
     kotlin("kapt")
+}
+
+detekt {
+    debug = false
+    source.setFrom("src/main/java", "src/main/kotlin")
+    buildUponDefaultConfig = true
+    autoCorrect = true
+    config.setFrom("$rootDir/detekt/detektConfig.yml")
+    basePath = projectDir.path
+}
+
+tasks.withType<Detekt>().configureEach {
+    reports {
+        html.required.set(true) // observe findings in your browser with structure and code snippets
+        xml.required.set(true) // checkstyle like format mainly for integrations like Jenkins
+        sarif.required.set(true) // standardized SARIF format (https://sarifweb.azurewebsites.net/) to support integrations with GitHub Code Scanning
+    }
+}
+
+tasks.withType<Detekt>().configureEach {
+    jvmTarget = "1.8"
+}
+tasks.withType<DetektCreateBaselineTask>().configureEach {
+    jvmTarget = "1.8"
 }
 
 android {
@@ -92,4 +119,7 @@ dependencies {
     //lifecycle
     implementation(libs.bundles.lifecycle)
     ksp(libs.lifecycle.compiler)
+
+    //detekt
+    detektPlugins(libs.detekt.formatting)
 }

@@ -22,6 +22,6 @@ abstract class FavoriteModule {
     companion object {
         @Provides
         fun provideFavoriteDao(pienoteDatabase: PienoteDatabase): FavoriteDao =
-            pienoteDatabase.FavoriteNotesDao()
+            pienoteDatabase.FavoriteDao()
     }
 }

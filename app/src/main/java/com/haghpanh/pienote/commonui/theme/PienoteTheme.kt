@@ -24,8 +24,11 @@ object PienoteTheme {
     val colors: Colors
         @Composable
         @ReadOnlyComposable
-        get() = if (isSystemInDarkTheme())
-            LocalDarkColors.current else LocalLightColors.current
+        get() = if (isSystemInDarkTheme()) {
+            LocalDarkColors.current
+        } else {
+            LocalLightColors.current
+        }
 
     val typography: Types
         @Composable
@@ -41,5 +44,4 @@ object PienoteTheme {
         @Composable
         @ReadOnlyComposable
         get() = LocalShapes.current
-
 }

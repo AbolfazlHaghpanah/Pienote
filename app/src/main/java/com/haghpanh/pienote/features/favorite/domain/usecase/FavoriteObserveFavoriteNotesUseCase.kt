@@ -8,7 +8,7 @@ import javax.inject.Inject
 class FavoriteObserveFavoriteNotesUseCase @Inject constructor(
     private var favoriteRepository: FavoriteRepository
 ) {
-    operator fun invoke () : Flow<List<NoteDomainModel>> {
+    operator fun invoke(): Flow<List<NoteDomainModel>> {
         return favoriteRepository.observeFavoriteNotes()
     }
 }

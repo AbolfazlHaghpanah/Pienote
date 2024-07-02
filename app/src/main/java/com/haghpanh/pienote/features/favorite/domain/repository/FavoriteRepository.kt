@@ -4,5 +4,5 @@ import com.haghpanh.pienote.commondomain.model.NoteDomainModel
 import kotlinx.coroutines.flow.Flow
 
 interface FavoriteRepository {
-    fun observeFavoriteNotes() : Flow<List<NoteDomainModel>>
+    fun observeFavoriteNotes(): Flow<List<NoteDomainModel>>
 }

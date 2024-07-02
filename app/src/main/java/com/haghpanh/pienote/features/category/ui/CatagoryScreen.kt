@@ -257,8 +257,11 @@ fun CategoryScreen(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .then(
-                                    if (image != null)
-                                        Modifier.aspectRatio(1f) else Modifier.height(180.dp)
+                                    if (image != null) {
+                                        Modifier.aspectRatio(1f)
+                                    } else {
+                                        Modifier.height(180.dp)
+                                    }
                                 )
                         ) {
                             if (image != null) {
@@ -377,7 +380,6 @@ fun CategoryScreen(
                                 }
                             }
                         }
-
                     }
                 }
             }

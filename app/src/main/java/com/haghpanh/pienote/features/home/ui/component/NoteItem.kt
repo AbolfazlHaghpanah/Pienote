@@ -45,7 +45,10 @@ fun HomeNoteItem(
     )
 
     val animatedItemColor by animateColorAsState(
-        targetValue = if (swipeState.directionalSwipe.isSwiped && swipeState.directionalSwipe.isOffsetAchieveThreshold) {
+        targetValue = if (
+            swipeState.directionalSwipe.isSwiped &&
+            swipeState.directionalSwipe.isOffsetAchieveThreshold
+        ) {
             PienoteTheme.colors.error
         } else if (swipeState.directionalSwipe.isSwiped) {
             PienoteTheme.colors.secondary
@@ -114,7 +117,6 @@ fun HomeNoteItem(
                     )
                 }
             }
-
         }
     }
 }

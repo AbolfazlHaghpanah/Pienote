@@ -8,6 +8,6 @@ import javax.inject.Inject
 class NotesListObserveNotesUseCase @Inject constructor(
     private val notesListRepository: NotesListRepository
 ) {
-    operator fun invoke() : Flow<List<NoteDomainModel>> =
+    operator fun invoke(): Flow<List<NoteDomainModel>> =
         notesListRepository.observeNoteList()
 }

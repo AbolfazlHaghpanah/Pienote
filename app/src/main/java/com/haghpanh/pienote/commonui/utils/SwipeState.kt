@@ -15,7 +15,6 @@ import androidx.compose.ui.composed
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 
-
 /**
  * Class representing the state of a swipe gesture.
  *
@@ -50,7 +49,7 @@ class SwipeState(
         }
     }
 
-    //TODO implement action
+    // TODO implement action
     /**
      * Represents a right-to-left swipe.
      */
@@ -63,7 +62,7 @@ class SwipeState(
         }
     }
 
-    //TODO implement actions
+    // TODO implement actions
     /**
      * Represents a swipe gesture in both directions.
      */
@@ -107,12 +106,11 @@ fun Modifier.swipeHandler(
     onSwipeLeft: (() -> Unit)? = null,
     shouldVibrateOnAchieveThreshold: Boolean = false
 ): Modifier = composed {
-
     when (state.directionalSwipe) {
         is SwipeState.LeftToRight -> {
             val context = LocalContext.current
 
-            //TODO VIBRATOR_SERVICE is deprecated
+            // TODO VIBRATOR_SERVICE is deprecated
             LaunchedEffect(state.directionalSwipe.isOffsetAchieveThreshold && shouldVibrateOnAchieveThreshold) {
                 if (state.directionalSwipe.isOffsetAchieveThreshold) {
                     (context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator?)?.apply {

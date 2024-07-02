@@ -6,9 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.haghpanh.pienote.commondomain.model.CategoryDomainModel
 import com.haghpanh.pienote.commondomain.model.NoteDomainModel
 import com.haghpanh.pienote.features.home.domain.usecase.HomeDeleteNoteUseCase
-import com.haghpanh.pienote.features.home.domain.usecase.HomeInsertCategoryUseCase
 import com.haghpanh.pienote.features.home.domain.usecase.HomeObserveCategories
-import com.haghpanh.pienote.features.home.domain.usecase.HomeObserveNotesByCategoryUseCase
 import com.haghpanh.pienote.features.home.domain.usecase.HomeObserveNotesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -20,8 +18,6 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val homeObserveNotesUseCase: HomeObserveNotesUseCase,
-    private val homeInsertCategoryUseCase: HomeInsertCategoryUseCase,
-    private val homeObserveNotesByCategoryUseCase: HomeObserveNotesByCategoryUseCase,
     private val homeObserveCategories: HomeObserveCategories,
     private val homeDeleteNoteUseCase: HomeDeleteNoteUseCase,
     private val savedStateHandle: SavedStateHandle
@@ -38,7 +34,6 @@ class HomeViewModel @Inject constructor(
 
     fun <T> savedStateHandle(key: String): T? =
         savedStateHandle.get<T>(key)
-
 
     fun setQuickNoteTitle(value: String?) {
         viewModelScope.launch {

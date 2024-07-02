@@ -18,5 +18,4 @@ data class CategoryEntity(
             priority = priority,
             image = image
         )
-
 }

@@ -32,7 +32,6 @@ class CategoryRepositoryImpl @Inject constructor(
     override fun observeAvailableNotes(): Flow<List<NoteDomainModel>> =
         categoryDao.observeAvailableNotes().map { note -> note.map { it.toDomainModel() } }
 
-
     override suspend fun deleteNoteFromCategory(noteId: Int) {
         categoryDao.deleteNoteFromCategory(noteId)
     }

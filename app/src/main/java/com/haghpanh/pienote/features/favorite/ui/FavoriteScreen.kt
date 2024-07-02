@@ -91,7 +91,7 @@ fun FavoriteScreen(
                         }
                     }
 
-                    PienoteTopBar(title = "Favorites",icon = R.drawable.high_priority)
+                    PienoteTopBar(title = "Favorites", icon = R.drawable.high_priority)
                 }
             }
 

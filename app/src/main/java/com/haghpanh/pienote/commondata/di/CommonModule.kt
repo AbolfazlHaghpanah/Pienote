@@ -19,7 +19,6 @@ abstract class CommonModule {
         commonRepositoryImpl: CommonRepositoryImpl
     ): CommonRepository
 
-
     companion object {
         @Provides
         fun provideCommonDao(database: PienoteDatabase): CommonDao =

@@ -73,7 +73,6 @@ fun PienoteDialog(
 
             content()
 
-
             Spacer(modifier = Modifier.weight(1f))
 
             TextButton(
@@ -84,7 +83,6 @@ fun PienoteDialog(
         }
     }
 }
-
 
 @Composable
 fun PienoteDialog(

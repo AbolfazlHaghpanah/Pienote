@@ -18,7 +18,7 @@ data class FavoriteNotesEntity(
     @ColumnInfo(name = "category_id")
     val categoryId: Int?,
     @ColumnInfo(name = "favorite_type")
-    val favoriteType : String
+    val favoriteType: String
 ) : BaseEntity<NoteDomainModel> {
     override fun toDomainModel(): NoteDomainModel =
         NoteDomainModel(

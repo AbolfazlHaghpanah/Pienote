@@ -5,5 +5,5 @@ import com.haghpanh.pienote.commondomain.model.NoteDomainModel
 
 data class NoteWithCategoryDomainModel(
     val note: NoteDomainModel,
-    val category : CategoryDomainModel? = null
+    val category: CategoryDomainModel? = null
 )
