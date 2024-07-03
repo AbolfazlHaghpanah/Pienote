@@ -35,6 +35,14 @@ jobs:
 
       - name: ls
         run: ls
+          - cd app
+          - ls 
+          - cd build 
+          - ls
+          - cd reports
+          - ls
+          - cd detekt
+          - ls
 
       - name: Upload SARIF to GitHub using the upload-sarif action
         uses: github/codeql-action/upload-sarif@v2
