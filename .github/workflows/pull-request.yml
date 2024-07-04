@@ -11,6 +11,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Setup Gradle
+        uses: ./.github/workflows/common-gradle.yml
+
       - name: gradlew permission
         run: chmod +x gradlew
 
