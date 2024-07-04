@@ -1,22 +1,16 @@
-# This is a basic workflow to help you get started with Actions
-
-name: pull request
+name: Pull Request CI
 
 on:
   pull_request:
     branches: [ "develop" ]
 
-  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
-  build:
+  setup_gradle:
     runs-on: ubuntu-latest
 
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v4
 
       - name: gradlew permission
@@ -27,19 +21,57 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: 21
+          cache: gradle
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
 
-      - name: Build with Gradle
-        run: ./gradlew build
 
-      - name: detekt
+  build:
+    needs: setup_gradle
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Build
+        run: ./gradlew build --configuration-cache
+
+
+  detekt:
+    needs: setup_gradle
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Run Detekt
         run: ./gradlew detekt
 
-      - name: Upload SARIF to GitHub using the upload-sarif action
-        uses: github/codeql-action/upload-sarif@v2
+      - name: ls
+        run: cd app
+
+      - name: ls1
+        run: ls
+
+      - name: ls2
+        run: cd build
+
+      - name: ls3
+        run: ls
+
+      - name: ls4
+        run: cd reports
+
+      - name: ls5
+        run: ls
+
+      - name: ls6
+        run: cd detekt
+
+      - name: ls7
+        run: ls
+
+      - name: Upload Detekt Reports
+        uses: github/codeql-action/upload-sarif@v3
         if: success() || failure()
         with:
           sarif_file: /app/build/reports/detekt/detekt.sarif
-
