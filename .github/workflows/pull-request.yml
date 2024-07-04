@@ -11,6 +11,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - uses: actions/checkout@v4
+
       - name: Setup Gradle
         uses: ./.github/workflows/common-gradle.yml
 
@@ -23,6 +25,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - uses: actions/checkout@v4
+
       - name: Setup Gradle
         uses: ./.github/workflows/common-gradle.yml
 
@@ -36,6 +40,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - uses: actions/checkout@v4
+
       - name: Setup Gradle
         uses: ./.github/workflows/common-gradle.yml
 
