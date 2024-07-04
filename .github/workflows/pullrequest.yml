@@ -13,6 +13,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: 21
+          cache: gradle
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+
       - name: gradlew permission
         run: chmod +x gradlew
 
@@ -24,18 +34,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Java
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'temurin'
-          java-version: 21
-          cache: gradle
-
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
 
       - name: Build
-        run: ./gradlew build --configuration-cache
+        run: ./gradlew build --configuration-cache --debug
 
 
   detekt:
@@ -46,45 +49,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Java
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'temurin'
-          java-version: 21
-          cache: gradle
-
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v3
-
       - name: Run Detekt
         run: ./gradlew detekt
 
       - name: ls
-        run: cd app
-
-      - name: ls1
-        run: ls
-
-      - name: ls2
-        run: cd build
-
-      - name: ls3
-        run: ls
-
-      - name: ls4
-        run: cd reports
-
-      - name: ls5
-        run: ls
-
-      - name: ls6
-        run: cd detekt
-
-      - name: ls7
-        run: ls
+        run: cd app/build/reports/detekt
 
       - name: Upload Detekt Reports
         uses: github/codeql-action/upload-sarif@v3
         if: success() || failure()
         with:
-          sarif_file: /app/build/reports/detekt/detekt.sarif
+          sarif_file: app/build/reports/detekt/detekt.sarif
