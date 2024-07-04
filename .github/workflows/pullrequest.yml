@@ -16,6 +16,14 @@ jobs:
       - name: gradlew permission
         run: chmod +x gradlew
 
+  build:
+    needs: setup_gradle
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
@@ -26,13 +34,6 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
 
-
-  build:
-    needs: setup_gradle
-
-    runs-on: ubuntu-latest
-
-    steps:
       - name: Build
         run: ./gradlew build --configuration-cache
 
@@ -43,6 +44,18 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: 21
+          cache: gradle
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+
       - name: Run Detekt
         run: ./gradlew detekt
 
