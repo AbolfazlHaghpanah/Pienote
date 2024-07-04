@@ -30,6 +30,7 @@ tasks.withType<Detekt>().configureEach {
 tasks.withType<Detekt>().configureEach {
     jvmTarget = "21"
 }
+
 tasks.withType<DetektCreateBaselineTask>().configureEach {
     jvmTarget = "21"
 }
