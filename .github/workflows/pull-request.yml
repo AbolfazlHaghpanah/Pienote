@@ -83,11 +83,17 @@ jobs:
 
       - name: Check Detekt Report Directory
         run: |
-          ls -la app
+          ls -la app/build/reports/detekt
 
 #      Upload SARIF file as an Artifact to download and view
-      - name: Upload SARIF as an Artifact
-        uses: actions/upload-artifact@v3
+#      - name: Upload SARIF as an Artifact
+#        uses: actions/upload-artifact@v3
+#        with:
+#          name: sarif-file
+#          path: app/detekt.serif
+
+      - uses: github/codeql-action/upload-sarif@v2
+        if: success() || failure()
         with:
-          name: sarif-file
-          path: app/detekt.serif
+          sarif_file: app/build/reports/detekt/detekt.sarif
+          category: detekt

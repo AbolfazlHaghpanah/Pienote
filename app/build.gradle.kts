@@ -15,15 +15,13 @@ detekt {
     buildUponDefaultConfig = true
     autoCorrect = true
     config.setFrom("$rootDir/detekt/detektConfig.yml")
-    basePath = projectDir.absolutePath
+    basePath = rootProject.projectDir.absolutePath
 }
 
 tasks.withType<Detekt>().configureEach {
-    println("mmd : $basePath")
     reports {
         sarif {
             required.set(true)
-            outputLocation.set(file("detekt.serif"))
         }
     }
 }
