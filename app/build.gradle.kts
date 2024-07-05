@@ -24,7 +24,6 @@ tasks.withType<Detekt>().configureEach {
         sarif {
             required.set(true)
             outputLocation.set(file("../detekt.serif"))
-            println("$outputLocation and $required done")
         }
     }
 }

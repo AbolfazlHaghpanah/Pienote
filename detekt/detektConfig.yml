@@ -42,7 +42,7 @@ console-reports:
   #  - 'LiteFindingsReport'
 
 output-reports:
-  active: false
+  active: true
 
 comments:
   active: true
