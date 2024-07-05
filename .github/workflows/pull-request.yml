@@ -59,10 +59,10 @@ jobs:
     needs: setup_gradle
 
     runs-on: ubuntu-latest
-
-    env:
-      GRADLE_OPTS: -Dorg.gradle.daemon=false
-
+    permissions:
+      security-events: write
+      actions: read
+      contents: read
 
     steps:
       - uses: actions/checkout@v4
@@ -81,10 +81,11 @@ jobs:
         run: ./gradlew detekt
 
       - name: Check Detekt Report Directory
-        run: ls -la app
+        run: |
+          ls -la app
+          cat app/detekt.serif
 
-      - name: Upload Detekt Reports
-        uses: github/codeql-action/upload-sarif@v3
+      - uses: github/codeql-action/upload-sarif@v3
         if: success() || failure()
         with:
-          sarif_file: ./app/detekt.sarif
+          sarif_file: app/detekt.sarif
