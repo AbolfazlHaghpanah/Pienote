@@ -1,10 +1,10 @@
-name: Gradle Setup
+name: setup-gradle
 
 on:
   workflow-call:
 
 jobs:
-  setup:
+  setup-gradle:
     runs-on: ubuntu-latest
 
     steps:
