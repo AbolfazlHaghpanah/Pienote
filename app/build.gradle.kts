@@ -15,10 +15,11 @@ detekt {
     buildUponDefaultConfig = true
     autoCorrect = true
     config.setFrom("$rootDir/detekt/detektConfig.yml")
-    basePath = rootDir.path
+    basePath = projectDir.absolutePath
 }
 
 tasks.withType<Detekt>().configureEach {
+    println("mmd : $basePath")
     reports {
         html.required.set(true)
         xml.required.set(true)
