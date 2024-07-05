@@ -21,9 +21,10 @@ detekt {
 tasks.withType<Detekt>().configureEach {
     println("mmd : $basePath")
     reports {
-        html.required.set(true)
-        xml.required.set(true)
-        sarif.required.set(true)
+        sarif {
+            required.set(true)
+            outputLocation.set(file("detekt.serif"))
+        }
     }
 }
 
