@@ -19,8 +19,7 @@ jobs:
       - name: check
         run: |
           ls
-          ls -la .gitlab/workflows
-          
+          ls -la .github/workflows
 
       - name: Setup Gradle
         uses: ./.github/workflows/gradle-setup/
