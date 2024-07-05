@@ -88,4 +88,4 @@ jobs:
       - uses: github/codeql-action/upload-sarif@v3
         if: success() || failure()
         with:
-          sarif_file: /home/runner/work/Pienote/Pienote/app/detekt.sarif
+          sarif_file: 'app/detekt.sarif'
