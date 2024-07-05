@@ -85,4 +85,3 @@ jobs:
         if: success() || failure()
         with:
           sarif_file: app/build/reports/detekt/detekt.sarif
-        run: ls
