@@ -16,8 +16,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: check
+        run: |
+          ls -la .gitlab/workflows/gradle-setup.yml
+
       - name: Setup Gradle
-        uses: ./.github/workflows/gradle-setup/
+        uses: ./.github/workflows/gradle-setup.yml
 
       - name: gradlew permission
         run: chmod +x gradlew
@@ -42,7 +46,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Setup Gradle
-        uses: ./.github/workflows/gradle-setup/
+        uses: ./.github/workflows/gradle-setup.yml
 
       - name: Run Detekt
         run: ./gradlew detekt
