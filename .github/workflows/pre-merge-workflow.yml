@@ -1,0 +1,49 @@
+name: Pre Merge Checks
+
+on:
+  pull_request:
+    branches: [ "develop" ]
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    permissions:
+      security-events: write
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: ./.github/workflows/gradle-setup.yml
+
+      - name: gradlew permission
+        run: chmod +x gradlew
+
+      - name: Build with Gradle
+        run: ./gradlew build
+
+      - name: Upload Lint Report
+        uses: github/codeql-action/upload-sarif@v2
+        if: success() || failure()
+        with:
+          sarif_file: app/build/reports/lint-results-debug.sarif
+          category: lint
+
+  detekt:
+    permissions:
+      security-events: write
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: ./.github/workflows/gradle-setup.yml
+
+      - name: Run Detekt
+        run: ./gradlew detekt
+
+      - name: Upload Detekt Report
+        uses: github/codeql-action/upload-sarif@v2
+        if: success() || failure()
+        with:
+          sarif_file: app/build/reports/detekt/detekt.sarif
+          category: detekt

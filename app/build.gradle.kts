@@ -49,6 +49,10 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+
+        lint {
+            sarifReport = true
+        }
     }
 
     buildTypes {
