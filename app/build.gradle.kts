@@ -15,7 +15,7 @@ detekt {
     buildUponDefaultConfig = true
     autoCorrect = true
     config.setFrom("$rootDir/detekt/detektConfig.yml")
-    basePath = projectDir.path
+    basePath = rootDir.path
 }
 
 tasks.withType<Detekt>().configureEach {

@@ -1,4 +1,4 @@
-name: Pull Request CI
+name: Pre Merge Checks
 
 on:
   pull_request:
@@ -33,7 +33,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
