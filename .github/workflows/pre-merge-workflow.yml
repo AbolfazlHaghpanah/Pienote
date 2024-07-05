@@ -7,7 +7,11 @@ on:
   workflow_dispatch:
 
 jobs:
+
   build:
+    uses:
+      setup-gradle: ./.github/workflows/gradle-setup.yml
+
     permissions:
       security-events: write
 
@@ -15,8 +19,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-
-      - uses: ./.github/workflows/gradle-setup
 
       - name: gradlew permission
         run: chmod +x gradlew
@@ -32,6 +34,9 @@ jobs:
           category: lint
 
   detekt:
+    uses:
+      setup-gradle: ./.github/workflows/gradle-setup.yml
+
     permissions:
       security-events: write
 
