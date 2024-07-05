@@ -11,8 +11,5 @@ class FavoriteRepositoryImpl @Inject constructor(
     private val favoriteDao: FavoriteDao
 ) : FavoriteRepository {
     override fun observeFavoriteNotes(): Flow<List<NoteDomainModel>> =
-        favoriteDao.observeFavoriteNotes().map { it.map {
-            throw Exception()
-            it.toDomainModel()
-        } }
+        favoriteDao.observeFavoriteNotes().map { it.map { it.toDomainModel() } }
 }
