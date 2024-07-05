@@ -59,6 +59,7 @@ jobs:
     needs: setup_gradle
 
     runs-on: ubuntu-latest
+
     permissions:
       security-events: write
       actions: read
@@ -88,4 +89,5 @@ jobs:
       - uses: github/codeql-action/upload-sarif@v3
         if: success() || failure()
         with:
-          sarif_file: 'app/detekt.sarif'
+          sarif_file: app/detekt.sarif
+          wait-for-processing: true
