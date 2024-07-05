@@ -16,11 +16,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: check
-        run: |
-          ls
-          ls -la .github/workflows
-
       - name: Setup Gradle
         uses: ./.github/workflows/gradle-setup.yml
 

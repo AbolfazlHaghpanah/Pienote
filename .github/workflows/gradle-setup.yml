@@ -1,5 +1,8 @@
 name: gradle-setup
 
+on:
+  workflow_call:
+
 jobs:
   setup:
     runs-on: ubuntu-latest
