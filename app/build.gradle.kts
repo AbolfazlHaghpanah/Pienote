@@ -11,27 +11,27 @@ plugins {
 }
 
 detekt {
-    debug = false
     source.setFrom("src/main/java", "src/main/kotlin")
     buildUponDefaultConfig = true
     autoCorrect = true
     config.setFrom("$rootDir/detekt/detektConfig.yml")
-    basePath = projectDir.path
+    basePath = rootProject.projectDir.absolutePath
 }
 
 tasks.withType<Detekt>().configureEach {
     reports {
-        html.required.set(true) // observe findings in your browser with structure and code snippets
-        xml.required.set(true) // checkstyle like format mainly for integrations like Jenkins
-        sarif.required.set(true) // standardized SARIF format (https://sarifweb.azurewebsites.net/) to support integrations with GitHub Code Scanning
+        sarif {
+            required.set(true)
+        }
     }
 }
 
 tasks.withType<Detekt>().configureEach {
-    jvmTarget = "1.8"
+    jvmTarget = "21"
 }
+
 tasks.withType<DetektCreateBaselineTask>().configureEach {
-    jvmTarget = "1.8"
+    jvmTarget = "21"
 }
 
 android {
@@ -49,6 +49,10 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+
+        lint {
+            sarifReport = true
+        }
     }
 
     buildTypes {
@@ -62,11 +66,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "21"
     }
     buildFeatures {
         compose = true
@@ -111,8 +115,7 @@ dependencies {
 
     //room
     implementation(libs.bundles.room)
-    annotationProcessor(libs.roomCompiler)
-    ksp(libs.roomCompilerKsp)
+    ksp(libs.roomCompiler)
     implementation(libs.paging)
     implementation(libs.room.paging)
 
