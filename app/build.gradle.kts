@@ -11,7 +11,6 @@ plugins {
 }
 
 detekt {
-    debug = false
     source.setFrom("src/main/java", "src/main/kotlin")
     buildUponDefaultConfig = true
     autoCorrect = true
@@ -21,9 +20,9 @@ detekt {
 
 tasks.withType<Detekt>().configureEach {
     reports {
-        html.required.set(true) // observe findings in your browser with structure and code snippets
-        xml.required.set(true) // checkstyle like format mainly for integrations like Jenkins
-        sarif.required.set(true) // standardized SARIF format (https://sarifweb.azurewebsites.net/) to support integrations with GitHub Code Scanning
+        html.required.set(true)
+        xml.required.set(true)
+        sarif.required.set(true)
     }
 }
 

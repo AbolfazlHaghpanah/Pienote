@@ -41,11 +41,17 @@ jobs:
           java-version: 21
           cache: gradle
 
+
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
 
-      - name: Build
-        run: ./gradlew build
+      - uses: gradle/gradle-build-action@v2
+        with:
+          cache-read-only: false
+          gradle-version: wrapper
+          cache-disabled: false
+          cache-write-only: false
+          gradle-home-cache-includes: caches
 
 
   detekt:
@@ -76,4 +82,4 @@ jobs:
         uses: github/codeql-action/upload-sarif@v3
         if: success() || failure()
         with:
-          sarif_file: ./app/build/reports/detekt/detekt.sarif
+          sarif_file: detekt.sarif
