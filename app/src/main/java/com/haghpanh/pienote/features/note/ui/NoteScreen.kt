@@ -33,10 +33,13 @@ import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Done
 import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -118,7 +121,6 @@ fun NoteScreen(
     )
 }
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun NoteScreen(
     state: NoteViewState,
@@ -242,6 +244,16 @@ fun NoteScreen(
                     .heightIn(min = localConfig.screenHeightDp.dp - 24.dp)
             ) {
                 if (state.isEditing) {
+                    var title by remember {
+                        mutableStateOf(state.note.title.orEmpty())
+                    }
+
+                    DisposableEffect(title) {
+                        onDispose {
+                            onUpdateTitle(title)
+                        }
+                    }
+
                     SideEffect {
                         if (state.focusRequestType is FocusRequestType.Title) {
                             titleFocusRequester.requestFocus()
@@ -253,8 +265,8 @@ fun NoteScreen(
                             .padding(horizontal = 14.dp)
                             .fillMaxWidth()
                             .focusRequester(titleFocusRequester),
-                        value = state.note.title.orEmpty(),
-                        onValueChange = onUpdateTitle,
+                        value = title,
+                        onValueChange = { title = it },
                         placeholder = {
                             Text(
                                 text = stringResource(R.string.label_untitled),
@@ -302,6 +314,16 @@ fun NoteScreen(
                 }
 
                 if (state.isEditing) {
+                    var note by remember {
+                        mutableStateOf(state.note.note.orEmpty())
+                    }
+
+                    DisposableEffect(note) {
+                        onDispose {
+                            onUpdateNote(note)
+                        }
+                    }
+
                     SideEffect {
                         if (state.focusRequestType is FocusRequestType.Note) {
                             noteFocusRequester.requestFocus()
@@ -314,8 +336,8 @@ fun NoteScreen(
                             .fillMaxWidth()
                             .weight(1f)
                             .focusRequester(noteFocusRequester),
-                        value = TextInputHandler.incBold(state.note.note.orEmpty()),
-                        onValueChange = onUpdateNote,
+                        value = note,
+                        onValueChange = { note = it },
                         placeholder = {
                             Text(
                                 text = stringResource(R.string.label_write_here),
