@@ -1,5 +1,6 @@
 package com.haghpanh.pienote.features.note.ui
 
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
@@ -46,6 +47,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalConfiguration
@@ -245,12 +247,12 @@ fun NoteScreen(
             ) {
                 if (state.isEditing) {
                     var title by remember {
-                        mutableStateOf(state.note.title.orEmpty())
+                        mutableStateOf(state.note.title)
                     }
 
                     DisposableEffect(title) {
                         onDispose {
-                            onUpdateTitle(title)
+                            title?.let(onUpdateTitle)
                         }
                     }
 
@@ -265,7 +267,7 @@ fun NoteScreen(
                             .padding(horizontal = 14.dp)
                             .fillMaxWidth()
                             .focusRequester(titleFocusRequester),
-                        value = title,
+                        value = title.orEmpty(),
                         onValueChange = { title = it },
                         placeholder = {
                             Text(
@@ -315,12 +317,12 @@ fun NoteScreen(
 
                 if (state.isEditing) {
                     var note by remember {
-                        mutableStateOf(state.note.note.orEmpty())
+                        mutableStateOf(state.note.note)
                     }
 
                     DisposableEffect(note) {
                         onDispose {
-                            onUpdateNote(note)
+                            note?.let(onUpdateNote)
                         }
                     }
 
@@ -336,7 +338,7 @@ fun NoteScreen(
                             .fillMaxWidth()
                             .weight(1f)
                             .focusRequester(noteFocusRequester),
-                        value = note,
+                        value = note.orEmpty(),
                         onValueChange = { note = it },
                         placeholder = {
                             Text(
@@ -349,14 +351,7 @@ fun NoteScreen(
                             focusedBorderColor = Color.Transparent,
                             unfocusedBorderColor = Color.Transparent
                         ),
-                        textStyle = PienoteTheme.typography.body1,
-                        visualTransformation = {
-                            TransformedText(
-                                text = createAnnotatedText(it.toString()),
-                                offsetMapping = OffsetMapping.Identity
-                            )
-                        }
-
+                        textStyle = PienoteTheme.typography.body1
                     )
                 } else {
                     Text(
