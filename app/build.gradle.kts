@@ -96,7 +96,6 @@ dependencies {
     implementation(libs.ui)
     implementation(libs.ui.graphics)
     implementation(libs.ui.tooling.preview)
-    implementation(libs.material)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.espresso.core)
@@ -107,6 +106,9 @@ dependencies {
     implementation(libs.coil)
     implementation(libs.pagingCommon)
     implementation(libs.pagingCompose)
+
+    //material
+    implementation(libs.material)
 
     //hilt
     implementation(libs.hilt)

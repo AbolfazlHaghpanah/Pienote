@@ -2,14 +2,14 @@ package com.haghpanh.pienote.commonui.theme
 
 import androidx.compose.foundation.shape.CornerBasedShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Shapes
+import androidx.compose.material3.Shapes
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.unit.dp
 
 @Immutable
-data class Shapes(
+data class PienoteShapes(
     val verySmall: CornerBasedShape = RoundedCornerShape(4.dp),
     val small: CornerBasedShape = RoundedCornerShape(8.dp),
     val medium: CornerBasedShape = RoundedCornerShape(12.dp),
@@ -20,12 +20,12 @@ data class Shapes(
 ) {
     @Composable
     fun toShapes(): Shapes = Shapes(
+        extraSmall = verySmall,
         small = small,
         medium = medium,
-        large = large
+        large = large,
+        extraLarge = veryLarge
     )
 }
 
-val LocalShapes = staticCompositionLocalOf {
-    com.haghpanh.pienote.commonui.theme.Shapes()
-}
+val LocalPienoteShapes = staticCompositionLocalOf { PienoteShapes() }

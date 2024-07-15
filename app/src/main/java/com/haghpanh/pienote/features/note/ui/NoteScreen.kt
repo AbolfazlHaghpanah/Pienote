@@ -21,16 +21,17 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.FloatingActionButton
-import androidx.compose.material.Icon
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
-import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Done
 import androidx.compose.material.icons.rounded.Edit
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -118,6 +119,7 @@ fun NoteScreen(
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NoteScreen(
     state: NoteViewState,
@@ -212,7 +214,7 @@ fun NoteScreen(
                             Text(
                                 modifier = Modifier.padding(end = 4.dp),
                                 text = parentScreen,
-                                style = PienoteTheme.typography.subtitle1
+                                style = PienoteTheme.typography.labelMedium
                             )
                         }
                     }
@@ -273,7 +275,7 @@ fun NoteScreen(
                         placeholder = {
                             Text(
                                 text = stringResource(R.string.label_untitled),
-                                style = PienoteTheme.typography.h1
+                                style = PienoteTheme.typography.headlineLarge
                             )
                         },
                         colors = TextFieldDefaults.outlinedTextFieldColors(
@@ -281,7 +283,7 @@ fun NoteScreen(
                             focusedBorderColor = Color.Transparent,
                             unfocusedBorderColor = Color.Transparent
                         ),
-                        textStyle = PienoteTheme.typography.h1
+                        textStyle = PienoteTheme.typography.headlineLarge
                     )
                 } else {
                     Text(
@@ -295,7 +297,7 @@ fun NoteScreen(
                             .padding(vertical = 16.dp, horizontal = 30.dp)
                             .fillMaxWidth(),
                         text = state.note.title ?: stringResource(R.string.label_untitled),
-                        style = PienoteTheme.typography.h1
+                        style = PienoteTheme.typography.headlineLarge
                     )
                 }
 
@@ -349,7 +351,7 @@ fun NoteScreen(
                         placeholder = {
                             Text(
                                 text = stringResource(R.string.label_write_here),
-                                style = PienoteTheme.typography.body2
+                                style = PienoteTheme.typography.bodyMedium
                             )
                         },
                         colors = TextFieldDefaults.outlinedTextFieldColors(
@@ -357,7 +359,7 @@ fun NoteScreen(
                             focusedBorderColor = Color.Transparent,
                             unfocusedBorderColor = Color.Transparent
                         ),
-                        textStyle = PienoteTheme.typography.body1
+                        textStyle = PienoteTheme.typography.bodyLarge
                     )
                 } else {
                     Text(
@@ -371,7 +373,7 @@ fun NoteScreen(
                             .padding(vertical = 16.dp, horizontal = 30.dp)
                             .fillMaxWidth(),
                         text = state.note.note ?: "",
-                        style = PienoteTheme.typography.body1
+                        style = PienoteTheme.typography.bodyLarge
                     )
                 }
             }

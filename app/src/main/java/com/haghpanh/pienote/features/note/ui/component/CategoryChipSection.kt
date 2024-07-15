@@ -9,10 +9,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.material.Chip
-import androidx.compose.material.ChipDefaults
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.Text
+import androidx.compose.material3.SuggestionChip
+import androidx.compose.material3.SuggestionChipDefaults
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
@@ -26,7 +25,6 @@ import androidx.compose.ui.unit.dp
 import com.haghpanh.pienote.commonui.theme.PienoteTheme
 import com.haghpanh.pienote.features.note.ui.Category
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun CategoryChipSection(
     modifier: Modifier = Modifier,
@@ -76,37 +74,35 @@ fun CategoryChipSection(
         horizontalArrangement = Arrangement.spacedBy(4.dp)
     ) {
         category?.let { cat ->
-            Chip(
+            SuggestionChip(
                 modifier = Modifier.padding(start = 30.dp),
                 onClick = { onChipSelect(cat.id) },
-                colors = ChipDefaults.chipColors(
-                    backgroundColor = PienoteTheme.colors.background,
-                    contentColor = chipContentColor
-                ),
+                label = @androidx.compose.runtime.Composable {
+                    Text(
+                        text = if (isWantToSelect) chipText else cat.name,
+                        style = PienoteTheme.typography.labelSmall
+                    )
+                },
                 border = BorderStroke(1.dp, chipContentColor)
-            ) {
-                Text(
-                    text = if (isWantToSelect) chipText else cat.name,
-                    style = PienoteTheme.typography.subtitle2
-                )
-            }
+            )
         }
 
         AnimatedVisibility(visible = category == null && isEditing) {
-            Chip(
+            SuggestionChip(
                 modifier = Modifier.padding(start = 30.dp),
                 onClick = { onChipSelect(null) },
-                colors = ChipDefaults.chipColors(
-                    backgroundColor = PienoteTheme.colors.background,
-                    contentColor = chipContentColor
-                ),
-                border = BorderStroke(1.dp, chipContentColor)
-            ) {
-                Text(
-                    text = chipText,
-                    style = PienoteTheme.typography.subtitle2
-                )
-            }
+//                colors = ChipDefaults.chipColors(
+//                    backgroundColor = PienoteTheme.colors.background,
+//                    contentColor = chipContentColor
+//                ),
+                border = BorderStroke(1.dp, chipContentColor),
+                label = {
+                    Text(
+                        text = chipText,
+                        style = PienoteTheme.typography.labelMedium
+                    )
+                }
+            )
         }
 
         AnimatedVisibility(visible = isWantToSelect) {
@@ -116,22 +112,23 @@ fun CategoryChipSection(
                 horizontalArrangement = Arrangement.spacedBy(4.dp)
             ) {
                 categories.forEach { cat ->
-                    Chip(
+                    SuggestionChip(
                         onClick = {
                             onChipSelect(cat.id)
                             onCategorySelect(cat.id)
                         },
-                        colors = ChipDefaults.chipColors(
-                            backgroundColor = PienoteTheme.colors.background,
-                            contentColor = PienoteTheme.colors.onBackground
-                        ),
-                        border = BorderStroke(1.dp, PienoteTheme.colors.onBackground)
-                    ) {
-                        Text(
-                            text = cat.name,
-                            style = PienoteTheme.typography.subtitle2
-                        )
-                    }
+//                        colors = ChipDefaults.chipColors(
+//                            backgroundColor = PienoteTheme.colors.background,
+//                            contentColor = PienoteTheme.colors.onBackground
+//                        ),
+                        border = BorderStroke(1.dp, PienoteTheme.colors.onBackground),
+                        label = {
+                            Text(
+                                text = cat.name,
+                                style = PienoteTheme.typography.labelMedium
+                            )
+                        }
+                    )
                 }
             }
         }

@@ -11,11 +11,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.Text
-import androidx.compose.material.TextButton
-import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
@@ -37,6 +38,7 @@ import androidx.compose.ui.unit.dp
 import com.haghpanh.pienote.R
 import com.haghpanh.pienote.commonui.theme.PienoteTheme
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun QuickNoteTextField(
     modifier: Modifier = Modifier,
@@ -80,7 +82,7 @@ fun QuickNoteTextField(
             placeholder = {
                 Text(
                     text = stringResource(R.string.label_title),
-                    style = PienoteTheme.typography.h2
+                    style = PienoteTheme.typography.headlineMedium
                 )
             },
             colors = TextFieldDefaults.outlinedTextFieldColors(
@@ -88,7 +90,7 @@ fun QuickNoteTextField(
                 focusedBorderColor = Color.Transparent,
                 unfocusedBorderColor = Color.Transparent
             ),
-            textStyle = PienoteTheme.typography.h2,
+            textStyle = PienoteTheme.typography.headlineMedium,
             keyboardActions = KeyboardActions(
                 onNext = { focusManager.moveFocus(FocusDirection.Down) }
             ),
@@ -108,7 +110,7 @@ fun QuickNoteTextField(
             placeholder = {
                 Text(
                     text = stringResource(R.string.label_write_here),
-                    style = PienoteTheme.typography.body2
+                    style = PienoteTheme.typography.bodyMedium
                 )
             },
             colors = TextFieldDefaults.outlinedTextFieldColors(
@@ -116,7 +118,7 @@ fun QuickNoteTextField(
                 focusedBorderColor = Color.Transparent,
                 unfocusedBorderColor = Color.Transparent
             ),
-            textStyle = PienoteTheme.typography.body1,
+            textStyle = PienoteTheme.typography.bodyLarge,
             keyboardActions = KeyboardActions(
                 onDone = { onDone() }
             ),
@@ -130,10 +132,10 @@ fun QuickNoteTextField(
         ) {
             TextButton(
                 onClick = onDiscard,
-                colors = ButtonDefaults.buttonColors(
-                    contentColor = PienoteTheme.colors.error,
-                    backgroundColor = Color.Transparent
-                )
+//                colors = ButtonDefaults.buttonColors(
+//                    contentColor = PienoteTheme.colors.error,
+//                    backgroundColor = Color.Transparent
+//                )
             ) {
                 Text(text = stringResource(R.string.label_discard))
             }

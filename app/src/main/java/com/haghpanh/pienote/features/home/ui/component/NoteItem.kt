@@ -15,8 +15,8 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Icon
-import androidx.compose.material.Text
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.runtime.Composable
@@ -101,7 +101,7 @@ fun HomeNoteItem(
                         modifier = Modifier
                             .padding(top = 24.dp, start = 24.dp, end = 24.dp),
                         text = title,
-                        style = PienoteTheme.typography.h6,
+                        style = PienoteTheme.typography.headlineSmall,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                         color = PienoteTheme.colors.onSurface
@@ -111,7 +111,7 @@ fun HomeNoteItem(
                         modifier = Modifier
                             .padding(horizontal = 24.dp, vertical = 16.dp),
                         text = note,
-                        style = PienoteTheme.typography.body2,
+                        style = PienoteTheme.typography.bodyLarge,
                         overflow = TextOverflow.Ellipsis,
                         color = PienoteTheme.colors.onSurface
                     )

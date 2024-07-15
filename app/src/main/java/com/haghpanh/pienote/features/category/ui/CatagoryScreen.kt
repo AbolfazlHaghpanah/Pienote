@@ -21,12 +21,12 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.Icon
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
-import androidx.compose.material.TextButton
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.MoreVert
@@ -136,7 +136,7 @@ fun CategoryScreen(
                                     .padding(start = 14.dp)
                                     .fillMaxWidth(),
                                 text = state.name,
-                                style = PienoteTheme.typography.h6,
+                                style = PienoteTheme.typography.displayMedium,
                                 color = PienoteTheme.colors.onSurface
                             )
 
@@ -145,7 +145,7 @@ fun CategoryScreen(
                                     .padding(horizontal = 14.dp, vertical = 8.dp)
                                     .fillMaxWidth(),
                                 text = stringResource(R.string.notes, state.notes.size),
-                                style = PienoteTheme.typography.subtitle2,
+                                style = PienoteTheme.typography.titleSmall,
                                 color = PienoteTheme.colors.onSurface
                             )
                         }
@@ -187,11 +187,7 @@ fun CategoryScreen(
                             horizontalArrangement = Arrangement.SpaceEvenly
                         ) {
                             TextButton(
-                                onClick = { dialogState = DialogState.Dismiss },
-                                colors = ButtonDefaults.buttonColors(
-                                    contentColor = PienoteTheme.colors.error,
-                                    backgroundColor = Color.Transparent
-                                )
+                                onClick = { dialogState = DialogState.Dismiss }
                             ) {
                                 Text(text = stringResource(id = R.string.label_discard))
                             }
@@ -220,7 +216,7 @@ fun CategoryScreen(
                             Text(
                                 modifier = Modifier.padding(vertical = 8.dp),
                                 text = "Select Note To Add",
-                                style = PienoteTheme.typography.h6
+                                style = PienoteTheme.typography.headlineMedium
                             )
                         }
 
@@ -228,7 +224,7 @@ fun CategoryScreen(
                             Text(
                                 modifier = Modifier.padding(vertical = 8.dp),
                                 text = it.title.orEmpty(),
-                                style = PienoteTheme.typography.body1
+                                style = PienoteTheme.typography.displayMedium
                             )
                         }
                     }
@@ -322,7 +318,7 @@ fun CategoryScreen(
                                             Text(
                                                 modifier = Modifier.padding(end = 4.dp),
                                                 text = parentScreen,
-                                                style = PienoteTheme.typography.subtitle1
+                                                style = PienoteTheme.typography.labelMedium
                                             )
                                         }
                                     }
@@ -341,7 +337,7 @@ fun CategoryScreen(
                                         .weight(1f)
                                         .padding(32.dp),
                                     text = state.name,
-                                    style = PienoteTheme.typography.h1,
+                                    style = PienoteTheme.typography.headlineLarge,
                                     maxLines = 1,
                                     overflow = TextOverflow.Ellipsis
                                 )
