@@ -144,6 +144,12 @@ class NoteViewModel @Inject constructor(
         }
     }
 
+    fun updateFocusRequester(type: FocusRequestType) {
+        updateState {
+            it.copy(focusRequestType = type)
+        }
+    }
+
     private fun NoteDomainModel.toUiModel(): Note =
         Note(
             id = id,

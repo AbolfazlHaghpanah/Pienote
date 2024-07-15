@@ -21,7 +21,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
 import androidx.compose.material.OutlinedTextField
@@ -33,31 +32,31 @@ import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Done
 import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.OffsetMapping
-import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.haghpanh.pienote.R
 import com.haghpanh.pienote.commonui.component.PienoteChip
-import com.haghpanh.pienote.commonui.component.TextInputHandler
-import com.haghpanh.pienote.commonui.component.TextInputHandler.createAnnotatedText
 import com.haghpanh.pienote.commonui.navigation.AppScreens
 import com.haghpanh.pienote.commonui.theme.PienoteTheme
 import com.haghpanh.pienote.features.note.ui.component.CategoryChipSection
@@ -112,13 +111,13 @@ fun NoteScreen(
         onRequestToPickImage = {
             pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
         },
+        onFocusRequestTypeChanged = viewModel::updateFocusRequester,
         onSwitchEditMode = viewModel::switchEditMode,
         navigateToRoute = { route -> navController.navigate(route) },
         onBack = onNavigateBack
     )
 }
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun NoteScreen(
     state: NoteViewState,
@@ -127,6 +126,7 @@ fun NoteScreen(
     onUpdateTitle: (String) -> Unit,
     onUpdateCategory: (Int?) -> Unit,
     onRequestToPickImage: () -> Unit,
+    onFocusRequestTypeChanged: (FocusRequestType) -> Unit,
     onSwitchEditMode: (FocusRequestType) -> Unit,
     navigateToRoute: (String) -> Unit,
     onBack: () -> Unit
@@ -242,6 +242,16 @@ fun NoteScreen(
                     .heightIn(min = localConfig.screenHeightDp.dp - 24.dp)
             ) {
                 if (state.isEditing) {
+                    var title by remember {
+                        mutableStateOf(state.note.title)
+                    }
+
+                    DisposableEffect(title) {
+                        onDispose {
+                            title?.let(onUpdateTitle)
+                        }
+                    }
+
                     SideEffect {
                         if (state.focusRequestType is FocusRequestType.Title) {
                             titleFocusRequester.requestFocus()
@@ -252,9 +262,14 @@ fun NoteScreen(
                         modifier = Modifier
                             .padding(horizontal = 14.dp)
                             .fillMaxWidth()
-                            .focusRequester(titleFocusRequester),
-                        value = state.note.title.orEmpty(),
-                        onValueChange = onUpdateTitle,
+                            .focusRequester(titleFocusRequester)
+                            .onFocusChanged {
+                                if (it.isFocused) {
+                                    onFocusRequestTypeChanged(FocusRequestType.Title)
+                                }
+                            },
+                        value = title.orEmpty(),
+                        onValueChange = { title = it },
                         placeholder = {
                             Text(
                                 text = stringResource(R.string.label_untitled),
@@ -302,6 +317,16 @@ fun NoteScreen(
                 }
 
                 if (state.isEditing) {
+                    var note by remember {
+                        mutableStateOf(state.note.note)
+                    }
+
+                    DisposableEffect(note) {
+                        onDispose {
+                            note?.let(onUpdateNote)
+                        }
+                    }
+
                     SideEffect {
                         if (state.focusRequestType is FocusRequestType.Note) {
                             noteFocusRequester.requestFocus()
@@ -313,9 +338,14 @@ fun NoteScreen(
                             .padding(horizontal = 14.dp)
                             .fillMaxWidth()
                             .weight(1f)
-                            .focusRequester(noteFocusRequester),
-                        value = TextInputHandler.incBold(state.note.note.orEmpty()),
-                        onValueChange = onUpdateNote,
+                            .focusRequester(noteFocusRequester)
+                            .onFocusChanged {
+                                if (it.isFocused) {
+                                    onFocusRequestTypeChanged(FocusRequestType.Note)
+                                }
+                            },
+                        value = note.orEmpty(),
+                        onValueChange = { note = it },
                         placeholder = {
                             Text(
                                 text = stringResource(R.string.label_write_here),
@@ -327,14 +357,7 @@ fun NoteScreen(
                             focusedBorderColor = Color.Transparent,
                             unfocusedBorderColor = Color.Transparent
                         ),
-                        textStyle = PienoteTheme.typography.body1,
-                        visualTransformation = {
-                            TransformedText(
-                                text = createAnnotatedText(it.toString()),
-                                offsetMapping = OffsetMapping.Identity
-                            )
-                        }
-
+                        textStyle = PienoteTheme.typography.body1
                     )
                 } else {
                     Text(

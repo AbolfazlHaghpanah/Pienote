@@ -117,9 +117,11 @@ private fun LibraryScreen(
                     var quickNoteTitle by remember {
                         mutableStateOf("")
                     }
+
                     var quickNoteNote by remember {
                         mutableStateOf("")
                     }
+
                     val resetQuickNoteStates = remember {
                         {
                             shouldShowQuickNoteTextField = false
