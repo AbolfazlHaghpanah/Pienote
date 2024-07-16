@@ -49,9 +49,9 @@ fun HomeNoteItem(
             swipeState.directionalSwipe.isSwiped &&
             swipeState.directionalSwipe.isOffsetAchieveThreshold
         ) {
-            PienoteTheme.colors.error
+            PienoteTheme.colors.errorContainer
         } else if (swipeState.directionalSwipe.isSwiped) {
-            PienoteTheme.colors.secondary
+            PienoteTheme.colors.secondaryContainer
         } else {
             PienoteTheme.colors.surface
         },
@@ -93,7 +93,8 @@ fun HomeNoteItem(
                         .rotate(animatedRotation)
                         .aspectRatio(1f),
                     imageVector = Icons.Rounded.Delete,
-                    contentDescription = "delete"
+                    contentDescription = "delete",
+                    tint = PienoteTheme.colors.onSecondaryContainer
                 )
             } else {
                 Column {

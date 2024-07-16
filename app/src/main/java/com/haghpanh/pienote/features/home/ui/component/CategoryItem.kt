@@ -35,10 +35,10 @@ fun HomeCategoryItem(
 
     Box(
         modifier = modifier
-            .clip(PienoteTheme.shapes.veryLarge)
+            .clip(PienoteTheme.shapes.small)
             .background(
-                color = PienoteTheme.colors.surface,
-                shape = PienoteTheme.shapes.veryLarge
+                color = PienoteTheme.colors.surfaceContainerLow,
+                shape = PienoteTheme.shapes.medium
             )
             .clickable(onClick = onClick)
             .fillMaxWidth()

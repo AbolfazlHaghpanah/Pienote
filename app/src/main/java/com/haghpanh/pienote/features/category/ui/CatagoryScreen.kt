@@ -30,6 +30,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.MoreVert
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -136,7 +137,7 @@ fun CategoryScreen(
                                     .padding(start = 14.dp)
                                     .fillMaxWidth(),
                                 text = state.name,
-                                style = PienoteTheme.typography.displayMedium,
+                                style = PienoteTheme.typography.headlineSmall,
                                 color = PienoteTheme.colors.onSurface
                             )
 
@@ -145,7 +146,7 @@ fun CategoryScreen(
                                     .padding(horizontal = 14.dp, vertical = 8.dp)
                                     .fillMaxWidth(),
                                 text = stringResource(R.string.notes, state.notes.size),
-                                style = PienoteTheme.typography.titleSmall,
+                                style = PienoteTheme.typography.titleMedium,
                                 color = PienoteTheme.colors.onSurface
                             )
                         }
@@ -215,16 +216,18 @@ fun CategoryScreen(
                         item {
                             Text(
                                 modifier = Modifier.padding(vertical = 8.dp),
-                                text = "Select Note To Add",
-                                style = PienoteTheme.typography.headlineMedium
+                                text = stringResource(R.string.message_select_note_to_add),
+                                style = PienoteTheme.typography.headlineSmall
                             )
                         }
 
                         items(state.availableNotesToAdd) {
+                            HorizontalDivider()
+
                             Text(
                                 modifier = Modifier.padding(vertical = 8.dp),
                                 text = it.title.orEmpty(),
-                                style = PienoteTheme.typography.displayMedium
+                                style = PienoteTheme.typography.bodyLarge
                             )
                         }
                     }

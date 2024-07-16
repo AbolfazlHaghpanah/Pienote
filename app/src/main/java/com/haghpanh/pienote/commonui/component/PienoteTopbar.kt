@@ -18,6 +18,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.TopAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,10 +38,17 @@ fun PienoteTopBar(
         title = {
             Text(
                 text = title,
-                style = PienoteTheme.typography.displayMedium,
+                style = PienoteTheme.typography.headlineLarge,
                 color = PienoteTheme.colors.onBackground
             )
         },
+        colors = TopAppBarColors(
+            containerColor = PienoteTheme.colors.background,
+            navigationIconContentColor = PienoteTheme.colors.onBackground,
+            scrolledContainerColor = PienoteTheme.colors.onBackground,
+            titleContentColor = PienoteTheme.colors.onBackground,
+            actionIconContentColor = PienoteTheme.colors.onBackground
+        ),
         modifier = Modifier
             .padding(horizontal = 8.dp)
             .fillMaxWidth(),
@@ -70,56 +79,6 @@ fun PienoteTopBar(
             }
         }
     )
-//    {
-//        Row(
-//            modifier = Modifier.fillMaxWidth(),
-//            verticalAlignment = Alignment.CenterVertically,
-//            horizontalArrangement = Arrangement.SpaceBetween
-//        ) {
-//            Row(
-//                verticalAlignment = Alignment.CenterVertically,
-//                horizontalArrangement = Arrangement.spacedBy(4.dp)
-//            ) {
-//                icon?.let { iconId ->
-//                    Icon(
-//                        modifier = Modifier
-//                            .padding(4.dp)
-//                            .fillMaxHeight()
-//                            .aspectRatio(1f),
-//                        painter = painterResource(id = iconId),
-//                        contentDescription = title,
-//                        tint = PienoteTheme.colors.onBackground
-//                    )
-//                } ?: Spacer(modifier = Modifier.width(14.dp))
-//
-//                Text(
-//                    text = title,
-//                    style = PienoteTheme.typography.h2,
-//                    color = PienoteTheme.colors.onBackground
-//                )
-//            }
-//
-//            action?.let {
-//                PienoteChip(
-//                    modifier = Modifier
-//                        .padding(8.dp)
-//                        .aspectRatio(1f),
-//                    shape = PienoteTheme.shapes.rounded,
-//                    onClick = action,
-//                    content = {
-//                        Icon(
-//                            modifier = Modifier
-//                                .padding(6.dp)
-//                                .fillMaxSize(),
-//                            imageVector = Icons.Rounded.MoreVert,
-//                            contentDescription = null,
-//                            tint = PienoteTheme.colors.onBackground
-//                        )
-//                    }
-//                )
-//            }
-//        }
-//    }
 }
 
 @Composable
@@ -149,10 +108,11 @@ fun PienoteTopBar(
                 Text(
                     modifier = Modifier.padding(end = 4.dp),
                     text = parent,
-                    style = PienoteTheme.typography.headlineMedium
+                    style = PienoteTheme.typography.labelLarge
                 )
             }
         }
+
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
@@ -175,7 +135,7 @@ fun PienoteTopBar(
 
                 Text(
                     text = title,
-                    style = PienoteTheme.typography.displayLarge,
+                    style = PienoteTheme.typography.headlineMedium,
                     color = PienoteTheme.colors.onBackground
                 )
             }

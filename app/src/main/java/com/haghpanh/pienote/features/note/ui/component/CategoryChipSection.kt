@@ -38,7 +38,9 @@ fun CategoryChipSection(
     val chipContentColor by animateColorAsState(
         targetValue = if (isEditing) {
             if (isWantToSelect) {
-                PienoteTheme.colors.error.copy(alpha = 0.7f)
+                PienoteTheme.colors.error
+            } else if (category == null) {
+                PienoteTheme.colors.tertiaryContainer
             } else {
                 PienoteTheme.colors.onBackground
             }
@@ -77,13 +79,17 @@ fun CategoryChipSection(
             SuggestionChip(
                 modifier = Modifier.padding(start = 30.dp),
                 onClick = { onChipSelect(cat.id) },
-                label = @androidx.compose.runtime.Composable {
+                label = {
                     Text(
                         text = if (isWantToSelect) chipText else cat.name,
-                        style = PienoteTheme.typography.labelSmall
+                        style = PienoteTheme.typography.labelSmall,
                     )
                 },
-                border = BorderStroke(1.dp, chipContentColor)
+                border = BorderStroke(1.dp, chipContentColor),
+                colors = SuggestionChipDefaults.suggestionChipColors(
+                    labelColor = chipContentColor
+                ),
+                shape = PienoteTheme.shapes.rounded
             )
         }
 
@@ -91,17 +97,17 @@ fun CategoryChipSection(
             SuggestionChip(
                 modifier = Modifier.padding(start = 30.dp),
                 onClick = { onChipSelect(null) },
-//                colors = ChipDefaults.chipColors(
-//                    backgroundColor = PienoteTheme.colors.background,
-//                    contentColor = chipContentColor
-//                ),
                 border = BorderStroke(1.dp, chipContentColor),
                 label = {
                     Text(
                         text = chipText,
                         style = PienoteTheme.typography.labelMedium
                     )
-                }
+                },
+                colors = SuggestionChipDefaults.suggestionChipColors(
+                    labelColor = chipContentColor
+                ),
+                shape = PienoteTheme.shapes.rounded
             )
         }
 
@@ -117,17 +123,14 @@ fun CategoryChipSection(
                             onChipSelect(cat.id)
                             onCategorySelect(cat.id)
                         },
-//                        colors = ChipDefaults.chipColors(
-//                            backgroundColor = PienoteTheme.colors.background,
-//                            contentColor = PienoteTheme.colors.onBackground
-//                        ),
                         border = BorderStroke(1.dp, PienoteTheme.colors.onBackground),
                         label = {
                             Text(
                                 text = cat.name,
                                 style = PienoteTheme.typography.labelMedium
                             )
-                        }
+                        },
+                        shape = PienoteTheme.shapes.rounded
                     )
                 }
             }

@@ -275,7 +275,7 @@ fun NoteScreen(
                         placeholder = {
                             Text(
                                 text = stringResource(R.string.label_untitled),
-                                style = PienoteTheme.typography.headlineLarge
+                                style = PienoteTheme.typography.displaySmall
                             )
                         },
                         colors = TextFieldDefaults.outlinedTextFieldColors(
@@ -283,7 +283,7 @@ fun NoteScreen(
                             focusedBorderColor = Color.Transparent,
                             unfocusedBorderColor = Color.Transparent
                         ),
-                        textStyle = PienoteTheme.typography.headlineLarge
+                        textStyle = PienoteTheme.typography.displaySmall
                     )
                 } else {
                     Text(
@@ -296,8 +296,9 @@ fun NoteScreen(
                             }
                             .padding(vertical = 16.dp, horizontal = 30.dp)
                             .fillMaxWidth(),
-                        text = state.note.title ?: stringResource(R.string.label_untitled),
-                        style = PienoteTheme.typography.headlineLarge
+                        text = if (state.note.title.isNullOrEmpty())
+                            stringResource(R.string.label_untitled) else state.note.title,
+                        style = PienoteTheme.typography.displaySmall
                     )
                 }
 
