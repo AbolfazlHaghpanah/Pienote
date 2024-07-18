@@ -1,14 +1,14 @@
-//package com.haghpanh.pienote.commonui.component
+// package com.haghpanh.pienote.commonui.component
 //
-//import androidx.compose.ui.text.AnnotatedString
-//import androidx.compose.ui.text.SpanStyle
-//import androidx.compose.ui.text.TextStyle
-//import androidx.compose.ui.text.buildAnnotatedString
-//import androidx.compose.ui.text.font.FontWeight
-//import androidx.compose.ui.unit.sp
-//import com.haghpanh.pienote.commonui.theme.robotoBoldFont
+// import androidx.compose.ui.text.AnnotatedString
+// import androidx.compose.ui.text.SpanStyle
+// import androidx.compose.ui.text.TextStyle
+// import androidx.compose.ui.text.buildAnnotatedString
+// import androidx.compose.ui.text.font.FontWeight
+// import androidx.compose.ui.unit.sp
+// import com.haghpanh.pienote.commonui.theme.robotoBoldFont
 //
-//object TextInputHandler {
+// object TextInputHandler {
 //
 //    fun incBold(value: String): String =
 //        "<div class = BOLD>$value</div>"
@@ -48,4 +48,4 @@
 //        fontWeight = FontWeight.Bold,
 //        fontSize = 20.sp
 //    )
-//}
+// }
