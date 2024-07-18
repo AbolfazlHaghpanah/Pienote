@@ -7,12 +7,11 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import com.haghpanh.pienote.R
 
-val robotoBoldFont = FontFamily(Font(R.font.roboto_bold, FontWeight.Normal))
-val robotoRegularFont = FontFamily(Font(R.font.roboto_regular, FontWeight.Normal))
+private val robotoBoldFont = FontFamily(Font(R.font.roboto_bold, FontWeight.Normal))
+private val robotoRegularFont = FontFamily(Font(R.font.roboto_regular, FontWeight.Normal))
+private val baseline = Typography()
 
-val baseline = Typography()
-
-val pienoteTypography = Typography(
+private val pienoteTypography = Typography(
     displayLarge = baseline.displayLarge.copy(fontFamily = robotoBoldFont),
     displayMedium = baseline.displayMedium.copy(fontFamily = robotoBoldFont),
     displaySmall = baseline.displaySmall.copy(fontFamily = robotoBoldFont),
