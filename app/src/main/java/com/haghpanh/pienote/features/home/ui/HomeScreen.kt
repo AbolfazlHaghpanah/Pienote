@@ -2,20 +2,17 @@ package com.haghpanh.pienote.features.home.ui
 
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Scaffold
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
@@ -24,7 +21,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -115,84 +111,79 @@ fun HomeScreen(
                 },
                 expanded = shouldExpandFAB
             )
-        }
+        },
     ) { paddingValues ->
-        Box(
-            modifier = Modifier
-                .statusBarsPadding()
-                .padding(paddingValues)
+        LazyColumn(
+            modifier = Modifier.padding(paddingValues),
+            contentPadding = PaddingValues(vertical = 24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(24.dp),
+            state = listState
         ) {
-            LazyColumn(
-                contentPadding = PaddingValues(vertical = 24.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(24.dp),
-                state = listState
-            ) {
-                item {
-                    if (parent != null) {
-                        PienoteTopBar(
-                            title = stringResource(R.string.label_home),
-                            icon = R.drawable.home,
-                            parent = parent,
-                            onBack = navigateBack
-                        )
-                    } else {
-                        PienoteTopBar(
-                            title = stringResource(R.string.label_home),
-                            icon = R.drawable.home,
-                        )
-                    }
+            item {
+                if (parent != null) {
+                    PienoteTopBar(
+                        title = stringResource(R.string.label_home),
+                        icon = R.drawable.home,
+                        parent = parent,
+                        onBack = navigateBack
+                    )
+                } else {
+                    PienoteTopBar(
+                        title = stringResource(R.string.label_home),
+                        icon = R.drawable.home,
+                    )
                 }
+            }
 
-                items(
-                    items = state.categories ?: emptyList(),
-                    key = { item -> item.id }
-                ) { category ->
-                    HomeCategoryItem(
-                        modifier = Modifier
-                            .padding(horizontal = 24.dp)
-                            .animateItemPlacement(
-                                animationSpec = tween(300)
-                            ),
-                        name = category.name,
-                        priority = category.priority
-                    ) {
+            items(
+                items = state.categories ?: emptyList(),
+                key = { item -> item.id }
+            ) { category ->
+                HomeCategoryItem(
+                    modifier = Modifier
+                        .padding(horizontal = 24.dp)
+                        .animateItemPlacement(
+                            animationSpec = tween(300)
+                        ),
+                    name = category.name,
+                    priority = category.priority
+                ) {
+                    navigateToNote(
+                        AppScreens.CategoryScreen.createRoute(
+                            category.id,
+                            parent = HOME_SCREEN_NAME
+                        )
+                    )
+                }
+            }
+
+            items(
+                items = state.notes ?: emptyList(),
+                key = { item -> "${item.id}_${item.title}" }
+            ) { note ->
+                HomeNoteItem(
+                    modifier = Modifier
+                        .padding(horizontal = 24.dp)
+                        .clip(PienoteTheme.shapes.veryLarge)
+                        .animateItemPlacement(
+                            animationSpec = tween(300)
+                        ),
+                    title = note.title,
+                    note = note.note,
+                    onDelete = {
+                        onDeleteNote(note)
+                    },
+                    onClick = {
                         navigateToNote(
-                            AppScreens.CategoryScreen.createRoute(
-                                category.id,
+                            NoteScreen.createRoute(
+                                id = note.id,
+                                isExist = true,
                                 parent = HOME_SCREEN_NAME
                             )
                         )
                     }
-                }
-
-                items(
-                    items = state.notes ?: emptyList(),
-                    key = { item -> "${item.id}_${item.title}" }
-                ) { note ->
-                    HomeNoteItem(
-                        modifier = Modifier
-                            .padding(horizontal = 24.dp)
-                            .clip(PienoteTheme.shapes.veryLarge)
-                            .animateItemPlacement(
-                                animationSpec = tween(300)
-                            ),
-                        title = note.title,
-                        note = note.note,
-                        onDelete = {
-                            onDeleteNote(note)
-                        },
-                        onClick = {
-                            navigateToNote(
-                                NoteScreen.createRoute(
-                                    id = note.id,
-                                    isExist = true,
-                                    parent = HOME_SCREEN_NAME
-                                )
-                            )
-                        }
-                    )
-                }
+                )
             }
         }
     }

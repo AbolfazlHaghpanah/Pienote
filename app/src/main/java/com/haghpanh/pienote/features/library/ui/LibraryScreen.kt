@@ -8,18 +8,18 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Scaffold
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -34,8 +34,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.haghpanh.pienote.R
 import com.haghpanh.pienote.commonui.component.PienoteTopBar
-import com.haghpanh.pienote.features.library.ui.components.QuickNoteTextField
 import com.haghpanh.pienote.features.library.ui.components.LibsItem
+import com.haghpanh.pienote.features.library.ui.components.QuickNoteTextField
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -105,13 +105,12 @@ private fun LibraryScreen(
                     onClick = { shouldShowQuickNoteTextField = true }
                 )
             }
-        }
+        },
+        contentWindowInsets = WindowInsets.ime
     ) { paddingValues ->
         Column(
             modifier = Modifier
                 .verticalScroll(rememberScrollState())
-                .statusBarsPadding()
-                .imePadding()
                 .padding(top = 14.dp)
                 .fillMaxSize()
                 .padding(paddingValues),

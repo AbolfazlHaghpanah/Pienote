@@ -2,7 +2,6 @@ package com.haghpanh.pienote.commonui.theme
 
 import androidx.compose.material3.ColorScheme
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
