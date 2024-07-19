@@ -2,25 +2,26 @@ package com.haghpanh.pienote.features.home.ui
 
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.FloatingActionButton
-import androidx.compose.material.Icon
-import androidx.compose.material.Scaffold
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
+import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -80,109 +81,109 @@ fun HomeScreen(
     onDeleteNote: (Note) -> Unit,
     navigateBack: () -> Unit
 ) {
-    Scaffold(
-        modifier = Modifier
-            .pointerInput(null) {
-                detectHorizontalDragGestures(
-                    onHorizontalDrag = { _, delta ->
-                        if (delta > 0) {
-                            navigateToNote(AppScreens.LibraryScreen.route)
-                        }
-                    }
-                )
-            },
-        floatingActionButton = {
-            FloatingActionButton(onClick = {
-                navigateToNote(
-                    NoteScreen.createRoute(
-                        id = -1,
-                        isExist = false,
-                        parent = HOME_SCREEN_NAME
-                    )
-                )
-            }) {
-                Icon(
-                    imageVector = Icons.Rounded.Add,
-                    contentDescription = "Add Note"
-                )
-            }
+    val listState = rememberLazyListState()
+    val shouldExpandFAB by remember {
+        derivedStateOf {
+            listState.canScrollForward.not()
         }
-    ) { paddingValues ->
-        Box(
-            modifier = Modifier
-                .statusBarsPadding()
-                .padding(paddingValues)
-        ) {
-            LazyColumn(
-                contentPadding = PaddingValues(vertical = 24.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(24.dp)
-            ) {
-                item {
-                    if (parent != null) {
-                        PienoteTopBar(
-                            title = "Home",
-                            icon = R.drawable.home,
-                            parent = parent,
-                            onBack = navigateBack
-                        )
-                    } else {
-                        PienoteTopBar(
-                            title = "Home",
-                            icon = R.drawable.home,
-                        )
-                    }
-                }
+    }
 
-                items(
-                    items = state.categories ?: emptyList(),
-                    key = { item -> item.id }
-                ) { category ->
-                    HomeCategoryItem(
-                        modifier = Modifier
-                            .padding(horizontal = 24.dp)
-                            .animateItemPlacement(
-                                animationSpec = tween(300)
-                            ),
-                        name = category.name,
-                        priority = category.priority
-                    ) {
+    Scaffold(
+        floatingActionButton = {
+            ExtendedFloatingActionButton(
+                onClick = {
+                    navigateToNote(
+                        NoteScreen.createRoute(
+                            id = -1,
+                            isExist = false,
+                            parent = HOME_SCREEN_NAME
+                        )
+                    )
+                },
+                icon = {
+                    Icon(
+                        imageVector = Icons.Rounded.Add,
+                        contentDescription = "Add Note"
+                    )
+                },
+                text = {
+                    Text(text = stringResource(R.string.label_add_note))
+                },
+                expanded = shouldExpandFAB
+            )
+        },
+    ) { paddingValues ->
+        LazyColumn(
+            modifier = Modifier.padding(paddingValues),
+            contentPadding = PaddingValues(vertical = 24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(24.dp),
+            state = listState
+        ) {
+            item {
+                if (parent != null) {
+                    PienoteTopBar(
+                        title = stringResource(R.string.label_home),
+                        icon = R.drawable.home,
+                        parent = parent,
+                        onBack = navigateBack
+                    )
+                } else {
+                    PienoteTopBar(
+                        title = stringResource(R.string.label_home),
+                        icon = R.drawable.home,
+                    )
+                }
+            }
+
+            items(
+                items = state.categories ?: emptyList(),
+                key = { item -> item.id }
+            ) { category ->
+                HomeCategoryItem(
+                    modifier = Modifier
+                        .padding(horizontal = 24.dp)
+                        .animateItemPlacement(
+                            animationSpec = tween(300)
+                        ),
+                    name = category.name,
+                    priority = category.priority
+                ) {
+                    navigateToNote(
+                        AppScreens.CategoryScreen.createRoute(
+                            category.id,
+                            parent = HOME_SCREEN_NAME
+                        )
+                    )
+                }
+            }
+
+            items(
+                items = state.notes ?: emptyList(),
+                key = { item -> "${item.id}_${item.title}" }
+            ) { note ->
+                HomeNoteItem(
+                    modifier = Modifier
+                        .padding(horizontal = 24.dp)
+                        .clip(PienoteTheme.shapes.veryLarge)
+                        .animateItemPlacement(
+                            animationSpec = tween(300)
+                        ),
+                    title = note.title,
+                    note = note.note,
+                    onDelete = {
+                        onDeleteNote(note)
+                    },
+                    onClick = {
                         navigateToNote(
-                            AppScreens.CategoryScreen.createRoute(
-                                category.id,
+                            NoteScreen.createRoute(
+                                id = note.id,
+                                isExist = true,
                                 parent = HOME_SCREEN_NAME
                             )
                         )
                     }
-                }
-
-                items(
-                    items = state.notes ?: emptyList(),
-                    key = { item -> "${item.id}_${item.title}" }
-                ) { note ->
-                    HomeNoteItem(
-                        modifier = Modifier
-                            .padding(horizontal = 24.dp)
-                            .clip(PienoteTheme.shapes.veryLarge)
-                            .animateItemPlacement(
-                                animationSpec = tween(300)
-                            ),
-                        title = note.title,
-                        note = note.note,
-                        onDelete = {
-                            onDeleteNote(note)
-                        },
-                        onClick = {
-                            navigateToNote(
-                                NoteScreen.createRoute(
-                                    id = note.id,
-                                    isExist = true,
-                                    parent = HOME_SCREEN_NAME
-                                )
-                            )
-                        }
-                    )
-                }
+                )
             }
         }
     }

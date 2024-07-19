@@ -7,8 +7,8 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Icon
-import androidx.compose.material.Text
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,10 +35,10 @@ fun HomeCategoryItem(
 
     Box(
         modifier = modifier
-            .clip(PienoteTheme.shapes.veryLarge)
+            .clip(PienoteTheme.shapes.small)
             .background(
-                color = PienoteTheme.colors.surface,
-                shape = PienoteTheme.shapes.veryLarge
+                color = PienoteTheme.colors.surfaceContainerLow,
+                shape = PienoteTheme.shapes.medium
             )
             .clickable(onClick = onClick)
             .fillMaxWidth()
@@ -49,7 +49,7 @@ fun HomeCategoryItem(
                 .align(Alignment.CenterStart)
                 .padding(start = 24.dp),
             text = name,
-            style = PienoteTheme.typography.h2,
+            style = PienoteTheme.typography.headlineMedium,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
             color = PienoteTheme.colors.onSurface

@@ -15,10 +15,10 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Icon
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Delete
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -49,9 +49,9 @@ fun HomeNoteItem(
             swipeState.directionalSwipe.isSwiped &&
             swipeState.directionalSwipe.isOffsetAchieveThreshold
         ) {
-            PienoteTheme.colors.error
+            PienoteTheme.colors.errorContainer
         } else if (swipeState.directionalSwipe.isSwiped) {
-            PienoteTheme.colors.secondary
+            PienoteTheme.colors.secondaryContainer
         } else {
             PienoteTheme.colors.surface
         },
@@ -93,7 +93,8 @@ fun HomeNoteItem(
                         .rotate(animatedRotation)
                         .aspectRatio(1f),
                     imageVector = Icons.Rounded.Delete,
-                    contentDescription = "delete"
+                    contentDescription = "delete",
+                    tint = PienoteTheme.colors.onSecondaryContainer
                 )
             } else {
                 Column {
@@ -101,7 +102,7 @@ fun HomeNoteItem(
                         modifier = Modifier
                             .padding(top = 24.dp, start = 24.dp, end = 24.dp),
                         text = title,
-                        style = PienoteTheme.typography.h6,
+                        style = PienoteTheme.typography.headlineSmall,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                         color = PienoteTheme.colors.onSurface
@@ -111,7 +112,7 @@ fun HomeNoteItem(
                         modifier = Modifier
                             .padding(horizontal = 24.dp, vertical = 16.dp),
                         text = note,
-                        style = PienoteTheme.typography.body2,
+                        style = PienoteTheme.typography.bodyLarge,
                         overflow = TextOverflow.Ellipsis,
                         color = PienoteTheme.colors.onSurface
                     )

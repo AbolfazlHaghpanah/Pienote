@@ -12,4 +12,7 @@
     <string name="label_medium">Medium</string>
     <string name="label_high">High</string>
     <string name="notes">%1$s Notes</string>
+    <string name="label_home">Home</string>
+    <string name="label_add_note">Add Note</string>
+    <string name="message_select_note_to_add">Select A Note To Add</string>
 </resources>

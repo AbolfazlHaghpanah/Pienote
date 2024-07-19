@@ -10,7 +10,7 @@ lifecycle-runtime-ktx = "2.8.3"
 activity-compose = "1.9.0"
 composeCompiler = "1.5.14"
 composeFoundation = "1.6.8"
-composeMaterial = "1.6.8"
+composeMaterial = "1.2.1"
 composeRuntime = "1.6.8"
 composeUi = "1.6.8"
 composeNavigation = "2.7.7"
@@ -49,7 +49,7 @@ ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling", version.ref =
 ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview", version.ref = "composeUi" }
 ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest", version.ref = "composeUi" }
 ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4", version.ref = "composeUi" }
-material = { group = "androidx.compose.material", name = "material", version.ref = "composeMaterial" }
+material = { group = "androidx.compose.material3", name = "material3", version.ref = "composeMaterial" }
 hilt = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
 hiltNavigationCompose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
 hiltCompiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hilt" }

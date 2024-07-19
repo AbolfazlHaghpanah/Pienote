@@ -1,92 +1,88 @@
 package com.haghpanh.pienote.commonui.theme
 
-import androidx.compose.material.Colors
+import androidx.compose.material3.ColorScheme
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 
-class Colors(
-    primary: Color,
-    onPrimary: Color,
-    secondary: Color,
-    onSecondary: Color,
-    background: Color,
-    onBackground: Color,
-    surface: Color,
-    onSurface: Color,
-    error: Color,
-    onError: Color,
-    isLight: Boolean
-) {
-    var primary by mutableStateOf(primary)
-        private set
-    var onPrimary by mutableStateOf(onPrimary)
-        private set
-    var secondary by mutableStateOf(secondary)
-        private set
-    var onSecondary by mutableStateOf(onSecondary)
-        private set
-    var background by mutableStateOf(background)
-        private set
-    var onBackground by mutableStateOf(onBackground)
-        private set
-    var surface by mutableStateOf(surface)
-        private set
-    var onSurface by mutableStateOf(onSurface)
-        private set
-    var error by mutableStateOf(error)
-        private set
-    var onError by mutableStateOf(onError)
-        private set
-    var isLight by mutableStateOf(isLight)
-        private set
-
-    fun toColor() = Colors(
-        primary = primary,
-        secondary = secondary,
-        background = background,
-        surface = surface,
-        error = error,
-        isLight = isLight,
-        onBackground = onBackground,
-        onError = error,
-        primaryVariant = primary,
-        onPrimary = onPrimary,
-        onSecondary = onSecondary,
-        onSurface = onSurface,
-        secondaryVariant = secondary
-    )
-}
-
-fun darkColors() = Colors(
-    primary = PrimaryDark,
-    secondary = SecondaryDark,
-    background = BackgroundDark,
-    surface = SurfaceDark,
-    error = ErrorDark,
-    onBackground = OnBackgroundDark,
-    onError = OnErrorDark,
-    onPrimary = OnPrimaryDark,
-    onSecondary = OnSecondaryDark,
-    onSurface = OnSurfaceDark,
-    isLight = false
+fun darkColorScheme() = ColorScheme(
+    primary = primaryDark,
+    onPrimary = onPrimaryDark,
+    primaryContainer = primaryContainerDark,
+    onPrimaryContainer = onPrimaryContainerDark,
+    inversePrimary = inversePrimaryDark,
+    secondary = secondaryDark,
+    onSecondary = onSecondaryDark,
+    secondaryContainer = secondaryContainerDark,
+    onSecondaryContainer = onSecondaryContainerDark,
+    tertiary = tertiaryDark,
+    onTertiary = onTertiaryDark,
+    tertiaryContainer = tertiaryContainerDark,
+    onTertiaryContainer = onTertiaryContainerDark,
+    background = backgroundDark,
+    onBackground = onBackgroundDark,
+    surface = surfaceDark,
+    onSurface = onSurfaceDark,
+    surfaceVariant = surfaceVariantDark,
+    onSurfaceVariant = onSurfaceVariantDark,
+    surfaceTint = Color.Unspecified,
+    inverseSurface = inverseSurfaceDark,
+    inverseOnSurface = inverseOnSurfaceDark,
+    error = errorDark,
+    onError = onErrorDark,
+    errorContainer = errorContainerDark,
+    onErrorContainer = onErrorContainerDark,
+    outline = outlineDark,
+    outlineVariant = outlineVariantDark,
+    scrim = scrimDark,
+    surfaceBright = surfaceBrightDark,
+    surfaceDim = surfaceDimDark,
+    surfaceContainer = surfaceContainerDark,
+    surfaceContainerHigh = surfaceContainerHighDark,
+    surfaceContainerHighest = surfaceContainerHighestDark,
+    surfaceContainerLow = surfaceContainerLowDark,
+    surfaceContainerLowest = surfaceContainerLowestDark
 )
 
-fun lightColors() = Colors(
-    primary = PrimaryLight,
-    secondary = SecondaryLight,
-    background = BackgroundLight,
-    surface = SurfaceLight,
-    error = ErrorLight,
-    onBackground = OnBackgroundLight,
-    onError = OnErrorLight,
-    onPrimary = OnPrimaryLight,
-    onSecondary = OnSecondaryLight,
-    onSurface = OnSurfaceLight,
-    isLight = true
+fun lightColorScheme() = ColorScheme(
+    primary = primaryLight,
+    onPrimary = onPrimaryLight,
+    primaryContainer = primaryContainerLight,
+    onPrimaryContainer = onPrimaryContainerLight,
+    inversePrimary = inversePrimaryLight,
+    secondary = secondaryLight,
+    onSecondary = onSecondaryLight,
+    secondaryContainer = secondaryContainerLight,
+    onSecondaryContainer = onSecondaryContainerLight,
+    tertiary = tertiaryLight,
+    onTertiary = onTertiaryLight,
+    tertiaryContainer = tertiaryContainerLight,
+    onTertiaryContainer = onTertiaryContainerLight,
+    background = backgroundLight,
+    onBackground = onBackgroundLight,
+    surface = surfaceLight,
+    onSurface = onSurfaceLight,
+    surfaceVariant = surfaceVariantLight,
+    onSurfaceVariant = onSurfaceVariantLight,
+    surfaceTint = Color.Unspecified,
+    inverseSurface = inverseSurfaceLight,
+    inverseOnSurface = inverseOnSurfaceLight,
+    error = errorLight,
+    onError = onErrorLight,
+    errorContainer = errorContainerLight,
+    onErrorContainer = onErrorContainerLight,
+    outline = outlineLight,
+    outlineVariant = outlineVariantLight,
+    scrim = scrimLight,
+    surfaceBright = surfaceBrightLight,
+    surfaceDim = surfaceDimLight,
+    surfaceContainer = surfaceContainerLight,
+    surfaceContainerHigh = surfaceContainerHighLight,
+    surfaceContainerHighest = surfaceContainerHighestLight,
+    surfaceContainerLow = surfaceContainerLowLight,
+    surfaceContainerLowest = surfaceContainerLowestLight
 )
 
-val LocalDarkColors = staticCompositionLocalOf { darkColors() }
-val LocalLightColors = staticCompositionLocalOf { lightColors() }
+val LocalDarkColors = staticCompositionLocalOf { darkColorScheme() }
+val LocalLightColors = staticCompositionLocalOf { lightColorScheme() }
