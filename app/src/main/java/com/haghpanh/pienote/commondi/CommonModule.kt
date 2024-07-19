@@ -1,9 +1,10 @@
-package com.haghpanh.pienote.commondata.di
+package com.haghpanh.pienote.commondi
 
 import com.haghpanh.pienote.commondata.PienoteDatabase
 import com.haghpanh.pienote.commondata.dao.CommonDao
 import com.haghpanh.pienote.commondata.repository.CommonRepositoryImpl
 import com.haghpanh.pienote.commondomain.repository.CommonRepository
+import com.haghpanh.pienote.commonui.utils.SnackbarManager
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -23,5 +24,8 @@ abstract class CommonModule {
         @Provides
         fun provideCommonDao(database: PienoteDatabase): CommonDao =
             database.CommonDao()
+
+        @Provides
+        fun provideSnackbarManager() = SnackbarManager()
     }
 }

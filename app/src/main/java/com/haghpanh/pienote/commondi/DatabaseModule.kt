@@ -1,4 +1,4 @@
-package com.haghpanh.pienote.commondata.di
+package com.haghpanh.pienote.commondi
 
 import android.content.Context
 import androidx.room.Room
