@@ -4,7 +4,6 @@ import com.haghpanh.pienote.commondata.PienoteDatabase
 import com.haghpanh.pienote.commondata.dao.CommonDao
 import com.haghpanh.pienote.commondata.repository.CommonRepositoryImpl
 import com.haghpanh.pienote.commondomain.repository.CommonRepository
-import com.haghpanh.pienote.commonui.utils.SnackbarManager
 import dagger.Binds
 import dagger.Module
 import dagger.Provides

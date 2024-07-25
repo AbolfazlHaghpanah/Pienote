@@ -13,7 +13,6 @@ import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -28,6 +27,13 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import javax.inject.Inject
 import kotlin.math.abs
 
+/**
+ * A manager class responsible for displaying and dismissing snackbar messages in the application.
+ *
+ * prefer to inject this class in each screen's viewmodel and pass it to SnackbarHost from viewmodel.
+ *
+ * @param context The application context for accessing resources.
+ */
 @Stable
 class SnackbarManager @Inject constructor(
     @ApplicationContext private val context: Context
@@ -35,14 +41,29 @@ class SnackbarManager @Inject constructor(
     private val _currentMessage = Channel<SnackbarData?>(Channel.BUFFERED)
     val currentMessage = _currentMessage.receiveAsFlow()
 
+    /**
+     * Sends a snackbar message.
+     *
+     * @param data The data to be displayed in the snackbar.
+     */
     suspend fun sendMessage(data: SnackbarData) {
         _currentMessage.send(data)
     }
 
+    /**
+     * Dismisses the current snackbar message.
+     */
     suspend fun dismiss() {
         _currentMessage.send(null)
     }
 
+    /**
+     * Sends an error snackbar message.
+     *
+     * @param message The error message to be displayed.
+     * @param action An optional action to be executed when the snackbar action is clicked.
+     * @param duration The duration for which the snackbar should be displayed.
+     */
     suspend fun sendError(
         message: String,
         action: (() -> Unit)? = null,
@@ -63,6 +84,14 @@ class SnackbarManager @Inject constructor(
         sendMessage(snackbarData)
     }
 
+    /**
+     * Sends a warning snackbar message.
+     *
+     * @param message The warning message to be displayed.
+     * @param action An optional action to be executed when the snackbar action is clicked.
+     * @param actionLabel An optional label for the snackbar action.
+     * @param duration The duration for which the snackbar should be displayed.
+     */
     suspend fun sendWarning(
         message: String,
         action: (() -> Unit)? = null,
@@ -86,6 +115,14 @@ class SnackbarManager @Inject constructor(
         sendMessage(snackbarData)
     }
 
+    /**
+     * Sends a success snackbar message.
+     *
+     * @param message The success message to be displayed.
+     * @param action An optional action to be executed when the snackbar action is clicked.
+     * @param actionLabel An optional label for the snackbar action.
+     * @param duration The duration for which the snackbar should be displayed.
+     */
     suspend fun sendSuccess(
         message: String,
         action: (() -> Unit)? = null,
@@ -114,6 +151,11 @@ private const val SLIDE_OUT_FROM_BOTTOM = 0
 private const val SLIDE_OUT_FROM_RIGHT = 1
 private const val SLIDE_OUT_FROM_LEFT = 2
 
+/**
+ * Composable function that hosts the snackbar.
+ *
+ * @param manager The SnackbarManager responsible for managing snackbar messages.
+ */
 @Composable
 fun PienoteSnackbarHost(manager: SnackbarManager) {
     var currentSnackbarData: SnackbarData? by rememberSaveable { mutableStateOf(null) }
@@ -126,7 +168,12 @@ fun PienoteSnackbarHost(manager: SnackbarManager) {
             shouldShowSnackbar = snackbarData != null
 
             if (snackbarData != null) {
-                val duration = calculateDurationInMillis(snackbarData)
+                val duration = when (snackbarData.duration) {
+                    SnackbarDuration.Short -> 3000L
+                    SnackbarDuration.Long -> 5000L
+                    SnackbarDuration.BasedOnMessage -> snackbarData.calculateDurationBasedOnText()
+                    SnackbarDuration.Infinite -> null
+                }
 
                 if (duration != null) {
                     delay(duration)
@@ -173,6 +220,14 @@ fun PienoteSnackbarHost(manager: SnackbarManager) {
     }
 }
 
+/**
+ * Data class representing the snackbar data.
+ *
+ * @param message The message to be displayed in the snackbar.
+ * @param type The type of the snackbar (Error, Warning, Success).
+ * @param duration The duration for which the snackbar should be displayed.
+ * @param action An optional action to be executed when the snackbar action is clicked.
+ */
 @Immutable
 data class SnackbarData(
     val message: String,
@@ -181,12 +236,21 @@ data class SnackbarData(
     val action: SnackbarAction? = null
 )
 
+/**
+ * Data class representing the snackbar action.
+ *
+ * @param action The action to be executed when the snackbar action is clicked.
+ * @param label The label for the snackbar action.
+ */
 @Immutable
 data class SnackbarAction(
     val action: () -> Unit,
     val label: String
 )
 
+/**
+ * Enum class representing the snackbar duration.
+ */
 @Immutable
 enum class SnackbarDuration {
     Short,
@@ -195,6 +259,9 @@ enum class SnackbarDuration {
     BasedOnMessage
 }
 
+/**
+ * Enum class representing the snackbar types.
+ */
 @Immutable
 enum class SnackbarTypes {
     Error,
@@ -202,15 +269,11 @@ enum class SnackbarTypes {
     Success
 }
 
-private fun calculateDurationInMillis(snackbarData: SnackbarData): Long? {
-    return when (snackbarData.duration) {
-        SnackbarDuration.Short -> 3000L
-        SnackbarDuration.Long -> 5000L
-        SnackbarDuration.BasedOnMessage -> snackbarData.calculateDurationBasedOnText()
-        SnackbarDuration.Infinite -> null
-    }
-}
-
+/**
+ * Calculates the duration based on the text length and having action of the snackbar message.
+ *
+ * @return The duration in milliseconds.
+ */
 private fun SnackbarData.calculateDurationBasedOnText(): Long {
     val wordCount = message.trim().split("\\s+".toRegex()).size
     val baseDuration = (wordCount * 500L).coerceAtLeast(3000L)
