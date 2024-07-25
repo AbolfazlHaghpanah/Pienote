@@ -15,4 +15,5 @@
     <string name="label_home">Home</string>
     <string name="label_add_note">Add Note</string>
     <string name="message_select_note_to_add">Select A Note To Add</string>
+    <string name="label_try_again">Try Again</string>
 </resources>

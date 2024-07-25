@@ -1,28 +1,37 @@
 package com.haghpanh.pienote.commonui.utils
 
+import android.content.Context
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
+import com.haghpanh.pienote.R
 import com.haghpanh.pienote.commonui.component.PienoteSnackbar
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.receiveAsFlow
+import javax.inject.Inject
 import kotlin.math.abs
 
 @Stable
-class SnackbarManager {
+class SnackbarManager @Inject constructor(
+    @ApplicationContext private val context: Context
+) {
     private val _currentMessage = Channel<SnackbarData?>(Channel.BUFFERED)
     val currentMessage = _currentMessage.receiveAsFlow()
 
@@ -46,7 +55,7 @@ class SnackbarManager {
             action = action?.let {
                 SnackbarAction(
                     action = action,
-                    label = "Try Again"
+                    label = context.getString(R.string.label_try_again)
                 )
             }
         )
@@ -101,21 +110,25 @@ class SnackbarManager {
     }
 }
 
+private const val SLIDE_OUT_FROM_BOTTOM = 0
+private const val SLIDE_OUT_FROM_RIGHT = 1
+private const val SLIDE_OUT_FROM_LEFT = 2
+
 @Composable
 fun PienoteSnackbarHost(manager: SnackbarManager) {
-    var currentSnackbarData: SnackbarData? by remember { mutableStateOf(null) }
-    var shouldShowSnackbar by remember { mutableStateOf(false) }
+    var currentSnackbarData: SnackbarData? by rememberSaveable { mutableStateOf(null) }
+    var shouldShowSnackbar by rememberSaveable { mutableStateOf(false) }
+    var slideOutAnimationId by rememberSaveable { mutableIntStateOf(0) }
 
     LaunchedEffect(Unit) {
         manager.currentMessage.collectLatest { snackbarData ->
             currentSnackbarData = snackbarData
-            shouldShowSnackbar = false
+            shouldShowSnackbar = snackbarData != null
 
-            snackbarData?.let { data ->
-                shouldShowSnackbar = true
-                val duration = calculateDurationInMillis(data)
+            if (snackbarData != null) {
+                val duration = calculateDurationInMillis(snackbarData)
 
-                duration?.let {
+                if (duration != null) {
                     delay(duration)
                     shouldShowSnackbar = false
                 }
@@ -123,16 +136,13 @@ fun PienoteSnackbarHost(manager: SnackbarManager) {
         }
     }
 
-    var slideOutAnimationId by remember {
-        mutableStateOf(0)
-    }
-
     AnimatedVisibility(
         visible = shouldShowSnackbar,
         enter = slideInVertically(initialOffsetY = { it }),
         exit = when (slideOutAnimationId) {
-            1 -> slideOutHorizontally(targetOffsetX = { it })
-            2 -> slideOutHorizontally(targetOffsetX = { -it })
+            SLIDE_OUT_FROM_RIGHT -> slideOutHorizontally(targetOffsetX = { it })
+            SLIDE_OUT_FROM_LEFT -> slideOutHorizontally(targetOffsetX = { -it })
+            SLIDE_OUT_FROM_BOTTOM -> slideOutVertically(targetOffsetY = { it })
             else -> slideOutVertically(targetOffsetY = { it })
         }
     ) {
@@ -142,16 +152,18 @@ fun PienoteSnackbarHost(manager: SnackbarManager) {
                     .pointerInput(Unit) {
                         detectDragGestures(
                             onDrag = { _, dragAmount ->
-                                if (dragAmount.y > 0 && dragAmount.y > abs(dragAmount.x)) {
-                                    slideOutAnimationId = 0
-                                    shouldShowSnackbar = false
-                                } else if (dragAmount.x > 0) {
-                                    slideOutAnimationId = 1
-                                    shouldShowSnackbar = false
-                                } else if (dragAmount.x < 0) {
-                                    slideOutAnimationId = 2
-                                    shouldShowSnackbar = false
+                                when {
+                                    dragAmount.y > 0 && dragAmount.y > abs(dragAmount.x) ->
+                                        slideOutAnimationId = SLIDE_OUT_FROM_BOTTOM
+
+                                    dragAmount.x > 0 ->
+                                        slideOutAnimationId = SLIDE_OUT_FROM_RIGHT
+
+                                    dragAmount.x < 0 ->
+                                        slideOutAnimationId = SLIDE_OUT_FROM_LEFT
                                 }
+
+                                shouldShowSnackbar = false
                             }
                         )
                     },
@@ -161,6 +173,7 @@ fun PienoteSnackbarHost(manager: SnackbarManager) {
     }
 }
 
+@Immutable
 data class SnackbarData(
     val message: String,
     val type: SnackbarTypes,
@@ -168,16 +181,25 @@ data class SnackbarData(
     val action: SnackbarAction? = null
 )
 
+@Immutable
 data class SnackbarAction(
     val action: () -> Unit,
     val label: String
 )
 
+@Immutable
 enum class SnackbarDuration {
     Short,
     Long,
     Infinite,
     BasedOnMessage
+}
+
+@Immutable
+enum class SnackbarTypes {
+    Error,
+    Warning,
+    Success
 }
 
 private fun calculateDurationInMillis(snackbarData: SnackbarData): Long? {
@@ -190,27 +212,7 @@ private fun calculateDurationInMillis(snackbarData: SnackbarData): Long? {
 }
 
 private fun SnackbarData.calculateDurationBasedOnText(): Long {
-    val message = message
-    val countOfWords =
-        if (message.isEmpty()) {
-            0
-        } else {
-            message.trim().split("\\s+".toRegex()).size
-        }
-
-    return (countOfWords * 500L).let {
-        if (action == null && it > 3000L) {
-            it
-        } else if (action != null) {
-            it + 3000L
-        } else {
-            3000L
-        }
-    }
-}
-
-enum class SnackbarTypes {
-    Error,
-    Warning,
-    Success
+    val wordCount = message.trim().split("\\s+".toRegex()).size
+    val baseDuration = (wordCount * 500L).coerceAtLeast(3000L)
+    return if (action != null) baseDuration + 3000L else baseDuration
 }

@@ -24,8 +24,5 @@ abstract class CommonModule {
         @Provides
         fun provideCommonDao(database: PienoteDatabase): CommonDao =
             database.CommonDao()
-
-        @Provides
-        fun provideSnackbarManager() = SnackbarManager()
     }
 }
