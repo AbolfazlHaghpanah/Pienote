@@ -1,4 +1,4 @@
-package com.haghpanh.pienote.commondata.di
+package com.haghpanh.pienote.commondi
 
 import com.haghpanh.pienote.commondata.PienoteDatabase
 import com.haghpanh.pienote.commondata.dao.CommonDao
