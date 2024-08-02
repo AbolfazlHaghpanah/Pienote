@@ -402,7 +402,8 @@ fun CategoryScreen(
                         },
                         onDelete = {
                             onDeleteNoteFromCategory(note.id)
-                        }
+                        },
+                        isSelected = false
                     )
                 }
             } else {
