@@ -1,6 +1,5 @@
 package com.haghpanh.pienote.commondomain.repository
 
-import com.haghpanh.pienote.commondomain.model.CategoryDomainModel
 import com.haghpanh.pienote.commondomain.model.NoteDomainModel
 
 interface CommonRepository {

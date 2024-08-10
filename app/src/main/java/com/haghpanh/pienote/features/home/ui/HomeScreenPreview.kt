@@ -45,13 +45,13 @@ fun HomeScreenPreview() {
                         addedTime = ""
                     ),
 
-                    )
+                )
             ),
             "Parent",
             SnackbarManager(LocalContext.current),
             {},
             {},
-            {_, _, _ ->
+            { _, _, _ ->
             },
             { _, _ -> },
             {}

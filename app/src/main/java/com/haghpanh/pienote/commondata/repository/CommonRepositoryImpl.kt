@@ -3,7 +3,6 @@ package com.haghpanh.pienote.commondata.repository
 import com.haghpanh.pienote.commondata.dao.CommonDao
 import com.haghpanh.pienote.commondata.entity.CategoryEntity
 import com.haghpanh.pienote.commondata.utils.toEntity
-import com.haghpanh.pienote.commondomain.model.CategoryDomainModel
 import com.haghpanh.pienote.commondomain.model.NoteDomainModel
 import com.haghpanh.pienote.commondomain.repository.CommonRepository
 import javax.inject.Inject
