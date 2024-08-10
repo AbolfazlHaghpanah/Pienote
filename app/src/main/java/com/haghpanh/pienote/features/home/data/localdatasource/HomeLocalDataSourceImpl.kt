@@ -18,12 +18,6 @@ class HomeLocalDataSourceImpl @Inject constructor(
     override fun observeNoteByCategory(categoryId: Int): Flow<List<NoteEntity>> =
         homeDao.observeNoteByCategory(categoryId)
 
-    override suspend fun insertNote(note: NoteEntity) =
-        homeDao.insertNotes(note)
-
-    override suspend fun insertCategory(category: CategoryEntity) =
-        homeDao.insertCategory(category)
-
     override suspend fun deleteNote(note: NoteEntity) {
         homeDao.deleteNote(note)
     }

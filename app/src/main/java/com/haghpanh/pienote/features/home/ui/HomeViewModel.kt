@@ -1,64 +1,38 @@
 package com.haghpanh.pienote.features.home.ui
 
 import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.haghpanh.pienote.commondomain.model.CategoryDomainModel
 import com.haghpanh.pienote.commondomain.model.NoteDomainModel
+import com.haghpanh.pienote.commonui.BaseViewModel
+import com.haghpanh.pienote.commonui.utils.Result
+import com.haghpanh.pienote.commonui.utils.SnackbarManager
+import com.haghpanh.pienote.features.home.domain.usecase.HomeAddNotesToCategoryUseCase
 import com.haghpanh.pienote.features.home.domain.usecase.HomeDeleteNoteUseCase
+import com.haghpanh.pienote.features.home.domain.usecase.HomeInsertCategoryUseCase
 import com.haghpanh.pienote.features.home.domain.usecase.HomeObserveCategories
 import com.haghpanh.pienote.features.home.domain.usecase.HomeObserveNotesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
+    savedStateHandle: SavedStateHandle,
+    val snackbarManager: SnackbarManager,
     private val homeObserveNotesUseCase: HomeObserveNotesUseCase,
     private val homeObserveCategories: HomeObserveCategories,
     private val homeDeleteNoteUseCase: HomeDeleteNoteUseCase,
-    private val savedStateHandle: SavedStateHandle
-) : ViewModel() {
-    private val _state = MutableStateFlow(HomeViewState())
-    val state = _state.asStateFlow()
-
-    private fun getCurrentState() = state.value
-
+    private val insertCategoryUseCase: HomeInsertCategoryUseCase,
+    private val addNotesToCategoryUseCase: HomeAddNotesToCategoryUseCase,
+) : BaseViewModel<HomeViewState>(
+    initialState = HomeViewState(),
+    savedStateHandle = savedStateHandle
+) {
     init {
         observeCategories()
         observeNotes()
-    }
-
-    fun <T> savedStateHandle(key: String): T? =
-        savedStateHandle.get<T>(key)
-
-    fun setQuickNoteTitle(value: String?) {
-        viewModelScope.launch {
-            val newState = getCurrentState().copy(quickNoteTitle = value)
-            _state.emit(newState)
-        }
-    }
-
-    fun setQuickNoteNote(value: String?) {
-        viewModelScope.launch {
-            val newState = getCurrentState().copy(quickNoteNote = value)
-            _state.emit(newState)
-        }
-    }
-
-    fun reverseQuickNoteState() {
-        viewModelScope.launch {
-            val newState =
-                getCurrentState().copy(
-                    hasClickedOnQuickNote = !getCurrentState().hasClickedOnQuickNote,
-                    quickNoteNote = null,
-                    quickNoteTitle = null
-                )
-            _state.emit(newState)
-        }
     }
 
     fun deleteNote(note: Note) {
@@ -69,13 +43,55 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    fun addNewCategory(
+        noteIds: List<Int>,
+        name: String,
+        image: String?
+    ) {
+        viewModelScope.launch(Dispatchers.IO) {
+            insertCategoryUseCase(
+                name = name,
+                image = image
+            )
+
+            getCurrentState()
+                .categories
+                ?.firstOrNull()
+                ?.let { category ->
+                    if (category.name == name) {
+                        addNoteToCategory(
+                            noteIds = noteIds,
+                            categoryId = category.id
+                        )
+                    }
+                }
+        }
+    }
+
+    fun addNoteToCategory(
+        noteIds: List<Int>,
+        categoryId: Int
+    ) {
+        viewModelScope.launch(Dispatchers.IO) {
+            addNotesToCategoryUseCase(
+                noteIds = noteIds,
+                categoryId = categoryId
+            )
+
+            updateState { it.copy(addToCategoryResult = Result.Success(categoryId)) }
+        }
+    }
+
     private fun observeNotes() {
         viewModelScope.launch(Dispatchers.IO) {
             homeObserveNotesUseCase().collect { notes ->
                 val mappedNotes = notes.map { it.toUiModel() }
-                val newState = getCurrentState().copy(notes = mappedNotes)
 
-                _state.emit(newState)
+                updateState {
+                    it.copy(
+                        notes = mappedNotes
+                    )
+                }
             }
         }
     }
@@ -86,9 +102,10 @@ class HomeViewModel @Inject constructor(
                 val mappedCategories = categories.map { category ->
                     category.toUiModel()
                 }
-                val newState = getCurrentState().copy(categories = mappedCategories)
 
-                _state.emit(newState)
+                updateState {
+                    it.copy(categories = mappedCategories)
+                }
             }
         }
     }

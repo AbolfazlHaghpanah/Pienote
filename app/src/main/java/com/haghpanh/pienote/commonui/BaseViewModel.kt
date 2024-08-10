@@ -1,17 +1,23 @@
 package com.haghpanh.pienote.commonui
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
+import com.haghpanh.pienote.commonui.utils.Result
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlin.reflect.KProperty
+import kotlin.reflect.KProperty0
 
 /**
  * Base class for ViewModels in a Compose-based application.
@@ -40,7 +46,7 @@ abstract class BaseViewModel<ViewState>(
      * @param dispatcher The coroutine dispatcher to use for the update operation. Default is [Dispatchers.IO].
      * @param copy A function that computes the new state based on the current state.
      */
-    fun updateState(
+    protected fun updateState(
         dispatcher: CoroutineDispatcher = Dispatchers.IO,
         copy: (ViewState) -> ViewState
     ) {
@@ -48,21 +54,6 @@ abstract class BaseViewModel<ViewState>(
             val newState = copy(getCurrentState())
 
             _state.emit(newState)
-        }
-    }
-
-    /**
-     * Update the state of the ViewModel to a specific state.
-     *
-     * @param dispatcher The coroutine dispatcher to use for the update operation. Default is [Dispatchers.IO].
-     * @param state The new state to set.
-     */
-    fun updateState(
-        dispatcher: CoroutineDispatcher = Dispatchers.IO,
-        state: ViewState
-    ) {
-        viewModelScope.launch(dispatcher) {
-            _state.emit(state)
         }
     }
 
@@ -74,9 +65,9 @@ abstract class BaseViewModel<ViewState>(
      * @param onUpdated A callback function to invoke after the state is updated.
      * @param copy A function that computes the new state based on the current state.
      */
-    fun updateState(
+    protected fun updateState(
         dispatcher: CoroutineDispatcher = Dispatchers.IO,
-        onUpdated: (() -> Unit)? = null,
+        onUpdated: (suspend () -> Unit)? = null,
         copy: (ViewState) -> ViewState
     ) {
         viewModelScope.launch(dispatcher) {
@@ -84,6 +75,22 @@ abstract class BaseViewModel<ViewState>(
             _state.emit(newState)
 
             onUpdated?.invoke()
+        }
+    }
+
+    // TODO Add KDoc Later
+    @Composable
+    fun <T> HandleResult(
+        prop: KProperty0<Result<T>>,
+        onSuccess: (suspend (T) -> Unit)? = null,
+        onFail: (suspend (Throwable) -> Unit)? = null,
+    ) {
+        LaunchedEffect(prop.get()) {
+            if (prop.get() is Result.Success && onSuccess != null) {
+                onSuccess(prop.get().value!!)
+            } else if (prop.get() is Result.Fail && onFail != null) {
+                onFail(prop.get().value as Throwable)
+            }
         }
     }
 

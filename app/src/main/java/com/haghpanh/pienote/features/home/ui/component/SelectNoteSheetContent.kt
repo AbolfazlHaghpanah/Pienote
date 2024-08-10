@@ -78,10 +78,12 @@ fun SelectNoteSheetContent(
 
 enum class SelectBottomSheetOptions(
     val label: String,
+    val shouldShowInList: Boolean,
     val icon: ImageVector? = null,
     val color: Color? = null
 ) {
-    MoveToCategory("Move To Category"),
-    AddToFavorite("Add To Favorite"),
-    DeleteNotes("Delete Notes")
+    MoveToCategory("Move To Category", true),
+    AddToFavorite("Add To Favorite", false),
+    DeleteNotes("Delete Notes", true),
+    AddCategory("Add Category", false)
 }

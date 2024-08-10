@@ -7,7 +7,6 @@ import com.haghpanh.pienote.commondomain.model.NoteDomainModel
 
 fun CategoryDomainModel.toEntity(): CategoryEntity =
     CategoryEntity(
-        id = id,
         name = name,
         priority = priority,
         image = image
