@@ -7,17 +7,20 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -113,7 +116,7 @@ private fun HomeScreen(
     )
 }
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun HomeScreen(
     state: HomeViewState,
@@ -195,12 +198,12 @@ fun HomeScreen(
         bottomMenu = {
             AnimatedVisibility(
                 visible = isSelectingNote,
-                enter = fadeIn(),
-                exit = fadeOut()
+                enter = slideInVertically(initialOffsetY = { it }),
+                exit = slideOutVertically(targetOffsetY = { it * 2 })
             ) {
                 AnimatedContent(
                     targetState = bottomMenuContentType,
-                    label = "",
+                    label = "bottom menu options",
                     transitionSpec = { fadeIn().togetherWith(fadeOut()) }
                 ) { options ->
                     when (options) {
@@ -269,24 +272,37 @@ fun HomeScreen(
             }
 
             items(
-                items = state.categories ?: emptyList(),
-                key = { item -> item.id }
-            ) { category ->
-                HomeCategoryItem(
+                items = state.categories?.chunked(2) ?: emptyList(),
+                key = { item -> item.first().id + (item.lastOrNull()?.id ?: 0) }
+            ) { categoriesInARow ->
+                Row(
                     modifier = Modifier
                         .padding(horizontal = 24.dp)
                         .animateItemPlacement(
                             animationSpec = tween(300)
                         ),
-                    name = category.name,
-                    priority = category.priority
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    navigateToNote(
-                        AppScreens.CategoryScreen.createRoute(
-                            category.id,
-                            parent = HOME_SCREEN_NAME
-                        )
-                    )
+                    categoriesInARow.forEach { category ->
+                        HomeCategoryItem(
+                            modifier = Modifier
+                                .weight(1f)
+                                .aspectRatio(
+                                    if (categoriesInARow.size > 1)
+                                        0.8f else 1.2f
+                                ),
+                            name = category.name,
+                            image = category.image
+                        ) {
+                            navigateToNote(
+                                AppScreens.CategoryScreen.createRoute(
+                                    category.id,
+                                    parent = HOME_SCREEN_NAME
+                                )
+                            )
+                        }
+                    }
                 }
             }
 

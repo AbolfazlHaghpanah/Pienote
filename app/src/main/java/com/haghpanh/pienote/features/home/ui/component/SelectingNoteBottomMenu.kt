@@ -1,11 +1,13 @@
 package com.haghpanh.pienote.features.home.ui.component
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -42,13 +44,14 @@ fun SelectingNoteBottomMenu(
             .chunked(3)
             .forEach { items ->
                 Row(
-                    modifier = Modifier,
+                    modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                    horizontalArrangement = Arrangement.SpaceEvenly,
                 ) {
                     items.forEach { item ->
                         Column(
                             modifier = Modifier
+                                .weight(1f)
                                 .clip(PienoteTheme.shapes.medium)
                                 .clickable { onItemClick(item) },
                             verticalArrangement = Arrangement.Center,
