@@ -150,6 +150,9 @@ fun HomeScreen(
         }
     }
 
+    //we should sync notes that is available on screen with selected notes
+    //so when we perform actions on selected notes that leads to remove some notes
+    //from screen they should remove from selected list to.
     LaunchedEffect(state.notes) {
         selectedNotes.removeAll {
             state.notes?.contains(it) == false

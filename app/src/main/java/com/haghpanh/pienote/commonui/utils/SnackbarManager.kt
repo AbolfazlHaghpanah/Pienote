@@ -13,13 +13,17 @@ import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import com.haghpanh.pienote.R
 import com.haghpanh.pienote.commonui.component.PienoteSnackbar
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ViewModelComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
+import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
@@ -34,7 +38,6 @@ import kotlin.math.abs
  *
  * @param context The application context for accessing resources.
  */
-@Stable
 class SnackbarManager @Inject constructor(
     @ApplicationContext private val context: Context
 ) {
@@ -158,9 +161,9 @@ private const val SLIDE_OUT_FROM_LEFT = 2
  */
 @Composable
 fun PienoteSnackbarHost(manager: SnackbarManager) {
-    var currentSnackbarData: SnackbarData? by rememberSaveable { mutableStateOf(null) }
-    var shouldShowSnackbar by rememberSaveable { mutableStateOf(false) }
-    var slideOutAnimationId by rememberSaveable { mutableIntStateOf(0) }
+    var currentSnackbarData: SnackbarData? by remember { mutableStateOf(null) }
+    var shouldShowSnackbar by remember { mutableStateOf(false) }
+    var slideOutAnimationId by remember { mutableIntStateOf(0) }
 
     LaunchedEffect(Unit) {
         manager.currentMessage.collectLatest { snackbarData ->

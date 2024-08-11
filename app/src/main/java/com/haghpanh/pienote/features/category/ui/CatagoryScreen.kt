@@ -53,6 +53,8 @@ import com.haghpanh.pienote.commonui.component.PienoteChip
 import com.haghpanh.pienote.commonui.component.PienoteDialog
 import com.haghpanh.pienote.commonui.navigation.AppScreens
 import com.haghpanh.pienote.commonui.theme.PienoteTheme
+import com.haghpanh.pienote.commonui.utils.PienoteSnackbarHost
+import com.haghpanh.pienote.commonui.utils.SnackbarManager
 import com.haghpanh.pienote.features.category.ui.components.CategoryDialogItem
 import com.haghpanh.pienote.features.category.ui.utils.CATEGORY_DIALOG_ITEM_ADD_NOTE_ID
 import com.haghpanh.pienote.features.category.ui.utils.CATEGORY_DIALOG_ITEM_CHANGE_COVER_ID
@@ -87,6 +89,7 @@ fun CategoryScreen(
     CategoryScreen(
         state = state,
         parentScreen = parentScreen,
+        snackbarManager = viewModel::snackbarManager.get(),
         onDeleteNoteFromCategory = viewModel::deleteNoteFromCategory,
         navigateToRoute = { route -> navController.navigate(route) },
         onBack = { navController.popBackStack() },
@@ -101,6 +104,7 @@ fun CategoryScreen(
 fun CategoryScreen(
     state: CategoryViewState,
     parentScreen: String?,
+    snackbarManager: SnackbarManager,
     onDeleteNoteFromCategory: (Int) -> Unit,
     navigateToRoute: (String) -> Unit,
     onBack: () -> Unit,
@@ -127,7 +131,10 @@ fun CategoryScreen(
     }
 
     Scaffold(
-        contentWindowInsets = WindowInsets(0.dp)
+        contentWindowInsets = WindowInsets(0.dp),
+        snackbarHost = {
+            PienoteSnackbarHost(manager = snackbarManager)
+        }
     ) { paddingValues ->
         when (dialogState) {
             DialogState.MainDialog -> {

@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.haghpanh.pienote.commondomain.model.CategoryDomainModel
 import com.haghpanh.pienote.commondomain.model.NoteDomainModel
 import com.haghpanh.pienote.commonui.BaseViewModel
+import com.haghpanh.pienote.commonui.utils.SnackbarManager
 import com.haghpanh.pienote.features.category.domain.usecase.CategoryAddNoteToCategoryUseCase
 import com.haghpanh.pienote.features.category.domain.usecase.CategoryDeleteNoteFromCategoryUseCase
 import com.haghpanh.pienote.features.category.domain.usecase.CategoryObserveAvailableNotesUseCase
@@ -20,6 +21,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CategoryViewModel @Inject constructor(
+    val snackbarManager: SnackbarManager,
     private val getCategoryUseCase: CategoryObserveCategoryUseCase,
     private val updateCategoryUseCase: CategoryUpdateCategoryUseCase,
     private val deleteNoteFromCategoryUseCase: CategoryDeleteNoteFromCategoryUseCase,
@@ -81,6 +83,10 @@ class CategoryViewModel @Inject constructor(
     fun deleteNoteFromCategory(noteId: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             deleteNoteFromCategoryUseCase(noteId)
+
+            snackbarManager.sendWarning(
+                message = "Note Removed From Category"
+            )
         }
     }
 
