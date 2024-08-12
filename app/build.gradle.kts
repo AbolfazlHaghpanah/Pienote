@@ -127,4 +127,5 @@ dependencies {
 
     //detekt
     detektPlugins(libs.detekt.formatting)
+    implementation(kotlin("reflect"))
 }

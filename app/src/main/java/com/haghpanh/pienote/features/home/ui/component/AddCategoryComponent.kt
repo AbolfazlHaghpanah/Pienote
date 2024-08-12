@@ -16,8 +16,10 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
@@ -47,7 +49,7 @@ import com.haghpanh.pienote.commonui.theme.PienoteTheme
 @Composable
 fun AddCategoryComponent(
     modifier: Modifier = Modifier,
-    onAddNewCategory: (String, String?) -> Unit,
+    onAddNewCategory: (String, Uri?) -> Unit,
     onDiscard: () -> Unit
 ) {
     BackHandler(onBack = onDiscard)
@@ -70,8 +72,7 @@ fun AddCategoryComponent(
             .clip(PienoteTheme.shapes.large)
             .background(PienoteTheme.colors.surfaceContainerHighest)
             .fillMaxWidth()
-            .padding(24.dp)
-            .verticalScroll(rememberScrollState()),
+            .padding(24.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         Text(
@@ -159,7 +160,7 @@ fun AddCategoryComponent(
             }
         }
 
-        Spacer(modifier = Modifier.weight(1f))
+        Spacer(modifier = Modifier.height(24.dp))
 
         Row(
             modifier = Modifier
@@ -171,7 +172,7 @@ fun AddCategoryComponent(
                 onClick = {
                     onAddNewCategory(
                         categoryName,
-                        categoryImage?.toString()
+                        categoryImage
                     )
                 },
                 colors = ButtonDefaults.buttonColors(

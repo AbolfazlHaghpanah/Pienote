@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
+import androidx.compose.material.icons.rounded.ArrowForward
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.Place
 import androidx.compose.material3.Icon
@@ -85,8 +86,8 @@ enum class SelectingNoteOptions(
     val shouldShowInList: Boolean,
     val icon: ImageVector? = null,
 ) {
-    MoveToCategory("Move To Category", true, Icons.Rounded.Place),
+    MoveToCategory("Move", true, Icons.Rounded.ArrowForward),
     AddToFavorite("Add To Favorite", false),
-    DeleteNotes("Delete Notes", true, Icons.Rounded.Delete),
-    AddCategory("Add Category", true, Icons.Rounded.Add)
+    DeleteNotes("Delete", true, Icons.Rounded.Delete),
+    AddCategory("New Category", true, Icons.Rounded.Add)
 }

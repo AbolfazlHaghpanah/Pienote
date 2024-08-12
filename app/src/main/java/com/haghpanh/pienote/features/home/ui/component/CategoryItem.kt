@@ -62,8 +62,8 @@ fun HomeCategoryItem(
             modifier = Modifier
                 .padding(8.dp)
                 .then(
-                    if (image.isNullOrEmpty()) Modifier else Modifier
-                        .background(PienoteTheme.colors.background)
+                    if (image.isNullOrEmpty()) Modifier.padding(vertical = 8.dp)
+                    else Modifier.background(PienoteTheme.colors.background)
                 )
                 .align(Alignment.BottomStart)
                 .padding(horizontal = 8.dp),

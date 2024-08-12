@@ -1,9 +1,12 @@
 package com.haghpanh.pienote.features.home.ui
 
+import android.net.Uri
+import androidx.core.net.toUri
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.haghpanh.pienote.commondomain.model.CategoryDomainModel
 import com.haghpanh.pienote.commondomain.model.NoteDomainModel
+import com.haghpanh.pienote.commondomain.usecase.SaveImageUriInCacheUseCase
 import com.haghpanh.pienote.commonui.BaseViewModel
 import com.haghpanh.pienote.commonui.utils.Result
 import com.haghpanh.pienote.commonui.utils.SnackbarManager
@@ -14,6 +17,7 @@ import com.haghpanh.pienote.features.home.domain.usecase.HomeObserveCategories
 import com.haghpanh.pienote.features.home.domain.usecase.HomeObserveNotesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -46,25 +50,31 @@ class HomeViewModel @Inject constructor(
     fun addNewCategory(
         noteIds: List<Int>,
         name: String,
-        image: String?
+        image: Uri?
     ) {
         viewModelScope.launch(Dispatchers.IO) {
-            insertCategoryUseCase(
-                name = name,
-                image = image
-            )
-
-            getCurrentState()
-                .categories
-                ?.firstOrNull()
-                ?.let { category ->
-                    if (category.name == name) {
-                        addNoteToCategory(
-                            noteIds = noteIds,
-                            categoryId = category.id
-                        )
+            runCatching {
+                insertCategoryUseCase(
+                    name = name,
+                    image = image
+                )
+            }.onSuccess {
+                //TODO this is Dozdi Way
+                delay(200)
+                getCurrentState()
+                    .categories
+                    ?.firstOrNull()
+                    ?.let { category ->
+                        if (category.name == name) {
+                            addNoteToCategory(
+                                noteIds = noteIds,
+                                categoryId = category.id
+                            )
+                        }
                     }
-                }
+            }.onFailure {
+                snackbarManager.sendError("Fail To Create Category")
+            }
         }
     }
 
@@ -73,12 +83,14 @@ class HomeViewModel @Inject constructor(
         categoryId: Int
     ) {
         viewModelScope.launch(Dispatchers.IO) {
-            addNotesToCategoryUseCase(
-                noteIds = noteIds,
-                categoryId = categoryId
-            )
-
-            updateState { it.copy(addToCategoryResult = Result.Success(categoryId)) }
+            runCatching {
+                addNotesToCategoryUseCase(
+                    noteIds = noteIds,
+                    categoryId = categoryId
+                )
+            }.onSuccess {
+                updateState { it.copy(movedToCategoryId = categoryId) }
+            }
         }
     }
 

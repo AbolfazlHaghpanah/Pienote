@@ -1,5 +1,6 @@
 package com.haghpanh.pienote.features.home.ui
 
+import android.net.Uri
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
@@ -13,8 +14,11 @@ import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -77,29 +81,13 @@ private fun HomeScreen(
     val state by viewModel.collectAsStateWithLifecycle()
     val parent = viewModel.savedStateHandler<String>("parent")
 
-    viewModel.HandleResult(
-        prop = state::addToCategoryResult,
-        onSuccess = { categoryId ->
-            viewModel.snackbarManager.sendSuccess(
-                "Moved To Category Category",
-                action = {
-                    navController.navigate(
-                        route = AppScreens.CategoryScreen.createRoute(
-                            categoryId,
-                            HOME_SCREEN_NAME
-                        )
-                    )
-                },
-                actionLabel = "Show"
-            )
-        }
-    )
+    viewModel.handleEffectsDispose()
 
     HomeScreen(
         state = state,
         parent = parent,
         snackbarManager = viewModel.snackbarManager,
-        navigateToNote = { route ->
+        navigateToRoute = { route ->
             navController.navigate(route = route) {
                 popUpTo(route) {
                     inclusive = true
@@ -122,9 +110,9 @@ fun HomeScreen(
     state: HomeViewState,
     parent: String?,
     snackbarManager: SnackbarManager,
-    navigateToNote: (String) -> Unit,
+    navigateToRoute: (String) -> Unit,
     onDeleteNote: (Note) -> Unit,
-    onAddNewCategory: (List<Int>, String, String?) -> Unit,
+    onAddNewCategory: (List<Int>, String, Uri?) -> Unit,
     onAddNotesToCategory: (noteIds: List<Int>, categoryId: Int) -> Unit,
     navigateBack: () -> Unit
 ) {
@@ -162,6 +150,33 @@ fun HomeScreen(
         }
     }
 
+    //if we don't do this after one time selecting notes and unselect them contentType
+    //is steel saved last state and if user select notes again bottom menu may show
+    //wrong content.
+    LaunchedEffect(isSelectingNote) {
+        if (!isSelectingNote) {
+            bottomMenuContentType = null
+        }
+    }
+
+    //shows snackbar for successfully move notes to a category
+    LaunchedEffect(state.movedToCategoryId) {
+        state.movedToCategoryId?.let { id ->
+            snackbarManager.sendSuccess(
+                "Moved To Category Category",
+                action = {
+                    navigateToRoute(
+                        AppScreens.CategoryScreen.createRoute(
+                            id,
+                            HOME_SCREEN_NAME
+                        )
+                    )
+                },
+                actionLabel = "Show"
+            )
+        }
+    }
+
     PienoteScaffold(
         snackbarHost = {
             PienoteSnackbarHost(manager = snackbarManager)
@@ -174,7 +189,7 @@ fun HomeScreen(
             ) {
                 ExtendedFloatingActionButton(
                     onClick = {
-                        navigateToNote(
+                        navigateToRoute(
                             NoteScreen.createRoute(
                                 id = -1,
                                 isExist = false,
@@ -257,6 +272,8 @@ fun HomeScreen(
         ) {
             item {
                 if (parent != null) {
+                    Spacer(modifier = Modifier.height(16.dp))
+
                     PienoteTopBar(
                         title = stringResource(R.string.label_home),
                         icon = R.drawable.home,
@@ -295,7 +312,7 @@ fun HomeScreen(
                             name = category.name,
                             image = category.image
                         ) {
-                            navigateToNote(
+                            navigateToRoute(
                                 AppScreens.CategoryScreen.createRoute(
                                     category.id,
                                     parent = HOME_SCREEN_NAME
@@ -335,7 +352,7 @@ fun HomeScreen(
                                 selectedNotes.add(note)
                             }
                         } else {
-                            navigateToNote(
+                            navigateToRoute(
                                 NoteScreen.createRoute(
                                     id = note.id,
                                     isExist = true,

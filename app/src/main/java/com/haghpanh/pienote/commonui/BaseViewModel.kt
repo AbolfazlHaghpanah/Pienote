@@ -1,20 +1,21 @@
 package com.haghpanh.pienote.commonui
 
+import android.annotation.SuppressLint
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.State
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
-import com.haghpanh.pienote.commonui.utils.Result
+import com.haghpanh.pienote.commonui.utils.EffectState
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlin.reflect.KProperty
-import kotlin.reflect.KProperty0
+import kotlin.reflect.full.hasAnnotation
 
 /**
  * Base class for ViewModels in a Compose-based application.
@@ -43,7 +44,7 @@ abstract class BaseViewModel<ViewState>(
      * @param dispatcher The coroutine dispatcher to use for the update operation. Default is [Dispatchers.IO].
      * @param copy A function that computes the new state based on the current state.
      */
-    protected fun updateState(
+    fun updateState(
         dispatcher: CoroutineDispatcher = Dispatchers.IO,
         copy: (ViewState) -> ViewState
     ) {
@@ -75,22 +76,6 @@ abstract class BaseViewModel<ViewState>(
         }
     }
 
-    // TODO Add KDoc Later
-    @Composable
-    fun <T> HandleResult(
-        prop: KProperty0<Result<T>>,
-        onSuccess: (suspend (T) -> Unit)? = null,
-        onFail: (suspend (Throwable) -> Unit)? = null,
-    ) {
-        LaunchedEffect(prop.get()) {
-            if (prop.get() is Result.Success && onSuccess != null) {
-                onSuccess(prop.get().value!!)
-            } else if (prop.get() is Result.Fail && onFail != null) {
-                onFail(prop.get().value as Throwable)
-            }
-        }
-    }
-
     /**
      *gives access to SavedStateHandle in compose Screen or viewModels that needs instance of it.
      *
@@ -99,6 +84,49 @@ abstract class BaseViewModel<ViewState>(
      */
     fun <T> savedStateHandler(key: String): T? =
         savedStateHandle.get<T>(key)
+
+    /**
+     * A composable function that handles the disposal of effects by resetting the properties annotated
+     * with `@EffectState` in the current ViewModel state to their initial values when the composable is disposed.
+     *
+     * This function uses reflection to access the primary constructor of the state class, retrieves the initial values
+     * of the properties, and creates a new state instance with the updated values upon disposal.
+     *
+     * This approach is useful in scenarios where certain state properties should be reset to their initial values
+     * when a composable is removed from the composition, ensuring that transient effects do not persist.
+     *
+     * @throws IllegalStateException If the current state is null or if no constructor is found for the state class.
+     */
+    @SuppressLint("ComposableNaming")
+    @Composable
+    fun handleEffectsDispose() {
+        DisposableEffect(Unit) {
+            val constructor = state.value!!::class
+                .constructors
+                .first()
+
+            onDispose {
+                val args = constructor
+                    .parameters
+                    .associateWith { param ->
+                        if (param.hasAnnotation<EffectState>()) {
+                            null
+                        } else {
+                            state.value!!::class.members
+                                .find { it.name == param.name }
+                                ?.call(state.value)
+                        }
+                    }
+
+                val newState = state.value!!::class
+                    .constructors
+                    .first()
+                    .callBy(args)
+
+                updateState { newState }
+            }
+        }
+    }
 
     /**
      * Collect the state as a Compose [State] with lifecycle awareness.
