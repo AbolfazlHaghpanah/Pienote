@@ -1,15 +1,13 @@
 package com.haghpanh.pienote.features.home.ui
 
 import android.net.Uri
-import androidx.core.net.toUri
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.haghpanh.pienote.commondomain.model.CategoryDomainModel
 import com.haghpanh.pienote.commondomain.model.NoteDomainModel
-import com.haghpanh.pienote.commondomain.usecase.SaveImageUriInCacheUseCase
 import com.haghpanh.pienote.commonui.BaseViewModel
-import com.haghpanh.pienote.commonui.utils.Result
 import com.haghpanh.pienote.commonui.utils.SnackbarManager
+import com.haghpanh.pienote.commonui.utils.chunkedEven
 import com.haghpanh.pienote.features.home.domain.usecase.HomeAddNotesToCategoryUseCase
 import com.haghpanh.pienote.features.home.domain.usecase.HomeDeleteNoteUseCase
 import com.haghpanh.pienote.features.home.domain.usecase.HomeInsertCategoryUseCase
@@ -59,10 +57,11 @@ class HomeViewModel @Inject constructor(
                     image = image
                 )
             }.onSuccess {
-                //TODO this is Dozdi Way
+                // TODO this is Dozdi Way
                 delay(200)
                 getCurrentState()
-                    .categories
+                    .categoriesChunked
+                    ?.firstOrNull()
                     ?.firstOrNull()
                     ?.let { category ->
                         if (category.name == name) {
@@ -116,7 +115,7 @@ class HomeViewModel @Inject constructor(
                 }
 
                 updateState {
-                    it.copy(categories = mappedCategories)
+                    it.copy(categoriesChunked = mappedCategories.chunkedEven())
                 }
             }
         }

@@ -14,7 +14,6 @@ import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
@@ -141,25 +140,25 @@ fun HomeScreen(
         }
     }
 
-    //we should sync notes that is available on screen with selected notes
-    //so when we perform actions on selected notes that leads to remove some notes
-    //from screen they should remove from selected list to.
+    // we should sync notes that is available on screen with selected notes
+    // so when we perform actions on selected notes that leads to remove some notes
+    // from screen they should remove from selected list to.
     LaunchedEffect(state.notes) {
         selectedNotes.removeAll {
             state.notes?.contains(it) == false
         }
     }
 
-    //if we don't do this after one time selecting notes and unselect them contentType
-    //is steel saved last state and if user select notes again bottom menu may show
-    //wrong content.
+    // if we don't do this after one time selecting notes and unselect them contentType
+    // is steel saved last state and if user select notes again bottom menu may show
+    // wrong content.
     LaunchedEffect(isSelectingNote) {
         if (!isSelectingNote) {
             bottomMenuContentType = null
         }
     }
 
-    //shows snackbar for successfully move notes to a category
+    // shows snackbar for successfully move notes to a category
     LaunchedEffect(state.movedToCategoryId) {
         state.movedToCategoryId?.let { id ->
             snackbarManager.sendSuccess(
@@ -249,7 +248,7 @@ fun HomeScreen(
                                         catId
                                     )
                                 },
-                                categories = state.categories,
+                                categories = state.categoriesChunked,
                                 onDiscard = { bottomMenuContentType = null }
                             )
                         }
@@ -289,7 +288,7 @@ fun HomeScreen(
             }
 
             items(
-                items = state.categories?.chunked(2) ?: emptyList(),
+                items = state.categoriesChunked ?: emptyList(),
                 key = { item -> item.first().id + (item.lastOrNull()?.id ?: 0) }
             ) { categoriesInARow ->
                 Row(
@@ -306,8 +305,11 @@ fun HomeScreen(
                             modifier = Modifier
                                 .weight(1f)
                                 .aspectRatio(
-                                    if (categoriesInARow.size > 1)
-                                        0.8f else 1.2f
+                                    if (categoriesInARow.size > 1) {
+                                        0.8f
+                                    } else {
+                                        1.2f
+                                    }
                                 ),
                             name = category.name,
                             image = category.image

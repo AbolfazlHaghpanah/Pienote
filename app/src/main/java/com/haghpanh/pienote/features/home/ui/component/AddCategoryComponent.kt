@@ -5,7 +5,6 @@ import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -15,8 +14,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -27,7 +26,6 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -54,8 +52,8 @@ fun AddCategoryComponent(
 ) {
     BackHandler(onBack = onDiscard)
 
-    var categoryName by remember {
-        mutableStateOf("")
+    var categoryName: String? by remember {
+        mutableStateOf(null)
     }
     var categoryImage: Uri? by remember {
         mutableStateOf(null)
@@ -68,10 +66,11 @@ fun AddCategoryComponent(
 
     Column(
         modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
             .imePadding()
             .clip(PienoteTheme.shapes.large)
             .background(PienoteTheme.colors.surfaceContainerHighest)
-            .fillMaxWidth()
             .padding(24.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
@@ -83,37 +82,33 @@ fun AddCategoryComponent(
 
         HorizontalDivider()
 
-        PienoteTextField(
-            value = categoryName,
-            onValueChange = { value -> categoryName = value },
-            placeHolder = {
-                Text(
-                    text = "Unnamed",
-                    style = PienoteTheme.typography.headlineSmall
-                )
-            },
-            textStyle = PienoteTheme.typography.headlineSmall
-        )
+        Spacer(modifier = Modifier.weight(1f))
 
-        AnimatedContent(
-            modifier = Modifier.align(Alignment.CenterHorizontally),
-            targetState = categoryImage
-        ) { imageUri ->
-            if (imageUri == null) {
-                TextButton(
-                    modifier = Modifier.align(Alignment.CenterHorizontally),
-                    onClick = {
-                        pickMedia.launch(
-                            PickVisualMediaRequest(
-                                ActivityResultContracts.PickVisualMedia.ImageOnly
-                            )
+        Box(
+            modifier = Modifier
+                .clip(PienoteTheme.shapes.small)
+                .background(PienoteTheme.colors.background)
+                .clickable {
+                    pickMedia.launch(
+                        PickVisualMediaRequest(
+                            ActivityResultContracts.PickVisualMedia.ImageOnly
                         )
-                    }
-                ) {
-                    Text(text = stringResource(id = R.string.add_cover_image))
+                    )
                 }
+                .fillMaxWidth()
+                .aspectRatio(1f),
+        ) {
+            if (categoryImage == null) {
+                Text(
+                    modifier = Modifier
+                        .padding(8.dp)
+                        .align(Alignment.BottomStart),
+                    text = stringResource(id = R.string.add_cover_image),
+                    style = PienoteTheme.typography.displayLarge,
+                    color = PienoteTheme.colors.onBackground,
+                )
             } else {
-                Box(
+                AsyncImage(
                     modifier = Modifier
                         .clickable {
                             pickMedia.launch(
@@ -122,45 +117,46 @@ fun AddCategoryComponent(
                                 )
                             )
                         }
-                        .clip(PienoteTheme.shapes.small)
                         .fillMaxWidth()
                         .aspectRatio(1f),
-                ) {
-                    AsyncImage(
-                        modifier = Modifier
-                            .clickable {
-                                pickMedia.launch(
-                                    PickVisualMediaRequest(
-                                        ActivityResultContracts.PickVisualMedia.ImageOnly
-                                    )
-                                )
-                            }
-                            .fillMaxWidth()
-                            .aspectRatio(1f),
-                        model = categoryImage,
-                        contentDescription = null,
-                        contentScale = ContentScale.Crop
-                    )
+                    model = categoryImage,
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop
+                )
 
-                    Box(
-                        modifier = Modifier
-                            .background(
-                                Brush.verticalGradient(
-                                    listOf(
-                                        Color.Transparent,
-                                        Color.Transparent,
-                                        PienoteTheme.colors.surfaceContainerLowest
-                                    )
+                Box(
+                    modifier = Modifier
+                        .background(
+                            Brush.verticalGradient(
+                                listOf(
+                                    Color.Transparent,
+                                    Color.Transparent,
+                                    PienoteTheme.colors.surfaceContainerHighest
                                 )
                             )
-                            .fillMaxWidth()
-                            .aspectRatio(1f),
-                    )
-                }
+                        )
+                        .fillMaxWidth()
+                        .aspectRatio(1f),
+                )
             }
         }
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.weight(1f))
+
+        PienoteTextField(
+            modifier = modifier.fillMaxWidth(),
+            value = categoryName.orEmpty(),
+            onValueChange = { value -> categoryName = value },
+            placeHolder = {
+                Text(
+                    text = "Unnamed...",
+                    style = PienoteTheme.typography.headlineMedium
+                )
+            },
+            textStyle = PienoteTheme.typography.headlineMedium
+        )
+
+        Spacer(modifier = Modifier.weight(1f))
 
         Row(
             modifier = Modifier
@@ -170,10 +166,12 @@ fun AddCategoryComponent(
         ) {
             Button(
                 onClick = {
-                    onAddNewCategory(
-                        categoryName,
-                        categoryImage
-                    )
+                    if (categoryName.isNullOrEmpty().not()) {
+                        onAddNewCategory(
+                            categoryName!!,
+                            categoryImage
+                        )
+                    }
                 },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = PienoteTheme.colors.tertiaryContainer,

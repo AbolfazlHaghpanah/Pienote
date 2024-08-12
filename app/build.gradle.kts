@@ -106,6 +106,7 @@ dependencies {
     implementation(libs.coil)
     implementation(libs.pagingCommon)
     implementation(libs.pagingCompose)
+    implementation(kotlin("reflect"))
 
     //material
     implementation(libs.material)
@@ -127,5 +128,4 @@ dependencies {
 
     //detekt
     detektPlugins(libs.detekt.formatting)
-    implementation(kotlin("reflect"))
 }

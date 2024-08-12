@@ -26,7 +26,7 @@ import com.haghpanh.pienote.features.home.ui.Category
 fun MoveToCategoryComponent(
     modifier: Modifier = Modifier,
     onCategorySelected: (Int) -> Unit,
-    categories: List<Category>?,
+    categories: List<List<Category>>?,
     onDiscard: () -> Unit
 ) {
     BackHandler(onBack = onDiscard)
@@ -47,20 +47,22 @@ fun MoveToCategoryComponent(
 
         HorizontalDivider()
 
-        categories?.forEach { cat ->
-            Text(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(PienoteTheme.shapes.small)
-                    .clickable {
-                        onCategorySelected(cat.id)
-                    }
-                    .padding(4.dp),
-                text = cat.name,
-                style = PienoteTheme.typography.titleMedium,
-                color = PienoteTheme.colors.onSurface
-            )
-        }
+        categories
+            ?.flatten()
+            ?.forEach { cat ->
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(PienoteTheme.shapes.small)
+                        .clickable {
+                            onCategorySelected(cat.id)
+                        }
+                        .padding(4.dp),
+                    text = cat.name,
+                    style = PienoteTheme.typography.titleMedium,
+                    color = PienoteTheme.colors.onSurface
+                )
+            }
 
         Spacer(modifier = Modifier.height(8.dp))
 

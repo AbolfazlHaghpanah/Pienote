@@ -1,4 +1,4 @@
-package com.haghpanh.pienote.commonui.utils
+package com.haghpanh.pienote.commonui.utils.annotation
 
 /**
  * This annotation used for view states fields that used to send an effect to screen
