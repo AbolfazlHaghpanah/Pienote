@@ -32,9 +32,10 @@ fun NotesListScreen(
             HomeNoteItem(
                 title = sdsds[it]?.genrNotes?.title ?: "",
                 note = sdsds[it]?.spcfFavorite?.favoriteType ?: "",
-                onDelete = { /*TODO*/ }
-            ) {
-            }
+                onDelete = { /*TODO*/ },
+                onClick = {},
+                isSelected = false
+            )
         }
     }
     NotesListScreen(

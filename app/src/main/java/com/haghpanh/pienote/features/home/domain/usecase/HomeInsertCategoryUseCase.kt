@@ -1,13 +1,20 @@
 package com.haghpanh.pienote.features.home.domain.usecase
 
-import com.haghpanh.pienote.commondomain.model.CategoryDomainModel
-import com.haghpanh.pienote.features.home.domain.repository.HomeRepository
+import android.net.Uri
+import com.haghpanh.pienote.commondomain.repository.CommonRepository
+import com.haghpanh.pienote.commondomain.usecase.SaveImageUriInCacheUseCase
 import javax.inject.Inject
 
 class HomeInsertCategoryUseCase @Inject constructor(
-    private val homeRepository: HomeRepository
+    private val commonRepository: CommonRepository,
+    private val saveImageUriInCacheUseCase: SaveImageUriInCacheUseCase
 ) {
-    suspend operator fun invoke(category: CategoryDomainModel) {
-        homeRepository.insertCategory(category)
+    suspend operator fun invoke(name: String, image: Uri?) {
+        val imageUri = saveImageUriInCacheUseCase(image)?.toString()
+
+        commonRepository.insertCategory(
+            name = name,
+            image = imageUri
+        )
     }
 }

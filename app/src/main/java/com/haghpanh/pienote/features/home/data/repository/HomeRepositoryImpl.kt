@@ -42,12 +42,6 @@ class HomeRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun insertCategory(category: CategoryDomainModel) {
-        val mappedCategory = category.toEntity()
-
-        homeLocalDataSource.insertCategory(mappedCategory)
-    }
-
     override suspend fun deleteNote(note: NoteDomainModel) {
         val mappedNote = note.toEntity()
 

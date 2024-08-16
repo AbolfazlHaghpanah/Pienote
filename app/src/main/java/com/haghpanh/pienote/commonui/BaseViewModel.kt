@@ -1,17 +1,21 @@
 package com.haghpanh.pienote.commonui
 
+import android.annotation.SuppressLint
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.State
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
+import com.haghpanh.pienote.commonui.utils.annotation.EffectState
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlin.reflect.KProperty
+import kotlin.reflect.full.hasAnnotation
 
 /**
  * Base class for ViewModels in a Compose-based application.
@@ -52,21 +56,6 @@ abstract class BaseViewModel<ViewState>(
     }
 
     /**
-     * Update the state of the ViewModel to a specific state.
-     *
-     * @param dispatcher The coroutine dispatcher to use for the update operation. Default is [Dispatchers.IO].
-     * @param state The new state to set.
-     */
-    fun updateState(
-        dispatcher: CoroutineDispatcher = Dispatchers.IO,
-        state: ViewState
-    ) {
-        viewModelScope.launch(dispatcher) {
-            _state.emit(state)
-        }
-    }
-
-    /**
      * Update the state of the ViewModel based on a transformation function and
      * invoke a callback when the state is updated.
      *
@@ -74,9 +63,9 @@ abstract class BaseViewModel<ViewState>(
      * @param onUpdated A callback function to invoke after the state is updated.
      * @param copy A function that computes the new state based on the current state.
      */
-    fun updateState(
+    protected fun updateState(
         dispatcher: CoroutineDispatcher = Dispatchers.IO,
-        onUpdated: (() -> Unit)? = null,
+        onUpdated: (suspend () -> Unit)? = null,
         copy: (ViewState) -> ViewState
     ) {
         viewModelScope.launch(dispatcher) {
@@ -95,6 +84,49 @@ abstract class BaseViewModel<ViewState>(
      */
     fun <T> savedStateHandler(key: String): T? =
         savedStateHandle.get<T>(key)
+
+    /**
+     * A composable function that handles the disposal of effects by resetting the properties annotated
+     * with `@EffectState` in the current ViewModel state to their initial values when the composable is disposed.
+     *
+     * This function uses reflection to access the primary constructor of the state class, retrieves the initial values
+     * of the properties, and creates a new state instance with the updated values upon disposal.
+     *
+     * This approach is useful in scenarios where certain state properties should be reset to their initial values
+     * when a composable is removed from the composition, ensuring that transient effects do not persist.
+     *
+     * @throws IllegalStateException If the current state is null or if no constructor is found for the state class.
+     */
+    @SuppressLint("ComposableNaming")
+    @Composable
+    fun handleEffectsDispose() {
+        DisposableEffect(Unit) {
+            val constructor = state.value!!::class
+                .constructors
+                .first()
+
+            onDispose {
+                val args = constructor
+                    .parameters
+                    .associateWith { param ->
+                        if (param.hasAnnotation<EffectState>()) {
+                            null
+                        } else {
+                            state.value!!::class.members
+                                .find { it.name == param.name }
+                                ?.call(state.value)
+                        }
+                    }
+
+                val newState = state.value!!::class
+                    .constructors
+                    .first()
+                    .callBy(args)
+
+                updateState { newState }
+            }
+        }
+    }
 
     /**
      * Collect the state as a Compose [State] with lifecycle awareness.

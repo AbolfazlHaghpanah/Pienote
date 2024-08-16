@@ -8,7 +8,5 @@ interface HomeLocalDataSource {
     fun observeNotes(): Flow<List<NoteEntity>>
     fun observeCategories(): Flow<List<CategoryEntity>>
     fun observeNoteByCategory(categoryId: Int): Flow<List<NoteEntity>>
-    suspend fun insertNote(note: NoteEntity)
-    suspend fun insertCategory(category: CategoryEntity)
     suspend fun deleteNote(note: NoteEntity)
 }

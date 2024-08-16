@@ -100,10 +100,18 @@ fun FavoriteScreen(
                     modifier = Modifier.padding(horizontal = 24.dp),
                     title = note.title.orEmpty(),
                     note = note.note.orEmpty(),
-                    onDelete = {}
-                ) {
-                    navigateToRoute(AppScreens.NoteScreen.createRoute(note.id, true, "Favorite"))
-                }
+                    onDelete = {},
+                    isSelected = false,
+                    onClick = {
+                        navigateToRoute(
+                            AppScreens.NoteScreen.createRoute(
+                                note.id,
+                                true,
+                                "Favorite"
+                            )
+                        )
+                    }
+                )
             }
         }
     }

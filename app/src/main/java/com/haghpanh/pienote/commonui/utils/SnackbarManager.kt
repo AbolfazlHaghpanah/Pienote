@@ -9,11 +9,10 @@ import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
@@ -34,7 +33,6 @@ import kotlin.math.abs
  *
  * @param context The application context for accessing resources.
  */
-@Stable
 class SnackbarManager @Inject constructor(
     @ApplicationContext private val context: Context
 ) {
@@ -158,9 +156,9 @@ private const val SLIDE_OUT_FROM_LEFT = 2
  */
 @Composable
 fun PienoteSnackbarHost(manager: SnackbarManager) {
-    var currentSnackbarData: SnackbarData? by rememberSaveable { mutableStateOf(null) }
-    var shouldShowSnackbar by rememberSaveable { mutableStateOf(false) }
-    var slideOutAnimationId by rememberSaveable { mutableIntStateOf(0) }
+    var currentSnackbarData: SnackbarData? by remember { mutableStateOf(null) }
+    var shouldShowSnackbar by remember { mutableStateOf(false) }
+    var slideOutAnimationId by remember { mutableIntStateOf(0) }
 
     LaunchedEffect(Unit) {
         manager.currentMessage.collectLatest { snackbarData ->

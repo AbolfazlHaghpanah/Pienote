@@ -1,8 +1,10 @@
 package com.haghpanh.pienote.features.home.ui
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import com.haghpanh.pienote.commonui.theme.PienoteTheme
+import com.haghpanh.pienote.commonui.utils.SnackbarManager
 
 @Suppress("MaximumLineLength", "MaxLineLength")
 @Preview(showBackground = true)
@@ -43,13 +45,15 @@ fun HomeScreenPreview() {
                         addedTime = ""
                     ),
 
-                ),
-                null,
-                null
+                )
             ),
             "Parent",
+            SnackbarManager(LocalContext.current),
             {},
             {},
+            { _, _, _ ->
+            },
+            { _, _ -> },
             {}
         )
     }

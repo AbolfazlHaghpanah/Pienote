@@ -1,15 +1,19 @@
 package com.haghpanh.pienote.features.home.ui.component
 
+import android.content.res.Configuration
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.animateSizeAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -23,22 +27,47 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.Wallpapers
 import androidx.compose.ui.unit.dp
 import com.haghpanh.pienote.commonui.theme.PienoteTheme
 import com.haghpanh.pienote.commonui.utils.SwipeState
 import com.haghpanh.pienote.commonui.utils.rememberSwipeState
 import com.haghpanh.pienote.commonui.utils.swipeHandler
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun HomeNoteItem(
     title: String,
     note: String,
+    isSelected: Boolean,
     modifier: Modifier = Modifier,
     onDelete: () -> Unit,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    onLongClick: () -> Unit = {}
 ) {
+    val density = LocalDensity.current
+    val animatedIsSelectedSize by animateSizeAsState(
+        targetValue = if (isSelected) {
+            val cornerSize = PienoteTheme
+                .shapes
+                .veryLarge
+                .topStart
+                .toPx(shapeSize = Size.Zero, density)
+
+            Size(cornerSize, cornerSize)
+        } else {
+            Size.Zero
+        },
+        label = "is selected label size"
+    )
+
     val swipeState = rememberSwipeState(
         threshold = 240f,
         swipeType = SwipeState.LeftToRight()
@@ -66,7 +95,10 @@ fun HomeNoteItem(
     Column(
         modifier = modifier
             .clip(PienoteTheme.shapes.veryLarge)
-            .clickable(onClick = onClick)
+            .combinedClickable(
+                onClick = onClick,
+                onLongClick = onLongClick
+            )
             .background(
                 color = animatedItemColor,
                 shape = PienoteTheme.shapes.veryLarge
@@ -78,7 +110,6 @@ fun HomeNoteItem(
                 onSwipeRight = onDelete,
                 shouldVibrateOnAchieveThreshold = true
             )
-
     ) {
         AnimatedContent(
             targetState = swipeState.directionalSwipe.isSwiped,
@@ -97,7 +128,20 @@ fun HomeNoteItem(
                     tint = PienoteTheme.colors.onSecondaryContainer
                 )
             } else {
-                Column {
+                val selectedColor = PienoteTheme.colors.tertiaryContainer
+
+                Column(
+                    Modifier
+                        .drawWithContent {
+                            drawRoundRect(
+                                color = selectedColor,
+                                size = animatedIsSelectedSize,
+                                cornerRadius = CornerRadius(8f)
+                            )
+                            drawContent()
+                        }
+                        .padding(start = with(density) { animatedIsSelectedSize.width.toDp() } / 2)
+                ) {
                     Text(
                         modifier = Modifier
                             .padding(top = 24.dp, start = 24.dp, end = 24.dp),
@@ -118,6 +162,32 @@ fun HomeNoteItem(
                     )
                 }
             }
+        }
+    }
+}
+
+@Preview(
+    wallpaper = Wallpapers.BLUE_DOMINATED_EXAMPLE,
+    backgroundColor = 0xFF3F51B5,
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
+@Composable
+private fun HomeNoteItemPreview() {
+    PienoteTheme {
+        Box(
+            modifier = Modifier
+                .background(PienoteTheme.colors.background)
+                .fillMaxWidth()
+                .padding(24.dp)
+        ) {
+            HomeNoteItem(
+                title = "Morteza",
+                note = "Give Me Some more",
+                isSelected = true,
+                onDelete = { /*TODO*/ },
+                onClick = { /*TODO*/ },
+                onLongClick = {}
+            )
         }
     }
 }
