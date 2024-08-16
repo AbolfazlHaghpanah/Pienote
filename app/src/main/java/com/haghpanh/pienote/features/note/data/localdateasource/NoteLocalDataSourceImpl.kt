@@ -13,7 +13,7 @@ class NoteLocalDataSourceImpl @Inject constructor(
     override fun observeNote(id: Int): Flow<NoteWithCategory> =
         noteDao.observeNote(id)
 
-    override fun getCategories(): List<CategoryEntity> =
+    override suspend fun getCategories(): List<CategoryEntity> =
         noteDao.getCategories()
 
     override suspend fun insertNote(note: NoteEntity) {

@@ -7,6 +7,6 @@ import javax.inject.Inject
 class NoteGetCategoriesUseCase @Inject constructor(
     private val noteRepository: NoteRepository
 ) {
-    operator fun invoke(): List<CategoryDomainModel> =
+    suspend operator fun invoke(): List<CategoryDomainModel> =
         noteRepository.getCategories()
 }

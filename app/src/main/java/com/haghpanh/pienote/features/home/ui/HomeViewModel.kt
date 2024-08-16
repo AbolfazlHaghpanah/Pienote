@@ -88,7 +88,7 @@ class HomeViewModel @Inject constructor(
                     categoryId = categoryId
                 )
             }.onSuccess {
-                updateState { it.copy(movedToCategoryId = categoryId) }
+                updateState { copy(movedToCategoryId = categoryId) }
             }
         }
     }
@@ -98,11 +98,7 @@ class HomeViewModel @Inject constructor(
             homeObserveNotesUseCase().collect { notes ->
                 val mappedNotes = notes.map { it.toUiModel() }
 
-                updateState {
-                    it.copy(
-                        notes = mappedNotes
-                    )
-                }
+                updateState { copy(notes = mappedNotes) }
             }
         }
     }
@@ -114,9 +110,7 @@ class HomeViewModel @Inject constructor(
                     category.toUiModel()
                 }
 
-                updateState {
-                    it.copy(categoriesChunked = mappedCategories.chunkedEven())
-                }
+                updateState { copy(categoriesChunked = mappedCategories.chunkedEven()) }
             }
         }
     }

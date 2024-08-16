@@ -45,10 +45,8 @@ class CategoryViewModel @Inject constructor(
 
         viewModelScope.launch {
             availableNotes.collect { notes ->
-                updateState { state ->
-                    state.copy(
-                        availableNotesToAdd = notes.map { note -> note.toUiModel() }
-                    )
+                updateState {
+                    copy(availableNotesToAdd = notes.map { note -> note.toUiModel() })
                 }
             }
         }
@@ -59,8 +57,8 @@ class CategoryViewModel @Inject constructor(
 
         viewModelScope.launch {
             category.collect { result ->
-                updateState { state ->
-                    state.copy(
+                updateState {
+                    copy(
                         name = result.name,
                         priority = result.priority,
                         image = result.image,

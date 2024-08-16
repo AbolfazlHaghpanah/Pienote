@@ -7,13 +7,10 @@ import androidx.compose.runtime.State
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewModelScope
 import com.haghpanh.pienote.commonui.utils.annotation.EffectState
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.update
 import kotlin.reflect.KProperty
 import kotlin.reflect.full.hasAnnotation
 
@@ -39,45 +36,22 @@ abstract class BaseViewModel<ViewState>(
     protected fun getCurrentState() = _state.value
 
     /**
-     * Update the state of the ViewModel based on a transformation function.
+     * Safely updates the current state of the ViewModel by applying a transformation to it.
      *
-     * @param dispatcher The coroutine dispatcher to use for the update operation. Default is [Dispatchers.IO].
-     * @param copy A function that computes the new state based on the current state.
+     * Example usage:
+     * ```
+     * updateState { copy(property = newValue) }
+     * ```
+     * @param copy A lambda function that takes the current state and returns the new transformed state.
      */
     fun updateState(
-        dispatcher: CoroutineDispatcher = Dispatchers.IO,
-        copy: (ViewState) -> ViewState
+        copy: ViewState.() -> ViewState
     ) {
-        viewModelScope.launch(dispatcher) {
-            val newState = copy(getCurrentState())
-
-            _state.emit(newState)
-        }
+        _state.update(copy)
     }
 
     /**
-     * Update the state of the ViewModel based on a transformation function and
-     * invoke a callback when the state is updated.
-     *
-     * @param dispatcher The coroutine dispatcher to use for the update operation. Default is [Dispatchers.IO].
-     * @param onUpdated A callback function to invoke after the state is updated.
-     * @param copy A function that computes the new state based on the current state.
-     */
-    protected fun updateState(
-        dispatcher: CoroutineDispatcher = Dispatchers.IO,
-        onUpdated: (suspend () -> Unit)? = null,
-        copy: (ViewState) -> ViewState
-    ) {
-        viewModelScope.launch(dispatcher) {
-            val newState = copy(getCurrentState())
-            _state.emit(newState)
-
-            onUpdated?.invoke()
-        }
-    }
-
-    /**
-     *gives access to SavedStateHandle in compose Screen or viewModels that needs instance of it.
+     * gives access to SavedStateHandle in compose Screen or viewModels that needs instance of it.
      *
      * @param key the key of value in savedStateHandle
      * @return get value with given key from savedStateHandle

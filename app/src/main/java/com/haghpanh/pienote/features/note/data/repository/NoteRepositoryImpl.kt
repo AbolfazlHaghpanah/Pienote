@@ -16,7 +16,7 @@ class NoteRepositoryImpl @Inject constructor(
     override fun observeNote(id: Int): Flow<NoteWithCategoryDomainModel> =
         noteLocalDataSource.observeNote(id).map { it.toDomainModel() }
 
-    override fun getCategories(): List<CategoryDomainModel> =
+    override suspend fun getCategories(): List<CategoryDomainModel> =
         noteLocalDataSource.getCategories().map { it.toDomainModel() }
 
     override suspend fun insertNote(note: NoteDomainModel) {

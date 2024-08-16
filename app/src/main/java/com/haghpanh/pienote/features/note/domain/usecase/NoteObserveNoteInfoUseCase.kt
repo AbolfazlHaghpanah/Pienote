@@ -8,6 +8,6 @@ import javax.inject.Inject
 class NoteObserveNoteInfoUseCase @Inject constructor(
     private val noteRepository: NoteRepository
 ) {
-    operator fun invoke(id: Int): Flow<NoteWithCategoryDomainModel> =
+    suspend operator fun invoke(id: Int): Flow<NoteWithCategoryDomainModel> =
         noteRepository.observeNote(id)
 }

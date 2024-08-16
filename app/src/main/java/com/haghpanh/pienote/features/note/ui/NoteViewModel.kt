@@ -44,21 +44,17 @@ class NoteViewModel @Inject constructor(
     fun switchEditMode(focusRequestType: FocusRequestType = FocusRequestType.Non) {
         if (getCurrentState().isEmptyNote) return
 
-        updateState { state ->
-            state.copy(
-                isEditing = !state.isEditing,
+        updateState {
+            copy(
+                isEditing = !isEditing,
                 focusRequestType = focusRequestType
             )
         }
     }
 
     fun updateCategory(value: Int?) {
-        updateState(
-            onUpdated = ::updateOrInsertNote
-        ) { state ->
-            val newNote = state.note.copy(categoryId = value)
-            state.copy(note = newNote)
-        }
+        updateState { copy(note = note.copy(categoryId = value)) }
+        updateOrInsertNote()
     }
 
     fun updateOrInsertNote() {
@@ -77,37 +73,34 @@ class NoteViewModel @Inject constructor(
             val newImage = noteUpdateNoteImageUseCase(note = note, uri = uri)
             val newNote = getCurrentState().note.copy(image = newImage?.toString())
 
-            updateState { state ->
-                state.copy(note = newNote)
-            }
+            updateState { copy(note = newNote) }
         }
     }
 
     fun updateNoteText(value: String) {
-        updateState { state ->
-            val newNote = getCurrentState().note.copy(note = value)
-            state.copy(note = newNote)
+        updateState {
+            val newNote = note.copy(note = value)
+            copy(note = newNote)
         }
     }
 
     fun updateTitleText(value: String) {
         updateState {
-            val newNote = getCurrentState().note.copy(title = value)
-            it.copy(note = newNote)
+            val newNote = note.copy(title = value)
+            copy(note = newNote)
         }
     }
 
     private fun getCategories() {
-        updateState { state ->
+        viewModelScope.launch(Dispatchers.IO) {
             val categories = getCategoriesUseCase().map { it.toUiModel() }
-            state.copy(categories = categories)
+            updateState { copy(categories = categories) }
         }
     }
 
     private fun updateCurrentNote() {
         viewModelScope.launch(Dispatchers.IO) {
             val note = getCurrentState().note.toDomainModel()
-
             updateNoteUseCase(note)
         }
     }
@@ -115,7 +108,6 @@ class NoteViewModel @Inject constructor(
     private fun insertCurrentNote() {
         viewModelScope.launch(Dispatchers.IO) {
             val note = getCurrentState().note.toDomainModel()
-
             insertNoteUseCase(note)
         }
     }
@@ -126,8 +118,8 @@ class NoteViewModel @Inject constructor(
                 val noteId = savedStateHandler<Int>("id") ?: -1
 
                 observeNoteInfoUseCase(noteId).collect { noteWithCat ->
-                    updateState { state ->
-                        state.copy(
+                    updateState {
+                        copy(
                             note = noteWithCat.note.toUiModel(),
                             category = noteWithCat.category?.toUiModel()
                         )
@@ -135,8 +127,8 @@ class NoteViewModel @Inject constructor(
                 }
             }
         } else {
-            updateState { state ->
-                state.copy(
+            updateState {
+                copy(
                     isEditing = true,
                     note = Note()
                 )
@@ -146,7 +138,7 @@ class NoteViewModel @Inject constructor(
 
     fun updateFocusRequester(type: FocusRequestType) {
         updateState {
-            it.copy(focusRequestType = type)
+            copy(focusRequestType = type)
         }
     }
 

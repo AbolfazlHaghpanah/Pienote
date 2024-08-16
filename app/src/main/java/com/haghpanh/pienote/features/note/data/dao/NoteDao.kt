@@ -18,7 +18,7 @@ interface NoteDao {
     fun observeNote(id: Int): Flow<NoteWithCategory>
 
     @Query("select * from categories")
-    fun getCategories(): List<CategoryEntity>
+    suspend fun getCategories(): List<CategoryEntity>
 
     @Insert
     suspend fun insertNote(note: NoteEntity)

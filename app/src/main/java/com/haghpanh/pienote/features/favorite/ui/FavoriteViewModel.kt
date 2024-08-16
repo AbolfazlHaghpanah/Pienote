@@ -27,7 +27,7 @@ class FavoriteViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             observeFavoriteNotesUseCase().collect { result ->
                 updateState {
-                    it.copy(notes = result.map { it.toUiModel() })
+                    copy(notes = result.map { it.toUiModel() })
                 }
             }
         }

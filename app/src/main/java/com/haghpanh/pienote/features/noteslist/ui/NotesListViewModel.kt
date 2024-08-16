@@ -36,9 +36,7 @@ class NotesListViewModel @Inject constructor(
             observeNotesUseCase().collect { result ->
                 val mappedResult = result.map { it.toUiModel() }
 
-                updateState {
-                    it.copy(notes = mappedResult)
-                }
+                updateState { copy(notes = mappedResult) }
             }
         }
     }
