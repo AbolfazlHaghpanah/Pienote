@@ -3,11 +3,11 @@ package com.haghpanh.pienote.features.home.ui
 import android.net.Uri
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
-import com.haghpanh.pienote.commondomain.model.CategoryDomainModel
 import com.haghpanh.pienote.commondomain.model.NoteDomainModel
 import com.haghpanh.pienote.commonui.BaseViewModel
 import com.haghpanh.pienote.commonui.utils.SnackbarManager
 import com.haghpanh.pienote.commonui.utils.chunkedEven
+import com.haghpanh.pienote.features.home.domain.model.CategoryWithNotesCountDomainModel
 import com.haghpanh.pienote.features.home.domain.usecase.HomeAddNotesToCategoryUseCase
 import com.haghpanh.pienote.features.home.domain.usecase.HomeDeleteNoteUseCase
 import com.haghpanh.pienote.features.home.domain.usecase.HomeInsertCategoryUseCase
@@ -115,12 +115,13 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private fun CategoryDomainModel.toUiModel(): Category =
+    private fun CategoryWithNotesCountDomainModel.toUiModel(): Category =
         Category(
             id = id,
             name = name,
             priority = priority,
-            image = image
+            image = image,
+            noteCounts = noteCount
         )
 
     private fun NoteDomainModel.toUiModel(): Note =

@@ -36,7 +36,7 @@ fun PienoteTopBar(
         title = {
             Text(
                 text = title,
-                style = PienoteTheme.typography.headlineLarge,
+                style = PienoteTheme.typography.headlineMedium,
                 color = PienoteTheme.colors.onBackground
             )
         },

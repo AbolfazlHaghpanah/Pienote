@@ -23,6 +23,7 @@ fun HomeCategoryItem(
     modifier: Modifier = Modifier,
     name: String,
     image: String? = null,
+    noteCount: Int,
     onClick: () -> Unit
 ) {
     Box(
@@ -46,6 +47,23 @@ fun HomeCategoryItem(
                 model = it,
                 contentDescription = name,
                 contentScale = ContentScale.Crop
+            )
+        }
+
+        if (noteCount != 0) {
+            Text(
+                modifier = Modifier
+                    .padding(8.dp)
+                    .clip(PienoteTheme.shapes.rounded)
+                    .background(
+                        shape = PienoteTheme.shapes.rounded,
+                        color = PienoteTheme.colors.background.copy(alpha = 0.4f)
+                    )
+                    .align(Alignment.TopEnd)
+                    .padding(horizontal = 6.dp, vertical = 2.dp),
+                text = "$noteCount ${if (noteCount == 1) "Note" else "Notes"}",
+                style = PienoteTheme.typography.titleSmall,
+                color = PienoteTheme.colors.onBackground
             )
         }
 
