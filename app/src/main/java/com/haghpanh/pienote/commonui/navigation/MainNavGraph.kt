@@ -6,11 +6,9 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.haghpanh.pienote.features.category.ui.CategoryScreen
-import com.haghpanh.pienote.features.favorite.ui.FavoriteScreen
 import com.haghpanh.pienote.features.home.ui.HomeScreen
 import com.haghpanh.pienote.features.library.ui.LibraryScreen
 import com.haghpanh.pienote.features.note.ui.NoteScreen
-import com.haghpanh.pienote.features.noteslist.ui.NotesListScreen
 
 fun NavGraphBuilder.mainNavGraph(
     navController: NavController
@@ -21,10 +19,6 @@ fun NavGraphBuilder.mainNavGraph(
 
     composable(AppScreens.HomeScreen.route) {
         HomeScreen(navController = navController)
-    }
-
-    composable(AppScreens.FavoriteScreen.route) {
-        FavoriteScreen(navController = navController)
     }
 
     composable(
@@ -53,9 +47,5 @@ fun NavGraphBuilder.mainNavGraph(
         )
     ) {
         NoteScreen(navController = navController)
-    }
-
-    composable(AppScreens.NotesListScreen.route) {
-        NotesListScreen(navController = navController)
     }
 }
