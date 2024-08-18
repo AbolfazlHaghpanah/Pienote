@@ -1,10 +1,10 @@
 package com.haghpanh.pienote.data.repository
 
-import com.haghpanh.pienote.commondomain.model.CategoryDomainModel
 import com.haghpanh.pienote.commondomain.model.NoteDomainModel
 import com.haghpanh.pienote.data.dao.CategoryDao
 import com.haghpanh.pienote.data.dao.NoteDao
 import com.haghpanh.pienote.data.utils.toEntity
+import com.haghpanh.pienote.features.home.domain.model.CategoryWithNotesCountDomainModel
 import com.haghpanh.pienote.features.home.domain.repository.HomeRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -24,8 +24,8 @@ class HomeRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun observeCategories(): Flow<List<CategoryDomainModel>> {
-        val categoriesFlow = categoryDao.observeCategories()
+    override fun observeCategories(): Flow<List<CategoryWithNotesCountDomainModel>> {
+        val categoriesFlow = categoryDao.observeCategoriesWithNotesCount()
 
         return categoriesFlow.map { categories ->
             categories.map { category ->

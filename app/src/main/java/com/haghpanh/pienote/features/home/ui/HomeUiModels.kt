@@ -32,5 +32,6 @@ data class Category(
     val id: Int = 0,
     val name: String,
     val priority: Int?,
-    val image: String?
+    val image: String?,
+    val noteCounts: Int
 )

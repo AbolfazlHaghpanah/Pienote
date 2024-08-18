@@ -7,13 +7,22 @@ import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
 import com.haghpanh.pienote.data.entity.CategoryEntity
+import com.haghpanh.pienote.data.models.CategoryWithNotesCount
 import com.haghpanh.pienote.data.relation.CategoryWithNotes
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface CategoryDao {
-    @Query("SELECT * FROM categories ORDER BY id DESC")
-    fun observeCategories(): Flow<List<CategoryEntity>>
+    @Query(
+        """
+            SELECT categories.*, COUNT(notes.id) as notesCount
+            FROM categories     
+            LEFT JOIN notes ON category_id = categories.id 
+            GROUP BY categories.id 
+            ORDER BY id DESC
+            """
+    )
+    fun observeCategoriesWithNotesCount(): Flow<List<CategoryWithNotesCount>>
 
     @Transaction
     @Query("SELECT * FROM categories WHERE id = :categoryId")

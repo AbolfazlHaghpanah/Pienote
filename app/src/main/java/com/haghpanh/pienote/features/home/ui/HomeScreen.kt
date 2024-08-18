@@ -96,10 +96,7 @@ private fun HomeScreen(
         },
         onDeleteNote = viewModel::deleteNote,
         onAddNewCategory = viewModel::addNewCategory,
-        onAddNotesToCategory = viewModel::addNoteToCategory,
-        navigateBack = {
-            navController.navigateUp()
-        }
+        onAddNotesToCategory = viewModel::addNoteToCategory
     )
 }
 
@@ -112,8 +109,7 @@ fun HomeScreen(
     navigateToRoute: (String) -> Unit,
     onDeleteNote: (Note) -> Unit,
     onAddNewCategory: (List<Int>, String, Uri?) -> Unit,
-    onAddNotesToCategory: (noteIds: List<Int>, categoryId: Int) -> Unit,
-    navigateBack: () -> Unit
+    onAddNotesToCategory: (noteIds: List<Int>, categoryId: Int) -> Unit
 ) {
     val listState = rememberLazyListState()
     val selectedNotes = remember { mutableStateListOf<Note>() }
@@ -132,12 +128,8 @@ fun HomeScreen(
         mutableStateOf(null)
     }
 
-    BackHandler {
-        if (isSelectingNote) {
-            selectedNotes.removeAll { true }
-        } else {
-            navigateBack()
-        }
+    BackHandler(isSelectingNote) {
+        selectedNotes.removeAll { true }
     }
 
     // we should sync notes that is available on screen with selected notes
@@ -277,7 +269,7 @@ fun HomeScreen(
                         title = stringResource(R.string.label_home),
                         icon = R.drawable.home,
                         parent = parent,
-                        onBack = navigateBack
+                        onBack = { navigateToRoute(AppScreens.LibraryScreen.route) }
                     )
                 } else {
                     PienoteTopBar(
@@ -312,7 +304,8 @@ fun HomeScreen(
                                     }
                                 ),
                             name = category.name,
-                            image = category.image
+                            image = category.image,
+                            noteCount = category.noteCounts
                         ) {
                             navigateToRoute(
                                 AppScreens.CategoryScreen.createRoute(
