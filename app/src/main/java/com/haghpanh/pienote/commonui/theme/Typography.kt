@@ -5,6 +5,7 @@ import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDirection
 import com.haghpanh.pienote.R
 
 private val robotoBoldFont = FontFamily(Font(R.font.roboto_bold, FontWeight.Normal))
@@ -12,21 +13,66 @@ private val robotoRegularFont = FontFamily(Font(R.font.roboto_regular, FontWeigh
 private val baseline = Typography()
 
 private val pienoteTypography = Typography(
-    displayLarge = baseline.displayLarge.copy(fontFamily = robotoBoldFont),
-    displayMedium = baseline.displayMedium.copy(fontFamily = robotoBoldFont),
-    displaySmall = baseline.displaySmall.copy(fontFamily = robotoBoldFont),
-    headlineLarge = baseline.headlineLarge.copy(fontFamily = robotoBoldFont),
-    headlineMedium = baseline.headlineMedium.copy(fontFamily = robotoBoldFont),
-    headlineSmall = baseline.headlineSmall.copy(fontFamily = robotoBoldFont),
-    titleLarge = baseline.titleLarge.copy(fontFamily = robotoBoldFont),
-    titleMedium = baseline.titleMedium.copy(fontFamily = robotoBoldFont),
-    titleSmall = baseline.titleSmall.copy(fontFamily = robotoBoldFont),
-    bodyLarge = baseline.bodyLarge.copy(fontFamily = robotoRegularFont),
-    bodyMedium = baseline.bodyMedium.copy(fontFamily = robotoRegularFont),
-    bodySmall = baseline.bodySmall.copy(fontFamily = robotoRegularFont),
-    labelLarge = baseline.labelLarge.copy(fontFamily = robotoRegularFont),
-    labelMedium = baseline.labelMedium.copy(fontFamily = robotoRegularFont),
-    labelSmall = baseline.labelSmall.copy(fontFamily = robotoRegularFont),
+    displayLarge = baseline.displayLarge.copy(
+        fontFamily = robotoBoldFont,
+        textDirection = TextDirection.ContentOrLtr
+    ),
+    displayMedium = baseline.displayMedium.copy(
+        fontFamily = robotoBoldFont,
+        textDirection = TextDirection.ContentOrLtr
+    ),
+    displaySmall = baseline.displaySmall.copy(
+        fontFamily = robotoBoldFont,
+        textDirection = TextDirection.ContentOrLtr
+    ),
+    headlineLarge = baseline.headlineLarge.copy(
+        fontFamily = robotoBoldFont,
+        textDirection = TextDirection.ContentOrLtr
+    ),
+    headlineMedium = baseline.headlineMedium.copy(
+        fontFamily = robotoBoldFont,
+        textDirection = TextDirection.ContentOrLtr
+    ),
+    headlineSmall = baseline.headlineSmall.copy(
+        fontFamily = robotoBoldFont,
+        textDirection = TextDirection.ContentOrLtr
+    ),
+    titleLarge = baseline.titleLarge.copy(
+        fontFamily = robotoBoldFont,
+        textDirection = TextDirection.ContentOrLtr
+    ),
+    titleMedium = baseline.titleMedium.copy(
+        fontFamily = robotoBoldFont,
+        textDirection = TextDirection.ContentOrLtr
+    ),
+    titleSmall = baseline.titleSmall.copy(
+        fontFamily = robotoBoldFont,
+        textDirection = TextDirection.ContentOrLtr
+    ),
+    bodyLarge = baseline.bodyLarge.copy(
+        fontFamily = robotoRegularFont,
+        textDirection = TextDirection.ContentOrLtr
+    ),
+    bodyMedium = baseline.bodyMedium.copy(
+        fontFamily = robotoRegularFont,
+        textDirection = TextDirection.ContentOrLtr
+    ),
+    bodySmall = baseline.bodySmall.copy(
+        fontFamily = robotoRegularFont,
+        textDirection = TextDirection.ContentOrLtr
+    ),
+    labelLarge = baseline.labelLarge.copy(
+        fontFamily = robotoRegularFont,
+        textDirection = TextDirection.ContentOrLtr
+    ),
+    labelMedium = baseline.labelMedium.copy(
+        fontFamily = robotoRegularFont,
+        textDirection = TextDirection.ContentOrLtr
+    ),
+    labelSmall = baseline.labelSmall.copy(
+        fontFamily = robotoRegularFont,
+        textDirection = TextDirection.ContentOrLtr
+    ),
 )
 
 val LocalTypography = staticCompositionLocalOf { pienoteTypography }

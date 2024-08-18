@@ -144,6 +144,7 @@ fun HomeNoteItem(
                 ) {
                     Text(
                         modifier = Modifier
+                            .fillMaxWidth()
                             .padding(top = 24.dp, start = 24.dp, end = 24.dp),
                         text = title,
                         style = PienoteTheme.typography.headlineSmall,
@@ -154,6 +155,7 @@ fun HomeNoteItem(
 
                     Text(
                         modifier = Modifier
+                            .fillMaxWidth()
                             .padding(horizontal = 24.dp, vertical = 16.dp),
                         text = note,
                         style = PienoteTheme.typography.bodyLarge,
