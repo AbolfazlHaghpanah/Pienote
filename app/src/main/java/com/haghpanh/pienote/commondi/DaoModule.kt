@@ -2,6 +2,7 @@ package com.haghpanh.pienote.commondi
 
 import com.haghpanh.pienote.data.dao.CategoryDao
 import com.haghpanh.pienote.data.dao.NoteDao
+import com.haghpanh.pienote.data.dao.TagDao
 import com.haghpanh.pienote.data.utils.PienoteDatabase
 import dagger.Module
 import dagger.Provides
@@ -18,4 +19,8 @@ class DaoModule {
     @Provides
     fun provideNoteDao(pienoteDatabase: PienoteDatabase): NoteDao =
         pienoteDatabase.NoteDao()
+
+    @Provides
+    fun provideTagDao(pienoteDatabase: PienoteDatabase): TagDao =
+        pienoteDatabase.TagDao()
 }
