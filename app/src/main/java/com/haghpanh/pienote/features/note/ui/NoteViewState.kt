@@ -10,6 +10,7 @@ data class NoteViewState(
     val isEditing: Boolean = false,
     val categories: List<Category> = emptyList(),
     val focusRequestType: FocusRequestType = FocusRequestType.Non,
+    val noteId: Int?,
     val isExist: Boolean
 ) {
     val isEmptyNote = note.title.isNullOrEmpty() && note.note.isNullOrEmpty()

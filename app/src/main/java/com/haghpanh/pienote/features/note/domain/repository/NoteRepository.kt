@@ -8,6 +8,6 @@ import kotlinx.coroutines.flow.Flow
 interface NoteRepository {
     fun observeNote(id: Int): Flow<NoteWithCategoryDomainModel>
     suspend fun getCategories(): List<CategoryDomainModel>
-    suspend fun insertNote(note: NoteDomainModel)
+    suspend fun insertNote(note: NoteDomainModel): Int
     suspend fun updateNote(note: NoteDomainModel)
 }

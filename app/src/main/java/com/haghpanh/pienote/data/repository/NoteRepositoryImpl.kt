@@ -21,8 +21,8 @@ class NoteRepositoryImpl @Inject constructor(
     override suspend fun getCategories(): List<CategoryDomainModel> =
         categoryDao.getCategories().map { it.toDomainModel() }
 
-    override suspend fun insertNote(note: NoteDomainModel) =
-        noteDao.insertNote(note.toEntity(true))
+    override suspend fun insertNote(note: NoteDomainModel): Int =
+        noteDao.insertNote(note.toEntity(true)).toInt()
 
     override suspend fun updateNote(note: NoteDomainModel) =
         noteDao.updateNote(note.toEntity())

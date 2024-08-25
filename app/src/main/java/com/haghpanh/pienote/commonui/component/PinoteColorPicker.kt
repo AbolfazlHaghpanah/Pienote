@@ -48,8 +48,11 @@ fun PienoteColorPicker(
     ) {
         items(colors) {
             val animatedBorderWidth by animateDpAsState(
-                targetValue = if (color == it)
-                    8.dp else 24.dp,
+                targetValue = if (color == it) {
+                    8.dp
+                } else {
+                    24.dp
+                },
                 label = "change border width"
             )
 
@@ -134,5 +137,5 @@ private val colorPickerDefaultColors = listOf(
     "#BDB76B", // Dark Khaki
     "#C0C0C0", // Silver
     "#FFA07A", // Light Salmon
-    "#F08080"  // Light Coral
+    "#F08080" // Light Coral
 )

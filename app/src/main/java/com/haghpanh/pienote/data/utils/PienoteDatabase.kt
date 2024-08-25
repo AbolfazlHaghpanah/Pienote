@@ -16,7 +16,8 @@ import com.haghpanh.pienote.data.entity.TagEntity
         TagEntity::class
     ],
     version = 1,
-    views = []
+    views = [],
+    exportSchema = true
 )
 abstract class PienoteDatabase : RoomDatabase() {
     abstract fun NoteDao(): NoteDao
