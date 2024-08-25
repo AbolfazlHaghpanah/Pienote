@@ -398,6 +398,7 @@ fun CategoryScreen(
                         modifier = Modifier.padding(horizontal = 24.dp, vertical = 14.dp),
                         title = note.title.orEmpty(),
                         note = note.note.orEmpty(),
+                        color = note.color,
                         onClick = {
                             navigateToRoute(
                                 AppScreens.NoteScreen.createRoute(
@@ -410,7 +411,7 @@ fun CategoryScreen(
                         onDelete = {
                             onDeleteNoteFromCategory(note.id)
                         },
-                        isSelected = false
+                        isSelected = false,
                     )
                 }
             } else {

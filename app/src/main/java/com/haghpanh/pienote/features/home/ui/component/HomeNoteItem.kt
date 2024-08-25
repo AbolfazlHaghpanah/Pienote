@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -30,6 +31,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextOverflow
@@ -40,12 +42,14 @@ import com.haghpanh.pienote.commonui.theme.PienoteTheme
 import com.haghpanh.pienote.commonui.utils.SwipeState
 import com.haghpanh.pienote.commonui.utils.rememberSwipeState
 import com.haghpanh.pienote.commonui.utils.swipeHandler
+import com.haghpanh.pienote.commonui.utils.toComposeColor
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun HomeNoteItem(
     title: String,
     note: String,
+    color: String?,
     isSelected: Boolean,
     modifier: Modifier = Modifier,
     onDelete: () -> Unit,
@@ -53,14 +57,13 @@ fun HomeNoteItem(
     onLongClick: () -> Unit = {}
 ) {
     val density = LocalDensity.current
+    val cornerSize = PienoteTheme
+        .shapes
+        .veryLarge
+        .topStart
+        .toPx(shapeSize = Size.Zero, density)
     val animatedIsSelectedSize by animateSizeAsState(
         targetValue = if (isSelected) {
-            val cornerSize = PienoteTheme
-                .shapes
-                .veryLarge
-                .topStart
-                .toPx(shapeSize = Size.Zero, density)
-
             Size(cornerSize, cornerSize)
         } else {
             Size.Zero
@@ -132,6 +135,16 @@ fun HomeNoteItem(
 
                 Column(
                     Modifier
+                        .fillMaxSize()
+                        .drawWithContent {
+                            color?.let { color ->
+                                drawRoundRect(
+                                    color = color.toComposeColor(),
+                                    topLeft = Offset(x = size.width - cornerSize, y = 0f)
+                                )
+                            }
+                            drawContent()
+                        }
                         .drawWithContent {
                             drawRoundRect(
                                 color = selectedColor,
@@ -185,10 +198,11 @@ private fun HomeNoteItemPreview() {
             HomeNoteItem(
                 title = "Morteza",
                 note = "Give Me Some more",
+                color = "#443233",
                 isSelected = true,
                 onDelete = { /*TODO*/ },
                 onClick = { /*TODO*/ },
-                onLongClick = {}
+                onLongClick = {},
             )
         }
     }

@@ -38,7 +38,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -335,6 +337,7 @@ fun HomeScreen(
                         ),
                     title = note.title,
                     note = note.note,
+                    color = note.color,
                     isSelected = isNoteSelected,
                     onDelete = {
                         onDeleteNote(note)
@@ -362,5 +365,57 @@ fun HomeScreen(
                 )
             }
         }
+    }
+}
+
+@Suppress("MaximumLineLength", "MaxLineLength")
+@Preview(showBackground = true)
+@Composable
+fun HomeScreenPreview() {
+    PienoteTheme {
+        HomeScreen(
+            state = HomeViewState(
+                notes = listOf(
+                    Note(
+                        0,
+                        "No Time To Die",
+                        "For example, if ExampleScreen is a destination in a navigation graph, call hiltViewModel() to get an instance of ExampleViewModel scoped to the destination as shown in the code snippet below:",
+                        addedTime = ""
+                    ),
+                    Note(
+                        0,
+                        "No Time To Die",
+                        "For example, if ExampleScreen is a destination in a navigation graph, call hiltViewModel() to get an instance of ExampleViewModel scoped to the destination as shown in the code snippet below:",
+                        addedTime = ""
+                    ),
+                    Note(
+                        0,
+                        "No Time To Die",
+                        "For example, if ExampleScreen is a destination in a navigation graph, call hiltViewModel() to get an instance of ExampleViewModel scoped to the destination as shown in the code snippet below:",
+                        addedTime = ""
+                    ),
+                    Note(
+                        0,
+                        "No Time To Die",
+                        "For example, if ExampleScreen is a destination in a navigation graph, call hiltViewModel() to get an instance of ExampleViewModel scoped to the destination as shown in the code snippet below:",
+                        addedTime = ""
+                    ),
+                    Note(
+                        0,
+                        "No Time To Die",
+                        "For example, if ExampleScreen is a destination in a navigation graph, call hiltViewModel() to get an instance of ExampleViewModel scoped to the destination as shown in the code snippet below:",
+                        addedTime = ""
+                    ),
+
+                )
+            ),
+            "Parent",
+            SnackbarManager(LocalContext.current),
+            {},
+            {},
+            { _, _, _ ->
+            },
+            { _, _ -> },
+        )
     }
 }
