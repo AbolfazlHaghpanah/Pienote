@@ -12,7 +12,7 @@ fun NoteDomainModel.toEntity(isNew: Boolean = false): NoteEntity =
             addedTime = addedTime,
             lastChangedTime = lastChangedTime,
             categoryId = categoryId,
-            priority = priority
+            priorityColor = color
         )
     } else {
         NoteEntity(
@@ -23,6 +23,6 @@ fun NoteDomainModel.toEntity(isNew: Boolean = false): NoteEntity =
             addedTime = addedTime,
             lastChangedTime = lastChangedTime,
             categoryId = categoryId,
-            priority = priority
+            priorityColor = color
         )
     }

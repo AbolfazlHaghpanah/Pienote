@@ -133,6 +133,6 @@ class HomeViewModel @Inject constructor(
             addedTime = addedTime,
             lastChangedTime = lastChangedTime,
             categoryId = categoryId,
-            priority = priority
+            priority = color
         )
 }

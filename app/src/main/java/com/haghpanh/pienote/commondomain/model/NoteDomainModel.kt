@@ -8,5 +8,5 @@ data class NoteDomainModel(
     val addedTime: String,
     val lastChangedTime: String? = null,
     val categoryId: Int? = null,
-    val priority: Int? = null
+    val color: String? = null
 )

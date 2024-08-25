@@ -128,6 +128,6 @@ class CategoryViewModel @Inject constructor(
             addedTime = addedTime,
             lastChangedTime = lastChangedTime,
             categoryId = categoryId,
-            priority = priority?.toFloat()
+            color = color
         )
 }

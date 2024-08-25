@@ -20,7 +20,8 @@ data class NoteEntity(
     val lastChangedTime: String?,
     @ColumnInfo(name = "category_id")
     val categoryId: Int?,
-    val priority: Int?
+    @ColumnInfo(name = "priority_color")
+    val priorityColor: String?
 ) {
     fun toDomainModel(): NoteDomainModel =
         NoteDomainModel(
@@ -30,6 +31,7 @@ data class NoteEntity(
             image = image,
             addedTime = addedTime,
             lastChangedTime = lastChangedTime,
-            categoryId = categoryId
+            categoryId = categoryId,
+            color = priorityColor
         )
 }

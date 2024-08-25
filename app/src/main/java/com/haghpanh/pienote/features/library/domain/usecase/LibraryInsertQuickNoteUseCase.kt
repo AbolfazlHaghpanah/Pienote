@@ -21,6 +21,6 @@ class LibraryInsertQuickNoteUseCase @Inject constructor(
             addedTime = addedTime,
             lastChangedTime = null,
             categoryId = null,
-            priority = null
+            color = null
         )
 }

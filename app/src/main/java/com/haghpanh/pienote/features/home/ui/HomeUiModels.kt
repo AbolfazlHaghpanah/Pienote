@@ -12,7 +12,7 @@ data class Note(
     val addedTime: String,
     val lastChangedTime: String? = null,
     val categoryId: Int? = null,
-    val priority: Int? = null
+    val priority: String? = null
 ) {
     fun toDomainModel(): NoteDomainModel =
         NoteDomainModel(
@@ -23,7 +23,7 @@ data class Note(
             addedTime = addedTime.orEmpty(),
             lastChangedTime = lastChangedTime,
             categoryId = categoryId,
-            priority = priority
+            color = priority
         )
 }
 

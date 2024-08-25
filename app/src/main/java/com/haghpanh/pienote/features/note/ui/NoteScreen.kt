@@ -6,6 +6,7 @@ import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -61,8 +62,10 @@ import com.haghpanh.pienote.R
 import com.haghpanh.pienote.commonui.component.PienoteChip
 import com.haghpanh.pienote.commonui.navigation.AppScreens
 import com.haghpanh.pienote.commonui.theme.PienoteTheme
+import com.haghpanh.pienote.commonui.utils.toComposeColor
 import com.haghpanh.pienote.features.note.ui.component.CategoryChipSection
 import com.haghpanh.pienote.features.note.ui.component.ImageCoverSection
+import com.haghpanh.pienote.features.note.ui.component.NoteColorSection
 import com.haghpanh.pienote.features.note.utils.FocusRequestType
 import com.haghpanh.pienote.features.note.utils.rememberNoteNestedScrollConnection
 
@@ -115,6 +118,7 @@ fun NoteScreen(
         },
         onFocusRequestTypeChanged = viewModel::updateFocusRequester,
         onSwitchEditMode = viewModel::switchEditMode,
+        onUpdateColor = viewModel::updateNoteColor,
         navigateToRoute = { route -> navController.navigate(route) },
         onBack = onNavigateBack
     )
@@ -131,6 +135,7 @@ fun NoteScreen(
     onRequestToPickImage: () -> Unit,
     onFocusRequestTypeChanged: (FocusRequestType) -> Unit,
     onSwitchEditMode: (FocusRequestType) -> Unit,
+    onUpdateColor: (String?) -> Unit,
     navigateToRoute: (String) -> Unit,
     onBack: () -> Unit
 ) {
@@ -141,6 +146,12 @@ fun NoteScreen(
     val interactionSource = remember { MutableInteractionSource() }
     val focusManager = LocalFocusManager.current
     val localConfig = LocalConfiguration.current
+
+    // changes fab color based on note color
+    val noteColor: Color by animateColorAsState(
+        targetValue = state.note.color?.toComposeColor()
+            ?: PienoteTheme.colors.primaryContainer
+    )
 
     LaunchedEffect(state.isEditing) {
         if (!state.isEditing) {
@@ -162,7 +173,9 @@ fun NoteScreen(
             .imePadding(),
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { onSwitchEditMode(FocusRequestType.Non) }
+                onClick = { onSwitchEditMode(FocusRequestType.Non) },
+                containerColor = noteColor,
+                contentColor = PienoteTheme.colors.surface
             ) {
                 AnimatedContent(
                     targetState = state.isEditing,
@@ -181,6 +194,14 @@ fun NoteScreen(
                     }
                 }
             }
+        },
+        topBar = {
+            NoteColorSection(
+                selectedColor = state.note.color,
+                onUpdateColor = onUpdateColor,
+                isEditing = state.isEditing,
+                color = noteColor
+            )
         },
         contentWindowInsets = WindowInsets(0.dp)
     ) { paddingValue ->

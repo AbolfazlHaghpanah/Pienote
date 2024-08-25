@@ -2,7 +2,6 @@ package com.haghpanh.pienote.features.note.ui
 
 import androidx.compose.runtime.Immutable
 import com.haghpanh.pienote.commondomain.model.NoteDomainModel
-import kotlin.math.roundToInt
 
 @Immutable
 data class Note(
@@ -13,7 +12,7 @@ data class Note(
     val addedTime: String? = null,
     val lastChangedTime: String? = null,
     val categoryId: Int? = null,
-    val priority: Float? = null
+    val color: String? = null
 ) {
     fun toDomainModel(): NoteDomainModel =
         NoteDomainModel(
@@ -24,7 +23,7 @@ data class Note(
             addedTime = addedTime.orEmpty(),
             lastChangedTime = lastChangedTime,
             categoryId = categoryId,
-            priority = priority?.roundToInt()
+            color = color
         )
 }
 
