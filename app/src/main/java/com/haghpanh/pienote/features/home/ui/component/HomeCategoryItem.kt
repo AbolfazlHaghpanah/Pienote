@@ -39,8 +39,8 @@ fun HomeCategoryItem(
             AsyncImage(
                 modifier = Modifier
                     .blur(
-                        radiusX = 10.dp,
-                        radiusY = 10.dp,
+                        radiusX = 248.dp,
+                        radiusY = 248.dp,
                         edgeTreatment = BlurredEdgeTreatment(PienoteTheme.shapes.medium)
                     )
                     .fillMaxWidth(),

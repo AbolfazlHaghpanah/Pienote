@@ -27,7 +27,8 @@ class NoteViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ) : BaseViewModel<NoteViewState>(
     initialState = NoteViewState(
-        isExist = savedStateHandle.get<Boolean>("isExist") ?: false
+        isExist = savedStateHandle.get<Boolean>("isExist") ?: false,
+        noteId = savedStateHandle.get<Int>("id") ?: -1
     ),
     savedStateHandle = savedStateHandle
 ) {
@@ -58,8 +59,6 @@ class NoteViewModel @Inject constructor(
     }
 
     fun updateOrInsertNote() {
-        if (getCurrentState().isEmptyNote) return
-
         if (getCurrentState().isExist) {
             updateCurrentNote()
         } else {
@@ -108,16 +107,19 @@ class NoteViewModel @Inject constructor(
     private fun insertCurrentNote() {
         viewModelScope.launch(Dispatchers.IO) {
             val note = getCurrentState().note.toDomainModel()
-            insertNoteUseCase(note)
+            val noteId = insertNoteUseCase(note)
+
+            updateState { copy(isExist = true, noteId = noteId) }
+            getNoteInfo()
         }
     }
 
     private fun getNoteInfo() {
         if (getCurrentState().isExist) {
             viewModelScope.launch(Dispatchers.IO) {
-                val noteId = savedStateHandler<Int>("id") ?: -1
+                if (getCurrentState().noteId == null) return@launch
 
-                observeNoteInfoUseCase(noteId).collect { noteWithCat ->
+                observeNoteInfoUseCase(getCurrentState().noteId!!).collect { noteWithCat ->
                     updateState {
                         copy(
                             note = noteWithCat.note.toUiModel(),

@@ -42,7 +42,7 @@ interface NoteDao {
     suspend fun deleteNote(note: NoteEntity)
 
     @Insert(onConflict = OnConflictStrategy.ABORT)
-    suspend fun insertNote(note: NoteEntity)
+    suspend fun insertNote(note: NoteEntity): Long
 
     @Update
     suspend fun updateNote(note: NoteEntity)
