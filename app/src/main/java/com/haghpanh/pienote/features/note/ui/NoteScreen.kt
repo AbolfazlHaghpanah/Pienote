@@ -1,5 +1,10 @@
 package com.haghpanh.pienote.features.note.ui
 
+import android.os.Build
+import android.view.ActionMode
+import android.view.View
+import androidx.annotation.DoNotInline
+import androidx.annotation.RequiresApi
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
@@ -38,6 +43,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
@@ -52,11 +58,18 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalTextToolbar
+import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.platform.TextToolbar
+import androidx.compose.ui.platform.TextToolbarStatus
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.input.getSelectedText
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -65,10 +78,13 @@ import com.haghpanh.pienote.R
 import com.haghpanh.pienote.commonui.component.PienoteChip
 import com.haghpanh.pienote.commonui.navigation.AppScreens
 import com.haghpanh.pienote.commonui.theme.PienoteTheme
+import com.haghpanh.pienote.commonui.utils.PienoteTextToolBar
 import com.haghpanh.pienote.commonui.utils.toComposeColor
 import com.haghpanh.pienote.features.note.ui.component.CategoryChipSection
 import com.haghpanh.pienote.features.note.ui.component.ImageCoverSection
 import com.haghpanh.pienote.features.note.ui.component.NoteColorSection
+import com.haghpanh.pienote.features.note.ui.component.PienoteTextEditorBar
+import com.haghpanh.pienote.features.note.ui.component.TextEditorBarOptions
 import com.haghpanh.pienote.features.note.utils.FocusRequestType
 import com.haghpanh.pienote.features.note.utils.rememberNoteNestedScrollConnection
 
@@ -151,6 +167,18 @@ fun NoteScreen(
     val noteFocusRequester = remember { FocusRequester() }
     val interactionSource = remember { MutableInteractionSource() }
 
+    var noteText by remember {
+        mutableStateOf(TextFieldValue(text = state.note.note.orEmpty()))
+    }
+
+    LaunchedEffect(state.note.note) {
+        state.note.note?.let {
+            noteText = noteText.copy(
+                text = it
+            )
+        }
+    }
+
     // changes fab color based on note color
     val noteColor: Color by animateColorAsState(
         targetValue = state.note.color?.toComposeColor()
@@ -217,7 +245,22 @@ fun NoteScreen(
                 }
             }
         },
-        contentWindowInsets = WindowInsets(0.dp)
+        contentWindowInsets = WindowInsets(0.dp),
+        bottomBar = {
+            AnimatedVisibility(visible = state.isEditing) {
+                PienoteTextEditorBar(
+                    selectedText = noteText.getSelectedText().text,
+                    onAction = { text ->
+                        noteText = noteText.copy(
+                            text = noteText.text.replaceRange(
+                                range = noteText.selection.start..noteText.selection.end,
+                                replacement = text
+                            )
+                        )
+                    }
+                )
+            }
+        }
     ) { paddingValue ->
         Column(
             modifier = Modifier
@@ -367,13 +410,10 @@ fun NoteScreen(
                 }
 
                 if (state.isEditing) {
-                    var note by remember {
-                        mutableStateOf(state.note.note)
-                    }
 
-                    DisposableEffect(note) {
+                    DisposableEffect(noteText) {
                         onDispose {
-                            note?.let(onUpdateNote)
+                            noteText.text.let(onUpdateNote)
                         }
                     }
 
@@ -383,32 +423,46 @@ fun NoteScreen(
                         }
                     }
 
-                    OutlinedTextField(
-                        modifier = Modifier
-                            .padding(horizontal = 14.dp)
-                            .fillMaxWidth()
-                            .weight(1f)
-                            .focusRequester(noteFocusRequester)
-                            .onFocusChanged {
-                                if (it.isFocused) {
-                                    onFocusRequestTypeChanged(FocusRequestType.Note)
-                                }
-                            },
-                        value = note.orEmpty(),
-                        onValueChange = { note = it },
-                        placeholder = {
-                            Text(
-                                text = stringResource(R.string.label_write_here),
-                                style = PienoteTheme.typography.bodyMedium
+                    val textToolbar = PienoteTextToolBar(
+                        view = LocalView.current,
+                        onBoldRequested = {
+                            noteText = noteText.copy(
+                                text = noteText.text.replaceRange(
+                                    range = noteText.selection.start..noteText.selection.end,
+                                    replacement = TextEditorBarOptions.BOLD.action(noteText.getSelectedText().text)
+                                )
                             )
-                        },
-                        colors = TextFieldDefaults.outlinedTextFieldColors(
-                            disabledBorderColor = Color.Transparent,
-                            focusedBorderColor = Color.Transparent,
-                            unfocusedBorderColor = Color.Transparent
-                        ),
-                        textStyle = PienoteTheme.typography.bodyLarge
+                        }
                     )
+
+                    CompositionLocalProvider(LocalTextToolbar provides textToolbar) {
+                        OutlinedTextField(
+                            modifier = Modifier
+                                .padding(horizontal = 14.dp)
+                                .fillMaxWidth()
+                                .weight(1f)
+                                .focusRequester(noteFocusRequester)
+                                .onFocusChanged {
+                                    if (it.isFocused) {
+                                        onFocusRequestTypeChanged(FocusRequestType.Note)
+                                    }
+                                },
+                            value = noteText,
+                            onValueChange = { noteText = it },
+                            placeholder = {
+                                Text(
+                                    text = stringResource(R.string.label_write_here),
+                                    style = PienoteTheme.typography.bodyMedium
+                                )
+                            },
+                            colors = TextFieldDefaults.outlinedTextFieldColors(
+                                disabledBorderColor = Color.Transparent,
+                                focusedBorderColor = Color.Transparent,
+                                unfocusedBorderColor = Color.Transparent
+                            ),
+                            textStyle = PienoteTheme.typography.bodyLarge
+                        )
+                    }
                 } else {
                     Text(
                         modifier = Modifier
