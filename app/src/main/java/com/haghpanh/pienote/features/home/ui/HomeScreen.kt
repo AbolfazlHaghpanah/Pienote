@@ -405,8 +405,7 @@ fun HomeScreenPreview() {
                         "No Time To Die",
                         "For example, if ExampleScreen is a destination in a navigation graph, call hiltViewModel() to get an instance of ExampleViewModel scoped to the destination as shown in the code snippet below:",
                         addedTime = ""
-                    ),
-
+                    )
                 )
             ),
             "Parent",

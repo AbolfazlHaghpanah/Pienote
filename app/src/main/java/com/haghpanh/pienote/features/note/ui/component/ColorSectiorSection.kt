@@ -2,15 +2,11 @@ package com.haghpanh.pienote.features.note.ui.component
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -34,58 +30,46 @@ fun NoteColorSection(
     color: Color,
     isEditing: Boolean
 ) {
-    AnimatedContent(
+    AnimatedVisibility(
         isEditing,
-        transitionSpec = { fadeIn().togetherWith(fadeOut()) },
-        label = "show or edit note color"
+        label = "shows choose color with color picker"
     ) {
-        if (it) {
-            var shouldShowColorPicker by remember {
-                mutableStateOf(false)
-            }
+        var shouldShowColorPicker by remember {
+            mutableStateOf(false)
+        }
 
-            Column(
-                modifier = Modifier.fillMaxWidth()
+        Column(
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Box(
+                modifier = Modifier
+                    .background(color)
+                    .clickable { shouldShowColorPicker = !shouldShowColorPicker }
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp),
+                contentAlignment = Alignment.Center
             ) {
-                Box(
-                    modifier = Modifier
-                        .background(color)
-                        .clickable { shouldShowColorPicker = !shouldShowColorPicker }
-                        .fillMaxWidth()
-                        .padding(vertical = 8.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    AnimatedContent(targetState = shouldShowColorPicker) {
-                        if (it) {
-                            Text(
-                                text = stringResource(R.string.label_done),
-                                color = PienoteTheme.colors.surface,
-                                style = PienoteTheme.typography.labelMedium
-                            )
-                        } else {
-                            Text(
-                                text = stringResource(R.string.label_change_color),
-                                color = PienoteTheme.colors.surface,
-                                style = PienoteTheme.typography.labelMedium
-                            )
-                        }
+                AnimatedContent(targetState = shouldShowColorPicker) {
+                    if (it) {
+                        Text(
+                            text = stringResource(R.string.label_done),
+                            color = PienoteTheme.colors.surface,
+                            style = PienoteTheme.typography.labelMedium
+                        )
+                    } else {
+                        Text(
+                            text = stringResource(R.string.label_change_color),
+                            color = PienoteTheme.colors.surface,
+                            style = PienoteTheme.typography.labelMedium
+                        )
                     }
                 }
-
-                AnimatedVisibility(visible = shouldShowColorPicker) {
-                    PienoteColorPicker(
-                        color = selectedColor,
-                        onColorSelection = { onUpdateColor(it) }
-                    )
-                }
             }
-        } else {
-            if (selectedColor != null) {
-                Box(
-                    modifier = Modifier
-                        .background(color)
-                        .fillMaxWidth()
-                        .height(4.dp)
+
+            AnimatedVisibility(visible = shouldShowColorPicker) {
+                PienoteColorPicker(
+                    color = selectedColor,
+                    onColorSelection = { onUpdateColor(it) }
                 )
             }
         }

@@ -8,14 +8,17 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.offset
@@ -139,21 +142,26 @@ fun NoteScreen(
     navigateToRoute: (String) -> Unit,
     onBack: () -> Unit
 ) {
+    val focusManager = LocalFocusManager.current
+    val localConfig = LocalConfiguration.current
+
     val scrollState = rememberScrollState()
     val nestedScrollConnection = rememberNoteNestedScrollConnection()
     val titleFocusRequester = remember { FocusRequester() }
     val noteFocusRequester = remember { FocusRequester() }
     val interactionSource = remember { MutableInteractionSource() }
-    val focusManager = LocalFocusManager.current
-    val localConfig = LocalConfiguration.current
 
     // changes fab color based on note color
     val noteColor: Color by animateColorAsState(
         targetValue = state.note.color?.toComposeColor()
-            ?: PienoteTheme.colors.primaryContainer
+            ?: PienoteTheme.colors.primaryContainer,
+        label = "change note color"
     )
 
     LaunchedEffect(state.isEditing) {
+        // we need to check if user switch to reading mode from edit mode or not.
+        // in that case we should scroll to top of screen because it may
+        // cause some messed up in image section's nested scroll states (alpha, scale,etc.).
         if (!state.isEditing) {
             nestedScrollConnection.reset()
             scrollState.animateScrollTo(
@@ -162,6 +170,8 @@ fun NoteScreen(
             )
         }
 
+        // as user changed edit mode resetting focus manager is necessary for
+        // next time user switching to edit mode without an specific focus request type.
         if (state.focusRequestType is FocusRequestType.Non) {
             focusManager.clearFocus()
         }
@@ -196,12 +206,16 @@ fun NoteScreen(
             }
         },
         topBar = {
-            NoteColorSection(
-                selectedColor = state.note.color,
-                onUpdateColor = onUpdateColor,
-                isEditing = state.isEditing,
-                color = noteColor
-            )
+            if (state.note.color != null) {
+                AnimatedVisibility(visible = !state.isEditing) {
+                    Box(
+                        modifier = Modifier
+                            .background(state.note.color.toComposeColor())
+                            .fillMaxWidth()
+                            .height(4.dp)
+                    )
+                }
+            }
         },
         contentWindowInsets = WindowInsets(0.dp)
     ) { paddingValue ->
@@ -218,6 +232,13 @@ fun NoteScreen(
                 )
                 .verticalScroll(scrollState)
         ) {
+            NoteColorSection(
+                selectedColor = state.note.color,
+                onUpdateColor = onUpdateColor,
+                isEditing = state.isEditing,
+                color = noteColor
+            )
+
             if (parentScreen != null) {
                 AnimatedVisibility(visible = !state.isEditing) {
                     PienoteChip(
