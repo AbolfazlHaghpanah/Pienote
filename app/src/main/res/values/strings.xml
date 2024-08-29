@@ -16,4 +16,5 @@
     <string name="label_add_note">Add Note</string>
     <string name="message_select_note_to_add">Select A Note To Add</string>
     <string name="label_try_again">Try Again</string>
+    <string name="label_change_color">Change Color</string>
 </resources>

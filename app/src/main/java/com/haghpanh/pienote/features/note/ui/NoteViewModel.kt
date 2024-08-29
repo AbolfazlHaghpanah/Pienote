@@ -83,6 +83,13 @@ class NoteViewModel @Inject constructor(
         }
     }
 
+    fun updateNoteColor(value: String?) {
+        updateState {
+            val newNote = note.copy(color = value)
+            copy(note = newNote)
+        }
+    }
+
     fun updateTitleText(value: String) {
         updateState {
             val newNote = note.copy(title = value)
@@ -152,6 +159,7 @@ class NoteViewModel @Inject constructor(
             image = image,
             addedTime = addedTime,
             lastChangedTime = lastChangedTime,
+            color = color,
             categoryId = categoryId
         )
 

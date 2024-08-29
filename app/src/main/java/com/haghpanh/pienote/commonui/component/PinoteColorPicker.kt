@@ -10,17 +10,16 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
-import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
@@ -31,20 +30,17 @@ import com.haghpanh.pienote.commonui.utils.toComposeColor
 @Composable
 fun PienoteColorPicker(
     color: String?,
-    onColorSelection: (String) -> Unit,
+    onColorSelection: (String?) -> Unit,
     modifier: Modifier = Modifier,
     colors: List<String> = colorPickerDefaultColors
 ) {
-    LazyHorizontalGrid(
+    LazyRow(
         modifier = modifier
-            .height(290.dp)
-            .clip(PienoteTheme.shapes.veryLarge)
-            .background(PienoteTheme.colors.surfaceDim)
+            .background(PienoteTheme.colors.background)
             .fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
+        verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp),
-        rows = GridCells.Fixed(4),
-        contentPadding = PaddingValues(24.dp),
+        contentPadding = PaddingValues(horizontal = 24.dp, vertical = 8.dp),
     ) {
         items(colors) {
             val animatedBorderWidth by animateDpAsState(
@@ -56,27 +52,12 @@ fun PienoteColorPicker(
                 label = "change border width"
             )
 
-            AnimatedVisibility(
-                modifier = Modifier,
-                visible = color == it
-            ) {
-                Icon(
-                    modifier = Modifier
-                        .size(48.dp)
-                        .aspectRatio(1f)
-                        .padding(10.dp),
-                    imageVector = Icons.Rounded.Check,
-                    contentDescription = "selected color",
-                    tint = it.toComposeColor()
-                )
-            }
-
             Box(
                 modifier = Modifier
                     .size(48.dp)
                     .aspectRatio(1f)
                     .clip(PienoteTheme.shapes.rounded)
-                    .clickable { onColorSelection(it) }
+                    .clickable { onColorSelection(if (it == color) null else it) }
                     .border(
                         width = animatedBorderWidth,
                         color = it
@@ -84,7 +65,22 @@ fun PienoteColorPicker(
                             .copy(alpha = 0.8f),
                         shape = PienoteTheme.shapes.rounded
                     )
-            )
+            ) {
+                AnimatedVisibility(
+                    modifier = Modifier,
+                    visible = color == it
+                ) {
+                    Icon(
+                        modifier = Modifier
+                            .size(48.dp)
+                            .aspectRatio(1f)
+                            .padding(10.dp),
+                        imageVector = Icons.Rounded.Check,
+                        contentDescription = "selected color",
+                        tint = it.toComposeColor()
+                    )
+                }
+            }
         }
     }
 }
