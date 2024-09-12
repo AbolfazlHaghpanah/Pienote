@@ -12,10 +12,9 @@ import com.haghpanh.pienote.R
 
 class PienoteTextToolBar(
     private val view: View,
-    private val onBoldRequested: (() -> Unit)? = null,
-    private val onUnderLineRequested: (() -> Unit)? = null,
-    private val onCodeRequested: (() -> Unit)? = null,
+    private val onCustomItemsRequest: ((MenuItemOption) -> Unit)? = null,
 ) : TextToolbar {
+
     private var actionMode: ActionMode? = null
     private val textActionModeCallback: TextActionModeCallback = TextActionModeCallback(
         onActionModeDestroy = {
@@ -37,14 +36,30 @@ class PienoteTextToolBar(
         onCutRequested: (() -> Unit)?,
         onSelectAllRequested: (() -> Unit)?
     ) {
+        val shouldAddCustomRequesters = onCustomItemsRequest != null
+
         textActionModeCallback.rect = rect
         textActionModeCallback.onCopyRequested = onCopyRequested
         textActionModeCallback.onCutRequested = onCutRequested
         textActionModeCallback.onPasteRequested = onPasteRequested
         textActionModeCallback.onSelectAllRequested = onSelectAllRequested
-        textActionModeCallback.onBoldRequested = onBoldRequested
-        textActionModeCallback.onCodeRequested = onCodeRequested
-        textActionModeCallback.onUnderLineRequested = onUnderLineRequested
+
+        textActionModeCallback.onBoldRequested = if (shouldAddCustomRequesters) {
+            { onCustomItemsRequest?.let { it(MenuItemOption.Bold) } }
+        } else {
+            null
+        }
+
+        textActionModeCallback.onCodeRequested = if (shouldAddCustomRequesters) {
+            { onCustomItemsRequest?.let { it(MenuItemOption.Code) } }
+        } else {
+            null
+        }
+        textActionModeCallback.onUnderLineRequested = if (shouldAddCustomRequesters) {
+            { onCustomItemsRequest?.let { it(MenuItemOption.UnderLine) } }
+        } else {
+            null
+        }
 
         if (actionMode == null) {
             status = TextToolbarStatus.Shown
@@ -153,7 +168,7 @@ private class TextActionModeCallback(
     }
 }
 
-private enum class MenuItemOption(val id: Int) {
+enum class MenuItemOption(val id: Int) {
     Bold(0),
     Code(1),
     UnderLine(2),
@@ -177,6 +192,37 @@ private enum class MenuItemOption(val id: Int) {
      * This item will be shown before all items that have order greater than this value.
      */
     val order = id
+}
+
+fun MenuItemOption.getActon(value: String): String {
+    return when (this) {
+        MenuItemOption.Bold -> {
+            if (value.startsWith("**") && value.endsWith("**")) {
+                value.removePrefix("**").removeSuffix("**")
+            } else {
+                "**$value**"
+            }
+        }
+
+        MenuItemOption.Code -> if (value.startsWith("`") && value.endsWith("`")) {
+            value.removePrefix("`").removeSuffix("`")
+        } else {
+            "`$value`"
+        }
+
+        MenuItemOption.UnderLine -> {
+            if (value.startsWith("_+") && value.endsWith("+_")) {
+                value.removePrefix("_+").removeSuffix("+_")
+            } else {
+                "_+$value+_"
+            }
+        }
+
+        MenuItemOption.Copy -> ""
+        MenuItemOption.Paste -> ""
+        MenuItemOption.Cut -> ""
+        MenuItemOption.SelectAll -> ""
+    }
 }
 
 private object TextToolbarHelperMethods {

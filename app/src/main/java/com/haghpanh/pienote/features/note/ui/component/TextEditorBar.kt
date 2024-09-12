@@ -98,7 +98,13 @@ enum class TextEditorBarOptions(
                 fontFamily = FontFamily(Font(R.font.roboto_bold))
             )
         ),
-        action = { "**$it**" }
+        action = {
+            if (it.startsWith("**") && it.endsWith("**")) {
+                it.removePrefix("**").removeSuffix("**")
+            } else {
+                "**$it**"
+            }
+        }
     ),
 
     CODE(
@@ -110,7 +116,12 @@ enum class TextEditorBarOptions(
                 fontFamily = FontFamily(Font(R.font.roboto_bold))
             )
         ),
-        action = { "'$it'" }
+        action = {
+            if (it.startsWith("`") && it.endsWith("`")) {
+                it.removePrefix("`").removeSuffix("`")
+            } else {
+                "`$it`"
+            } }
     ),
 
     UNDERLINE(

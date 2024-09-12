@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -23,9 +24,10 @@ fun PienoteScaffold(
     floatingActionButton: @Composable () -> Unit = {},
     bottomMenu: @Composable () -> Unit = {},
     floatingActionButtonAlignment: Alignment = Alignment.BottomEnd,
+    topBar: @Composable () -> Unit = {},
     content: @Composable (PaddingValues) -> Unit
 ) {
-    var paddingValues = remember {
+    val paddingValues = remember {
         mutableStateOf(PaddingValues(0.dp))
     }
     val density = LocalDensity.current
@@ -71,6 +73,19 @@ fun PienoteScaffold(
                 .fillMaxWidth()
         ) {
             snackbarHost()
+        }
+
+        Box(
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+                .fillMaxWidth()
+                .onGloballyPositioned {
+                    with(density) {
+                        paddingValues.value = PaddingValues(top = it.size.height.toDp())
+                    }
+                }
+        ) {
+            topBar()
         }
     }
 }

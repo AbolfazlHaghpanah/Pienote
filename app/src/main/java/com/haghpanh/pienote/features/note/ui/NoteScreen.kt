@@ -1,10 +1,5 @@
 package com.haghpanh.pienote.features.note.ui
 
-import android.os.Build
-import android.view.ActionMode
-import android.view.View
-import androidx.annotation.DoNotInline
-import androidx.annotation.RequiresApi
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
@@ -20,7 +15,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -39,7 +33,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
@@ -58,16 +51,14 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalTextToolbar
 import androidx.compose.ui.platform.LocalView
-import androidx.compose.ui.platform.TextToolbar
-import androidx.compose.ui.platform.TextToolbarStatus
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.getSelectedText
 import androidx.compose.ui.unit.IntOffset
@@ -76,15 +67,15 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.haghpanh.pienote.R
 import com.haghpanh.pienote.commonui.component.PienoteChip
+import com.haghpanh.pienote.commonui.component.PienoteScaffold
 import com.haghpanh.pienote.commonui.navigation.AppScreens
 import com.haghpanh.pienote.commonui.theme.PienoteTheme
 import com.haghpanh.pienote.commonui.utils.PienoteTextToolBar
+import com.haghpanh.pienote.commonui.utils.getActon
 import com.haghpanh.pienote.commonui.utils.toComposeColor
 import com.haghpanh.pienote.features.note.ui.component.CategoryChipSection
 import com.haghpanh.pienote.features.note.ui.component.ImageCoverSection
 import com.haghpanh.pienote.features.note.ui.component.NoteColorSection
-import com.haghpanh.pienote.features.note.ui.component.PienoteTextEditorBar
-import com.haghpanh.pienote.features.note.ui.component.TextEditorBarOptions
 import com.haghpanh.pienote.features.note.utils.FocusRequestType
 import com.haghpanh.pienote.features.note.utils.rememberNoteNestedScrollConnection
 
@@ -205,10 +196,7 @@ fun NoteScreen(
         }
     }
 
-    Scaffold(
-        modifier = Modifier
-            .statusBarsPadding()
-            .imePadding(),
+    PienoteScaffold(
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { onSwitchEditMode(FocusRequestType.Non) },
@@ -245,22 +233,6 @@ fun NoteScreen(
                 }
             }
         },
-        contentWindowInsets = WindowInsets(0.dp),
-        bottomBar = {
-            AnimatedVisibility(visible = state.isEditing) {
-                PienoteTextEditorBar(
-                    selectedText = noteText.getSelectedText().text,
-                    onAction = { text ->
-                        noteText = noteText.copy(
-                            text = noteText.text.replaceRange(
-                                range = noteText.selection.start..noteText.selection.end,
-                                replacement = text
-                            )
-                        )
-                    }
-                )
-            }
-        }
     ) { paddingValue ->
         Column(
             modifier = Modifier
@@ -388,7 +360,8 @@ fun NoteScreen(
                         } else {
                             state.note.title
                         },
-                        style = PienoteTheme.typography.displaySmall
+                        style = PienoteTheme.typography.displaySmall,
+                        color = PienoteTheme.colors.onBackground
                     )
                 }
 
@@ -425,13 +398,24 @@ fun NoteScreen(
 
                     val textToolbar = PienoteTextToolBar(
                         view = LocalView.current,
-                        onBoldRequested = {
-                            noteText = noteText.copy(
-                                text = noteText.text.replaceRange(
-                                    range = noteText.selection.start..noteText.selection.end,
-                                    replacement = TextEditorBarOptions.BOLD.action(noteText.getSelectedText().text)
+                        onCustomItemsRequest = if (noteText.selection.length < 1) {
+                            null
+                        } else {
+                            {
+                                val newText = noteText.copy(
+                                    text = noteText.text.replaceRange(
+                                        range = noteText.selection.start..<noteText.selection.end,
+                                        replacement = it.getActon(noteText.getSelectedText().text)
+                                    )
                                 )
-                            )
+                                noteText = newText
+                                noteText = noteText.copy(
+                                    selection = TextRange(
+                                        start = noteText.selection.start,
+                                        end = noteText.selection.end + 4
+                                    )
+                                )
+                            }
                         }
                     )
 
@@ -475,7 +459,8 @@ fun NoteScreen(
                             .padding(vertical = 16.dp, horizontal = 30.dp)
                             .fillMaxWidth(),
                         text = state.note.note ?: "",
-                        style = PienoteTheme.typography.bodyLarge
+                        style = PienoteTheme.typography.bodyLarge,
+                        color = PienoteTheme.colors.onBackground
                     )
                 }
             }
