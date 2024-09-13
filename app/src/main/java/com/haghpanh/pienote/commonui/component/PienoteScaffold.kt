@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.systemBarsPadding
@@ -55,14 +56,14 @@ fun PienoteScaffold(
 
         Box(
             modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(24.dp)
+                .fillMaxWidth()
                 .onGloballyPositioned {
                     with(density) {
                         paddingValues.value = PaddingValues(bottom = it.size.height.toDp())
                     }
                 }
-                .align(Alignment.BottomCenter)
-                .padding(24.dp)
-                .fillMaxWidth()
         ) {
             bottomMenu()
         }

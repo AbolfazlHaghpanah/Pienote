@@ -19,10 +19,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -71,7 +69,8 @@ import com.haghpanh.pienote.commonui.component.PienoteScaffold
 import com.haghpanh.pienote.commonui.navigation.AppScreens
 import com.haghpanh.pienote.commonui.theme.PienoteTheme
 import com.haghpanh.pienote.commonui.utils.PienoteTextToolBar
-import com.haghpanh.pienote.commonui.utils.getActon
+import com.haghpanh.pienote.commonui.utils.getPrefixOrNull
+import com.haghpanh.pienote.commonui.utils.performAction
 import com.haghpanh.pienote.commonui.utils.toComposeColor
 import com.haghpanh.pienote.features.note.ui.component.CategoryChipSection
 import com.haghpanh.pienote.features.note.ui.component.ImageCoverSection
@@ -383,7 +382,6 @@ fun NoteScreen(
                 }
 
                 if (state.isEditing) {
-
                     DisposableEffect(noteText) {
                         onDispose {
                             noteText.text.let(onUpdateNote)
@@ -396,23 +394,46 @@ fun NoteScreen(
                         }
                     }
 
+                    //give us bold, code and underline options on actionMenu
+                    //that appear when selecting a text.
                     val textToolbar = PienoteTextToolBar(
                         view = LocalView.current,
                         onCustomItemsRequest = if (noteText.selection.length < 1) {
                             null
                         } else {
-                            {
-                                val newText = noteText.copy(
+                            { menuItem ->
+                                //perform and action based on which item has been
+                                //click and returning new text for the selected text
+                                val result =
+                                    menuItem.performAction(noteText.getSelectedText().text)
+
+                                //min and max representing exactly what we need here.
+                                val startRange = noteText.selection.min
+                                val endRange = noteText.selection.max
+
+                                //sets new text
+                                noteText = noteText.copy(
                                     text = noteText.text.replaceRange(
-                                        range = noteText.selection.start..<noteText.selection.end,
-                                        replacement = it.getActon(noteText.getSelectedText().text)
+                                        range = startRange..<endRange,
+                                        replacement = result.first
                                     )
                                 )
-                                noteText = newText
+
+                                val newSelectionEndRange by lazy {
+                                    val length = (menuItem.getPrefixOrNull()?.length ?: 0) * 2
+
+                                    if (result.second) {
+                                        -length
+                                    } else {
+                                        length
+                                    }
+                                }
+
+                                //change selected range based on new text
                                 noteText = noteText.copy(
                                     selection = TextRange(
-                                        start = noteText.selection.start,
-                                        end = noteText.selection.end + 4
+                                        start = startRange,
+                                        end = endRange + newSelectionEndRange
                                     )
                                 )
                             }

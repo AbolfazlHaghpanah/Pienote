@@ -9,7 +9,7 @@ data class NoteViewState(
     val category: Category? = null,
     val isEditing: Boolean = false,
     val categories: List<Category> = emptyList(),
-    val focusRequestType: FocusRequestType = FocusRequestType.Non,
+    val focusRequestType: FocusRequestType = FocusRequestType.Title,
     val noteId: Int?,
     val isExist: Boolean
 ) {

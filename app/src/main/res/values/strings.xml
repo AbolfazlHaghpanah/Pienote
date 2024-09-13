@@ -20,4 +20,6 @@
     <string name="label_bold">Bold</string>
     <string name="label_underline">Under Line</string>
     <string name="label_code">Code</string>
+    <string name="label_add">Add</string>
+    <string name="label_unnamed">Unnamed...</string>
 </resources>

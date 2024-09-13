@@ -9,6 +9,10 @@ import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.platform.TextToolbar
 import androidx.compose.ui.platform.TextToolbarStatus
 import com.haghpanh.pienote.R
+import com.haghpanh.pienote.commonui.utils.MenuItemOption.Bold
+import com.haghpanh.pienote.commonui.utils.MenuItemOption.Code
+import com.haghpanh.pienote.commonui.utils.MenuItemOption.UnderLine
+
 
 class PienoteTextToolBar(
     private val view: View,
@@ -45,18 +49,19 @@ class PienoteTextToolBar(
         textActionModeCallback.onSelectAllRequested = onSelectAllRequested
 
         textActionModeCallback.onBoldRequested = if (shouldAddCustomRequesters) {
-            { onCustomItemsRequest?.let { it(MenuItemOption.Bold) } }
+            { onCustomItemsRequest?.let { it(Bold) } }
         } else {
             null
         }
 
         textActionModeCallback.onCodeRequested = if (shouldAddCustomRequesters) {
-            { onCustomItemsRequest?.let { it(MenuItemOption.Code) } }
+            { onCustomItemsRequest?.let { it(Code) } }
         } else {
             null
         }
+
         textActionModeCallback.onUnderLineRequested = if (shouldAddCustomRequesters) {
-            { onCustomItemsRequest?.let { it(MenuItemOption.UnderLine) } }
+            { onCustomItemsRequest?.let { it(UnderLine) } }
         } else {
             null
         }
@@ -71,6 +76,7 @@ class PienoteTextToolBar(
                 )
         } else {
             actionMode?.invalidate()
+            actionMode = null
         }
     }
 }
@@ -128,9 +134,9 @@ private class TextActionModeCallback(
             MenuItemOption.Paste.id -> onPasteRequested?.invoke()
             MenuItemOption.Cut.id -> onCutRequested?.invoke()
             MenuItemOption.SelectAll.id -> onSelectAllRequested?.invoke()
-            MenuItemOption.Bold.id -> onBoldRequested?.invoke()
-            MenuItemOption.UnderLine.id -> onUnderLineRequested?.invoke()
-            MenuItemOption.Code.id -> onCodeRequested?.invoke()
+            Bold.id -> onBoldRequested?.invoke()
+            UnderLine.id -> onUnderLineRequested?.invoke()
+            Code.id -> onCodeRequested?.invoke()
             else -> return false
         }
         mode?.finish()
@@ -146,9 +152,9 @@ private class TextActionModeCallback(
         addOrRemoveMenuItem(menu, MenuItemOption.Paste, onPasteRequested)
         addOrRemoveMenuItem(menu, MenuItemOption.Cut, onCutRequested)
         addOrRemoveMenuItem(menu, MenuItemOption.SelectAll, onSelectAllRequested)
-        addOrRemoveMenuItem(menu, MenuItemOption.Bold, onBoldRequested)
-        addOrRemoveMenuItem(menu, MenuItemOption.Code, onCodeRequested)
-        addOrRemoveMenuItem(menu, MenuItemOption.UnderLine, onUnderLineRequested)
+        addOrRemoveMenuItem(menu, Bold, onBoldRequested)
+        addOrRemoveMenuItem(menu, Code, onCodeRequested)
+        addOrRemoveMenuItem(menu, UnderLine, onUnderLineRequested)
     }
 
     private fun addMenuItem(menu: Menu, item: MenuItemOption) {
@@ -194,36 +200,53 @@ enum class MenuItemOption(val id: Int) {
     val order = id
 }
 
-fun MenuItemOption.getActon(value: String): String {
-    return when (this) {
-        MenuItemOption.Bold -> {
-            if (value.startsWith("**") && value.endsWith("**")) {
-                value.removePrefix("**").removeSuffix("**")
-            } else {
-                "**$value**"
-            }
-        }
+/**
+ * Modifies the provided string by adding or removing a prefix and suffix based on the [MenuItemOption].
+ * If the string already contains the specified prefix and suffix, they are removed.
+ * Otherwise, they are added. The prefix and suffix differ depending on the [MenuItemOption] selected.
+ *
+ * - [MenuItemOption.Bold] adds/removes "**" around the string.
+ * - [MenuItemOption.Code] adds/removes "`" around the string.
+ * - [MenuItemOption.UnderLine] adds/removes "_+" and "+_" around the string.
+ *
+ * @param value The string to be modified.
+ * @return A [Pair] where:
+ * - The first value is the string with the action performed (prefix/suffix added or removed).
+ * - The second value is a [Boolean] indicating whether the prefix and suffix were removed (true) or added (false).
+ */
+fun MenuItemOption.performAction(value: String): Pair<String, Boolean> {
+    val prefix = when (this) {
+        Bold -> "**"
+        Code -> "`"
+        UnderLine -> "_+"
+        else -> ""
+    }
+    val suffix = when (this) {
+        Bold -> "**"
+        Code -> "`"
+        UnderLine -> "+_"
+        else -> ""
+    }
 
-        MenuItemOption.Code -> if (value.startsWith("`") && value.endsWith("`")) {
-            value.removePrefix("`").removeSuffix("`")
-        } else {
-            "`$value`"
-        }
-
-        MenuItemOption.UnderLine -> {
-            if (value.startsWith("_+") && value.endsWith("+_")) {
-                value.removePrefix("_+").removeSuffix("+_")
-            } else {
-                "_+$value+_"
-            }
-        }
-
-        MenuItemOption.Copy -> ""
-        MenuItemOption.Paste -> ""
-        MenuItemOption.Cut -> ""
-        MenuItemOption.SelectAll -> ""
+    return if (value.startsWith(prefix) && value.endsWith(suffix)) {
+        Pair(value.removePrefix(prefix).removeSuffix(suffix), true)
+    } else {
+        Pair("$prefix$value$suffix", false)
     }
 }
+
+/**
+ * returns prefix for given [MenuItemOption] item.
+ */
+fun MenuItemOption.getPrefixOrNull(): String? {
+    return when (this) {
+        Bold -> "**"
+        Code -> "`"
+        UnderLine -> "_+"
+        else -> null
+    }
+}
+
 
 private object TextToolbarHelperMethods {
     @DoNotInline
@@ -236,11 +259,6 @@ private object TextToolbarHelperMethods {
             actionModeCallback,
             type
         )
-    }
-
-    @DoNotInline
-    fun invalidateContentRect(actionMode: ActionMode) {
-        actionMode.invalidateContentRect()
     }
 }
 
@@ -275,25 +293,5 @@ private class FloatingTextActionModeCallback(
             rect.right.toInt(),
             rect.bottom.toInt()
         )
-    }
-}
-
-private class PrimaryTextActionModeCallback(
-    private val callback: TextActionModeCallback
-) : ActionMode.Callback {
-    override fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
-        return callback.onActionItemClicked(mode, item)
-    }
-
-    override fun onCreateActionMode(mode: ActionMode?, menu: Menu?): Boolean {
-        return callback.onCreateActionMode(mode, menu)
-    }
-
-    override fun onPrepareActionMode(mode: ActionMode?, menu: Menu?): Boolean {
-        return callback.onPrepareActionMode(mode, menu)
-    }
-
-    override fun onDestroyActionMode(mode: ActionMode?) {
-        callback.onDestroyActionMode()
     }
 }

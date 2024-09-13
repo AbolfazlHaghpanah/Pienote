@@ -149,7 +149,7 @@ fun AddCategoryComponent(
             onValueChange = { value -> categoryName = value },
             placeHolder = {
                 Text(
-                    text = "Unnamed...",
+                    text = stringResource(R.string.label_unnamed),
                     style = PienoteTheme.typography.headlineMedium
                 )
             },
@@ -178,7 +178,7 @@ fun AddCategoryComponent(
                     contentColor = PienoteTheme.colors.onTertiaryContainer
                 )
             ) {
-                Text(text = "Add")
+                Text(text = stringResource(R.string.label_add))
             }
 
             OutlinedButton(
@@ -191,7 +191,7 @@ fun AddCategoryComponent(
                     color = PienoteTheme.colors.onErrorContainer
                 )
             ) {
-                Text(text = "Discard")
+                Text(text = stringResource(R.string.label_discard))
             }
         }
     }
