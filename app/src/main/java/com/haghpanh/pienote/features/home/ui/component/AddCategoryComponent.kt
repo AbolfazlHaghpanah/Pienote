@@ -146,13 +146,8 @@ fun AddCategoryComponent(
         PienoteTextField(
             modifier = modifier.fillMaxWidth(),
             value = categoryName.orEmpty(),
-            onValueChange = { value -> categoryName = value },
-            placeHolder = {
-                Text(
-                    text = stringResource(R.string.label_unnamed),
-                    style = PienoteTheme.typography.headlineMedium
-                )
-            },
+            onValueChange = { categoryName = it },
+            placeHolderText = stringResource(R.string.label_unnamed),
             textStyle = PienoteTheme.typography.headlineMedium
         )
 

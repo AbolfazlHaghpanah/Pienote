@@ -277,7 +277,6 @@ fun MenuItemOption.getPrefixOrNull(): String? {
     }
 }
 
-
 private object TextToolbarHelperMethods {
     @DoNotInline
     fun startActionMode(

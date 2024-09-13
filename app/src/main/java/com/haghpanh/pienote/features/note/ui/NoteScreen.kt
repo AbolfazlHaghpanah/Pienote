@@ -30,9 +30,7 @@ import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
@@ -66,6 +64,7 @@ import androidx.navigation.NavController
 import com.haghpanh.pienote.R
 import com.haghpanh.pienote.commonui.component.PienoteChip
 import com.haghpanh.pienote.commonui.component.PienoteScaffold
+import com.haghpanh.pienote.commonui.component.PienoteTextField
 import com.haghpanh.pienote.commonui.navigation.AppScreens
 import com.haghpanh.pienote.commonui.theme.PienoteTheme
 import com.haghpanh.pienote.commonui.utils.PienoteTextToolBar
@@ -318,7 +317,7 @@ fun NoteScreen(
                         }
                     }
 
-                    OutlinedTextField(
+                    PienoteTextField(
                         modifier = Modifier
                             .padding(horizontal = 14.dp)
                             .fillMaxWidth()
@@ -330,17 +329,7 @@ fun NoteScreen(
                             },
                         value = title.orEmpty(),
                         onValueChange = { title = it },
-                        placeholder = {
-                            Text(
-                                text = stringResource(R.string.label_untitled),
-                                style = PienoteTheme.typography.displaySmall
-                            )
-                        },
-                        colors = TextFieldDefaults.outlinedTextFieldColors(
-                            disabledBorderColor = Color.Transparent,
-                            focusedBorderColor = Color.Transparent,
-                            unfocusedBorderColor = Color.Transparent
-                        ),
+                        placeHolderText = stringResource(R.string.label_untitled),
                         textStyle = PienoteTheme.typography.displaySmall
                     )
                 } else {
@@ -394,24 +383,24 @@ fun NoteScreen(
                         }
                     }
 
-                    //give us bold, code and underline options on actionMenu
-                    //that appear when selecting a text.
+                    // give us bold, code and underline options on actionMenu
+                    // that appear when selecting a text.
                     val textToolbar = PienoteTextToolBar(
                         view = LocalView.current,
                         onCustomItemsRequest = if (noteText.selection.length < 1) {
                             null
                         } else {
                             { menuItem ->
-                                //perform and action based on which item has been
-                                //click and returning new text for the selected text
+                                // perform and action based on which item has been
+                                // click and returning new text for the selected text
                                 val result =
                                     menuItem.performAction(noteText.getSelectedText().text)
 
-                                //min and max representing exactly what we need here.
+                                // min and max representing exactly what we need here.
                                 val startRange = noteText.selection.min
                                 val endRange = noteText.selection.max
 
-                                //sets new text
+                                // sets new text
                                 noteText = noteText.copy(
                                     text = noteText.text.replaceRange(
                                         range = startRange..<endRange,
@@ -429,7 +418,7 @@ fun NoteScreen(
                                     }
                                 }
 
-                                //change selected range based on new text
+                                // change selected range based on new text
                                 noteText = noteText.copy(
                                     selection = TextRange(
                                         start = startRange,
@@ -441,7 +430,7 @@ fun NoteScreen(
                     )
 
                     CompositionLocalProvider(LocalTextToolbar provides textToolbar) {
-                        OutlinedTextField(
+                        PienoteTextField(
                             modifier = Modifier
                                 .padding(horizontal = 14.dp)
                                 .fillMaxWidth()
@@ -454,17 +443,7 @@ fun NoteScreen(
                                 },
                             value = noteText,
                             onValueChange = { noteText = it },
-                            placeholder = {
-                                Text(
-                                    text = stringResource(R.string.label_write_here),
-                                    style = PienoteTheme.typography.bodyMedium
-                                )
-                            },
-                            colors = TextFieldDefaults.outlinedTextFieldColors(
-                                disabledBorderColor = Color.Transparent,
-                                focusedBorderColor = Color.Transparent,
-                                unfocusedBorderColor = Color.Transparent
-                            ),
+                            placeHolderText = stringResource(R.string.label_write_here),
                             textStyle = PienoteTheme.typography.bodyLarge
                         )
                     }
