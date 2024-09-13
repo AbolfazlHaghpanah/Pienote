@@ -11,9 +11,26 @@ import androidx.compose.ui.platform.TextToolbarStatus
 import com.haghpanh.pienote.R
 import com.haghpanh.pienote.commonui.utils.MenuItemOption.Bold
 import com.haghpanh.pienote.commonui.utils.MenuItemOption.Code
+import com.haghpanh.pienote.commonui.utils.MenuItemOption.Copy
+import com.haghpanh.pienote.commonui.utils.MenuItemOption.Cut
+import com.haghpanh.pienote.commonui.utils.MenuItemOption.Paste
+import com.haghpanh.pienote.commonui.utils.MenuItemOption.SelectAll
 import com.haghpanh.pienote.commonui.utils.MenuItemOption.UnderLine
 
-
+/**
+ * A customized version of the [androidx.compose.ui.platform.AndroidTextToolbar] class that extends
+ * the standard text toolbar with additional custom items and their corresponding functionality.
+ *
+ * This class integrates standard text operations (Copy, Paste, Cut, Select All) and allows
+ * the addition of custom menu items such as Bold, Code, and Underline. The custom actions are triggered
+ * via the [onCustomItemsRequest] callback.
+ *
+ * @property view The [View] on which the toolbar will be shown.
+ * @property onCustomItemsRequest Optional callback for handling custom menu items like [MenuItemOption.Bold],
+ * [MenuItemOption.Code], and [MenuItemOption.UnderLine].
+ *
+ * @constructor Creates an instance of [PienoteTextToolBar] with a custom [onCustomItemsRequest] handler.
+ */
 class PienoteTextToolBar(
     private val view: View,
     private val onCustomItemsRequest: ((MenuItemOption) -> Unit)? = null,
@@ -97,25 +114,25 @@ private class TextActionModeCallback(
         requireNotNull(mode) { "onCreateActionMode requires a non-null mode" }
 
         onBoldRequested?.let {
-            addMenuItem(menu, MenuItemOption.Copy)
+            addMenuItem(menu, Copy)
         }
         onCodeRequested?.let {
-            addMenuItem(menu, MenuItemOption.Copy)
+            addMenuItem(menu, Copy)
         }
         onUnderLineRequested?.let {
-            addMenuItem(menu, MenuItemOption.Copy)
+            addMenuItem(menu, Copy)
         }
         onCopyRequested?.let {
-            addMenuItem(menu, MenuItemOption.Copy)
+            addMenuItem(menu, Copy)
         }
         onPasteRequested?.let {
-            addMenuItem(menu, MenuItemOption.Paste)
+            addMenuItem(menu, Paste)
         }
         onCutRequested?.let {
-            addMenuItem(menu, MenuItemOption.Cut)
+            addMenuItem(menu, Cut)
         }
         onSelectAllRequested?.let {
-            addMenuItem(menu, MenuItemOption.SelectAll)
+            addMenuItem(menu, SelectAll)
         }
         return true
     }
@@ -130,10 +147,10 @@ private class TextActionModeCallback(
 
     fun onActionItemClicked(mode: ActionMode?, item: MenuItem?): Boolean {
         when (item!!.itemId) {
-            MenuItemOption.Copy.id -> onCopyRequested?.invoke()
-            MenuItemOption.Paste.id -> onPasteRequested?.invoke()
-            MenuItemOption.Cut.id -> onCutRequested?.invoke()
-            MenuItemOption.SelectAll.id -> onSelectAllRequested?.invoke()
+            Copy.id -> onCopyRequested?.invoke()
+            Paste.id -> onPasteRequested?.invoke()
+            Cut.id -> onCutRequested?.invoke()
+            SelectAll.id -> onSelectAllRequested?.invoke()
             Bold.id -> onBoldRequested?.invoke()
             UnderLine.id -> onUnderLineRequested?.invoke()
             Code.id -> onCodeRequested?.invoke()
@@ -148,10 +165,10 @@ private class TextActionModeCallback(
     }
 
     private fun updateMenuItems(menu: Menu) {
-        addOrRemoveMenuItem(menu, MenuItemOption.Copy, onCopyRequested)
-        addOrRemoveMenuItem(menu, MenuItemOption.Paste, onPasteRequested)
-        addOrRemoveMenuItem(menu, MenuItemOption.Cut, onCutRequested)
-        addOrRemoveMenuItem(menu, MenuItemOption.SelectAll, onSelectAllRequested)
+        addOrRemoveMenuItem(menu, Copy, onCopyRequested)
+        addOrRemoveMenuItem(menu, Paste, onPasteRequested)
+        addOrRemoveMenuItem(menu, Cut, onCutRequested)
+        addOrRemoveMenuItem(menu, SelectAll, onSelectAllRequested)
         addOrRemoveMenuItem(menu, Bold, onBoldRequested)
         addOrRemoveMenuItem(menu, Code, onCodeRequested)
         addOrRemoveMenuItem(menu, UnderLine, onUnderLineRequested)
@@ -174,6 +191,17 @@ private class TextActionModeCallback(
     }
 }
 
+/**
+ * Enum class representing various menu item options used in the text toolbar.
+ * Each option corresponds to an action such as Bold, Code, Underline, Copy, Paste, Cut, or Select All.
+ *
+ * @property id The unique identifier for each [MenuItemOption], used for ordering and referencing.
+ * @property titleResource The resource ID for the string label of the menu item,
+ * corresponding to the action (e.g., Bold, Code, Underline) or Android system string resources
+ * (e.g., Copy, Paste, Cut, Select All).
+ * @property order The order in which the item should appear, determined by the [id].
+ * Items with a lower [id] will be shown before items with a higher [id].
+ */
 enum class MenuItemOption(val id: Int) {
     Bold(0),
     Code(1),
@@ -183,6 +211,7 @@ enum class MenuItemOption(val id: Int) {
     Cut(5),
     SelectAll(6);
 
+    // Retrieves the appropriate string resource for each menu option
     val titleResource: Int
         get() = when (this) {
             Bold -> R.string.label_bold
@@ -195,7 +224,8 @@ enum class MenuItemOption(val id: Int) {
         }
 
     /**
-     * This item will be shown before all items that have order greater than this value.
+     * The order in which this item will be displayed in the menu.
+     * Menu items are arranged based on their [id] value, with lower [id] items appearing first.
      */
     val order = id
 }
