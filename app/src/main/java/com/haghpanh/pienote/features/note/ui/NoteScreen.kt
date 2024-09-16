@@ -74,6 +74,8 @@ import com.haghpanh.pienote.commonui.utils.toComposeColor
 import com.haghpanh.pienote.features.note.ui.component.CategoryChipSection
 import com.haghpanh.pienote.features.note.ui.component.ImageCoverSection
 import com.haghpanh.pienote.features.note.ui.component.NoteColorSection
+import com.haghpanh.pienote.features.note.ui.component.PienoteTextEditor
+import com.haghpanh.pienote.features.note.ui.component.TextEditorValue
 import com.haghpanh.pienote.features.note.utils.FocusRequestType
 import com.haghpanh.pienote.features.note.utils.rememberNoteNestedScrollConnection
 
@@ -430,22 +432,29 @@ fun NoteScreen(
                     )
 
                     CompositionLocalProvider(LocalTextToolbar provides textToolbar) {
-                        PienoteTextField(
-                            modifier = Modifier
-                                .padding(horizontal = 14.dp)
-                                .fillMaxWidth()
-                                .weight(1f)
-                                .focusRequester(noteFocusRequester)
-                                .onFocusChanged {
-                                    if (it.isFocused) {
-                                        onFocusRequestTypeChanged(FocusRequestType.Note)
-                                    }
-                                },
-                            value = noteText,
-                            onValueChange = { noteText = it },
-                            placeHolderText = stringResource(R.string.label_write_here),
-                            textStyle = PienoteTheme.typography.bodyLarge
+                        val noteTextEditorValue = remember {
+                            TextEditorValue(noteText.text)
+                        }
+                        PienoteTextEditor(
+                            modifier = Modifier.fillMaxWidth(),
+                            value = noteTextEditorValue
                         )
+//                        PienoteTextField(
+//                            modifier = Modifier
+//                                .padding(horizontal = 14.dp)
+//                                .fillMaxWidth()
+//                                .weight(1f)
+//                                .focusRequester(noteFocusRequester)
+//                                .onFocusChanged {
+//                                    if (it.isFocused) {
+//                                        onFocusRequestTypeChanged(FocusRequestType.Note)
+//                                    }
+//                                },
+//                            value = noteText,
+//                            onValueChange = { noteText = it },
+//                            placeHolderText = stringResource(R.string.label_write_here),
+//                            textStyle = PienoteTheme.typography.bodyLarge
+//                        )
                     }
                 } else {
                     Text(
