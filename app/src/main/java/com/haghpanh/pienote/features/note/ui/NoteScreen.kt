@@ -32,10 +32,10 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -51,13 +51,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.platform.LocalTextToolbar
-import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextRange
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.text.input.getSelectedText
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -68,15 +62,12 @@ import com.haghpanh.pienote.commonui.component.PienoteScaffold
 import com.haghpanh.pienote.commonui.component.PienoteTextField
 import com.haghpanh.pienote.commonui.navigation.AppScreens
 import com.haghpanh.pienote.commonui.theme.PienoteTheme
-import com.haghpanh.pienote.commonui.utils.PienoteTextToolBar
-import com.haghpanh.pienote.commonui.utils.getPrefixOrNull
-import com.haghpanh.pienote.commonui.utils.performAction
 import com.haghpanh.pienote.commonui.utils.toComposeColor
 import com.haghpanh.pienote.features.note.ui.component.CategoryChipSection
 import com.haghpanh.pienote.features.note.ui.component.ImageCoverSection
 import com.haghpanh.pienote.features.note.ui.component.NoteColorSection
 import com.haghpanh.pienote.features.note.ui.component.PienoteTextEditor
-import com.haghpanh.pienote.features.note.ui.component.TextEditorValue
+import com.haghpanh.pienote.features.note.ui.component.rememberTextEditorValue
 import com.haghpanh.pienote.features.note.utils.FocusRequestType
 import com.haghpanh.pienote.features.note.utils.rememberNoteNestedScrollConnection
 
@@ -159,21 +150,11 @@ fun NoteScreen(
     val noteFocusRequester = remember { FocusRequester() }
     val interactionSource = remember { MutableInteractionSource() }
 
-    var noteText by remember {
-        mutableStateOf(
-            TextFieldValue(
-                annotatedString = TextEditorValue.renderMarkdownToAnnotatedString(
-                    state.note.note.orEmpty()
-                )
-            )
-        )
-    }
+    val noteText = rememberTextEditorValue(initialMarkdown = state.note.note.orEmpty())
 
     LaunchedEffect(state.note.note) {
         state.note.note?.let {
-            noteText = noteText.copy(
-                annotatedString = TextEditorValue.renderMarkdownToAnnotatedString(it)
-            )
+            noteText.updateMarkdown(it)
         }
     }
 
@@ -194,6 +175,10 @@ fun NoteScreen(
                 value = 0,
                 animationSpec = tween(300)
             )
+        }
+
+        if (!state.isEditing) {
+            onUpdateNote(noteText.await().markdown)
         }
 
         // as user changed edit mode resetting focus manager is necessary for
@@ -391,13 +376,15 @@ fun NoteScreen(
                             .padding(horizontal = 14.dp)
                             .focusRequester(noteFocusRequester)
                             .fillMaxWidth(),
-                        value = noteText,
-                        onValueChange = { newValue, markdown ->
-                            noteText = newValue
-                            onUpdateNote(markdown)
-                        }
+                        value = noteText
                     )
                 } else {
+                    val note by remember {
+                        derivedStateOf {
+                            noteText.await().annotatedString
+                        }
+                    }
+
                     Text(
                         modifier = Modifier
                             .clickable(
@@ -408,15 +395,7 @@ fun NoteScreen(
                             }
                             .padding(vertical = 16.dp, horizontal = 30.dp)
                             .fillMaxWidth(),
-                        text = if (state.note.note.isNullOrEmpty()) {
-                            buildAnnotatedString {
-                                append(
-                                    stringResource(R.string.label_untitled)
-                                )
-                            }
-                        } else {
-                            noteText.annotatedString
-                        },
+                        text = note,
                         style = PienoteTheme.typography.bodyLarge,
                         color = PienoteTheme.colors.onBackground
                     )

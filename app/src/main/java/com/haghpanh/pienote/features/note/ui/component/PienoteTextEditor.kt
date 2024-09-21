@@ -1,5 +1,6 @@
 package com.haghpanh.pienote.features.note.ui.component
 
+import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -9,9 +10,13 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalTextToolbar
 import androidx.compose.ui.platform.LocalView
@@ -32,96 +37,47 @@ import com.haghpanh.pienote.commonui.theme.PienoteTheme
 import com.haghpanh.pienote.commonui.utils.PienoteTextToolBar
 import com.haghpanh.pienote.commonui.utils.getPrefixOrNull
 import com.haghpanh.pienote.commonui.utils.performAction
+import com.haghpanh.pienote.features.note.ui.component.TextEditorValue.Companion.getTextStyle
 
 @Composable
 fun PienoteTextEditor(
-    value: TextFieldValue,
-    onValueChange: (TextFieldValue, String) -> Unit,
+    value: TextEditorValue,
     modifier: Modifier = Modifier,
 ) {
-    val textEditorValue = remember {
-        TextEditorValue(value.text)
+    val textFields by remember {
+        derivedStateOf { value.getRenderedTexts() }
     }
 
-    DisposableEffect(textEditorValue) {
-        onDispose {
-            onValueChange(
-                value.copy(
-                    annotatedString = textEditorValue.getAnnotatedText(),
-                ),
-                textEditorValue.markdownInput
-            )
-        }
+    LaunchedEffect(key1 = textFields) {
+        Log.d(
+            "mmd",
+            "PienoteTextEditor: ${textFields.joinToString { it.second.getSelectedText() }}"
+        )
     }
 
-    // give us bold, code and underline options on actionMenu
-    // that appear when selecting a text.
-    val textToolbar = PienoteTextToolBar(
-        view = LocalView.current,
-        onCustomItemsRequest = if (value.selection.length < 1) {
-            null
-        } else {
-            { menuItem ->
-                // perform and action based on which item has been
-                // click and returning new text for the selected text
-                val result =
-                    menuItem.performAction(value.getSelectedText().text)
+    Column(modifier = modifier) {
+        textFields.forEachIndexed { index, item ->
 
-                // min and max representing exactly what we need here.
-                val startRange = value.selection.min
-                val endRange = value.selection.max
-
-                // sets new text
-                onValueChange(
-                    value.copy(
-                        text = value.text.replaceRange(
-                            range = startRange..<endRange,
-                            replacement = result.first
-                        )
-                    ),
-                    textEditorValue.markdownInput
-                )
-
-                val newSelectionEndRange by lazy {
-                    val length = (menuItem.getPrefixOrNull()?.length ?: 0) * 2
-
-                    if (result.second) {
-                        -length
-                    } else {
-                        length
-                    }
-                }
-
-                // change selected range based on new text
-                onValueChange(
-                    value.copy(
-                        selection = TextRange(
-                            start = startRange,
-                            end = endRange + newSelectionEndRange
-                        )
-                    ),
-                    textEditorValue.markdownInput
-                )
+            // give us bold, code and underline options on actionMenu
+            // that appear when selecting a text.
+            val textToolbar = buildPienoteTextTool(value = item.second) {
+                value.onEachValueChange(index, it)
             }
-        }
-    )
 
-    CompositionLocalProvider(LocalTextToolbar provides textToolbar) {
-        Column(modifier = modifier) {
-            textEditorValue.getRenderedTexts().forEachIndexed { index, item ->
+            CompositionLocalProvider(LocalTextToolbar provides textToolbar) {
                 PienoteTextField(
-                    value = item,
-                    onValueChange = { textEditorValue.onValueChange(it, index) },
-                    textStyle = PienoteTheme.typography.titleMedium
+                    value = item.second,
+                    onValueChange = { value.onEachValueChange(index, it) },
+                    textStyle = item.first?.getTextStyle() ?: PienoteTheme.typography.titleMedium
                 )
             }
+        }
 
-            LazyRow(modifier = Modifier.fillMaxWidth()) {
-                items(TextEditorValue.Companion.Action.entries) {
-                    Box(modifier = Modifier.fillMaxWidth()) {
-                        TextButton(onClick = { textEditorValue.add(it) }) {
-                            Text(text = it.name)
-                        }
+        LazyRow(modifier = Modifier.fillMaxWidth()) {
+            items(TextEditorValue.Companion.Action.entries) {
+                Box(modifier = Modifier.fillMaxWidth()) {
+                    TextButton(onClick = { value.addSection(it) }) {
+                        Text(text = it.name)
                     }
                 }
             }
@@ -130,78 +86,110 @@ fun PienoteTextEditor(
 }
 
 class TextEditorValue(
-    initialText: String? = null
+    initialMarkdown: String = "",
 ) {
-    private val renderedTexts = mutableStateListOf<String>().also { list ->
-        if (!initialText.isNullOrEmpty()) {
-            initialText.split("\n\n")
-                .filter { it.isNotBlank() }
-                .forEach {
-                    list.add(it)
-                }
-        }
-    }
-
-    var markdownInput: String = initialText.orEmpty()
+    var markdown by mutableStateOf(initialMarkdown)
+        private set
+    var annotatedString by mutableStateOf(renderMarkdownToAnnotatedString(markdown))
         private set
 
-    fun getRenderedTexts(): List<String> = renderedTexts
-
-    fun add(action: Action) {
-        renderedTexts.add("${action.key} ")
-
-        markdownInput += "\n\n${action.key} "
+    private val renderedTexts = mutableStateListOf<Pair<Action?, TextFieldValue>>().also { list ->
+        if (initialMarkdown.isNotEmpty()) {
+            initialMarkdown.split("\n\n")
+                .filter { it.isNotBlank() }
+                .forEach {
+                    val text = it.removePrefix()
+                    val action = it.getActionOrNull()
+                    list.add(action to TextFieldValue(text))
+                }
+        }
     }
 
-    fun onValueChange(value: String, index: Int) {
-        renderedTexts[index] = value
+    fun getRenderedTexts(): List<Pair<Action?, TextFieldValue>> =
+        renderedTexts.map { it.first to it.second }
 
-        markdownInput = markdownInput
-            .split("\n\n")
-            .mapIndexed { textIndex, s ->
-                if (textIndex == index) {
-                    value
-                } else {
-                    s
-                }
-            }.joinToString(separator = "") { "$it\n\n" }
+    fun addSection(action: Action) {
+        renderedTexts.add(action to TextFieldValue())
     }
 
-    fun getAnnotatedText(): AnnotatedString {
-        return buildAnnotatedString {
-            var counter = 0
-            renderedTexts.forEach { text ->
-                text.removePrefix().let { renderedText ->
-                    append(renderedText)
+    fun onEachValueChange(index: Int, value: TextFieldValue) {
+        Log.d("mmd", "onEachValueChange: $index + $value")
+        renderedTexts[index] = renderedTexts[index].copy(second = value)
+    }
 
-                    text.getActionOrNull()?.let { action ->
-                        addStyle(
-                            start = counter, end = counter + renderedText.length,
-                            style = action.getFontStyle().toSpanStyle()
-                        )
-                    }
+    fun updateMarkdown(value: String) {
+        markdown = value
+        syncRenderedTextsWithMarkdown()
+        syncAnnotatedStringWithRenderedTexts()
+    }
 
-                    counter += renderedText.length
+    fun await(): TextEditorValue {
+        syncAnnotatedStringWithRenderedTexts()
+        syncMarkdownWithRenderedText()
+        return this
+    }
+
+    private fun syncRenderedTextsWithMarkdown() {
+        renderedTexts.removeAll { true }
+        if (markdown.isNotEmpty()) {
+            markdown.split("\n\n")
+                .filter { it.isNotBlank() }
+                .forEach {
+                    val text = it.removePrefix()
+                    val action = it.getActionOrNull()
+                    renderedTexts.add(action to TextFieldValue(text))
                 }
+        }
+    }
+
+    private fun syncAnnotatedStringWithRenderedTexts() {
+        annotatedString = buildAnnotatedString {
+            var count = 0
+            renderedTexts.forEach { renderedText ->
+                append(renderedText.second.text + "\n")
+
+                renderedText.first?.getTextStyle()?.let { textStyle ->
+                    addStyle(
+                        start = count,
+                        end = count + renderedText.second.text.length,
+                        style = textStyle.toSpanStyle()
+                    )
+                }
+
+                count += (renderedText.second.text.length + 1)
             }
         }
+    }
+
+    private fun syncMarkdownWithRenderedText() {
+        emptyMarkdown()
+        renderedTexts.forEach {
+            markdown += "${it.first?.key}${it.second.text}\n\n"
+        }
+    }
+
+    private fun emptyMarkdown() {
+        markdown = ""
     }
 
     companion object {
         private val robotoRegularFont = FontFamily(Font(R.font.roboto_regular, FontWeight.Normal))
 
         enum class Action(val key: String) {
-            H1("#"),
-            H2("##"),
-            H3("###"),
-            H4("####"),
-            TodoListNotComplete("- [ ]"),
-            TodoListComplete("- [x]"),
-            DotList("-"),
-            NumberList(".1")
+            Non(""),
+            H1("# "),
+            H2("## "),
+            H3("### "),
+            H4("#### "),
+            TodoListNotComplete("- [ ] "),
+            TodoListComplete("- [x] "),
+            DotList("- "),
+
+            // TODO: find the way
+            NumberList(".1 ")
         }
 
-        private fun Action.getFontStyle(): TextStyle {
+        fun Action.getTextStyle(): TextStyle {
             return when (this) {
                 Action.H1 -> TextStyle.Default.copy(
                     fontFamily = robotoRegularFont,
@@ -252,6 +240,35 @@ class TextEditorValue(
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Light
                 )
+
+                Action.Non -> TextStyle.Default.copy(
+                    fontFamily = robotoRegularFont,
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Light
+                )
+            }
+        }
+
+        fun renderMarkdownToAnnotatedString(markdownInput: String): AnnotatedString {
+            return buildAnnotatedString {
+                var counter = 0
+                markdownInput
+                    .split("\n\n")
+                    .forEach { text ->
+                        text.removePrefix().let { renderedText ->
+                            append(renderedText + "\n")
+
+                            text.getActionOrNull()?.let { action ->
+                                addStyle(
+                                    start = counter,
+                                    end = counter + renderedText.length,
+                                    style = action.getTextStyle().toSpanStyle()
+                                )
+                            }
+
+                            counter += renderedText.length + 1
+                        }
+                    }
             }
         }
 
@@ -266,33 +283,74 @@ class TextEditorValue(
 
         private fun String.removePrefix(): String {
             Action.entries.reversed().forEach { action ->
-                if (this.startsWith("${action.key} ")) {
-                    return this.removePrefix("${action.key} ")
+                if (this.startsWith(action.key)) {
+                    return this.removePrefix(action.key)
                 }
             }
             return this
         }
+    }
+}
 
-        fun renderMarkdownToAnnotatedString(markdownInput: String): AnnotatedString {
-            return buildAnnotatedString {
-                var counter = 0
-                markdownInput
-                    .split("\n\n")
-                    .forEach { text ->
-                        text.removePrefix().let { renderedText ->
-                            append(renderedText + "\n")
+@Composable
+private fun buildPienoteTextTool(
+    value: TextFieldValue,
+    onValueChange: (TextFieldValue) -> Unit
+): PienoteTextToolBar {
+    return PienoteTextToolBar(
+        view = LocalView.current,
+        onCustomItemsRequest = if (value.selection.length < 1) {
+            null
+        } else {
+            { menuItem ->
+                // perform and action based on which item has been
+                // click and returning new text for the selected text
+                val result =
+                    menuItem.performAction(value.getSelectedText().text)
 
-                            text.getActionOrNull()?.let { action ->
-                                addStyle(
-                                    start = counter, end = counter + renderedText.length,
-                                    style = action.getFontStyle().toSpanStyle()
-                                )
-                            }
+                // min and max representing exactly what we need here.
+                val startRange = value.selection.min
+                val endRange = value.selection.max
 
-                            counter += renderedText.length + 1
-                        }
+                // sets new text
+                onValueChange(
+                    value.copy(
+                        text = value.text.replaceRange(
+                            range = startRange..<endRange,
+                            replacement = result.first
+                        )
+                    ),
+                )
+
+                val newSelectionEndRange by lazy {
+                    val length = (menuItem.getPrefixOrNull()?.length ?: 0) * 2
+
+                    if (result.second) {
+                        -length
+                    } else {
+                        length
                     }
+                }
+
+                // change selected range based on new text
+                onValueChange(
+                    value.copy(
+                        selection = TextRange(
+                            start = startRange,
+                            end = endRange + newSelectionEndRange
+                        )
+                    ),
+                )
             }
         }
+    )
+}
+
+@Composable
+fun rememberTextEditorValue(
+    initialMarkdown: String
+): TextEditorValue {
+    return remember {
+        TextEditorValue(initialMarkdown)
     }
 }
