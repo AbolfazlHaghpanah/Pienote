@@ -55,6 +55,7 @@ import androidx.compose.ui.platform.LocalTextToolbar
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.getSelectedText
 import androidx.compose.ui.unit.IntOffset
@@ -159,13 +160,19 @@ fun NoteScreen(
     val interactionSource = remember { MutableInteractionSource() }
 
     var noteText by remember {
-        mutableStateOf(TextFieldValue(text = state.note.note.orEmpty()))
+        mutableStateOf(
+            TextFieldValue(
+                annotatedString = TextEditorValue.renderMarkdownToAnnotatedString(
+                    state.note.note.orEmpty()
+                )
+            )
+        )
     }
 
     LaunchedEffect(state.note.note) {
         state.note.note?.let {
             noteText = noteText.copy(
-                text = it
+                annotatedString = TextEditorValue.renderMarkdownToAnnotatedString(it)
             )
         }
     }
@@ -373,89 +380,23 @@ fun NoteScreen(
                 }
 
                 if (state.isEditing) {
-                    DisposableEffect(noteText) {
-                        onDispose {
-                            noteText.text.let(onUpdateNote)
-                        }
-                    }
-
                     SideEffect {
                         if (state.focusRequestType is FocusRequestType.Note) {
                             noteFocusRequester.requestFocus()
                         }
                     }
 
-                    // give us bold, code and underline options on actionMenu
-                    // that appear when selecting a text.
-                    val textToolbar = PienoteTextToolBar(
-                        view = LocalView.current,
-                        onCustomItemsRequest = if (noteText.selection.length < 1) {
-                            null
-                        } else {
-                            { menuItem ->
-                                // perform and action based on which item has been
-                                // click and returning new text for the selected text
-                                val result =
-                                    menuItem.performAction(noteText.getSelectedText().text)
-
-                                // min and max representing exactly what we need here.
-                                val startRange = noteText.selection.min
-                                val endRange = noteText.selection.max
-
-                                // sets new text
-                                noteText = noteText.copy(
-                                    text = noteText.text.replaceRange(
-                                        range = startRange..<endRange,
-                                        replacement = result.first
-                                    )
-                                )
-
-                                val newSelectionEndRange by lazy {
-                                    val length = (menuItem.getPrefixOrNull()?.length ?: 0) * 2
-
-                                    if (result.second) {
-                                        -length
-                                    } else {
-                                        length
-                                    }
-                                }
-
-                                // change selected range based on new text
-                                noteText = noteText.copy(
-                                    selection = TextRange(
-                                        start = startRange,
-                                        end = endRange + newSelectionEndRange
-                                    )
-                                )
-                            }
+                    PienoteTextEditor(
+                        modifier = Modifier
+                            .padding(horizontal = 14.dp)
+                            .focusRequester(noteFocusRequester)
+                            .fillMaxWidth(),
+                        value = noteText,
+                        onValueChange = { newValue, markdown ->
+                            noteText = newValue
+                            onUpdateNote(markdown)
                         }
                     )
-
-                    CompositionLocalProvider(LocalTextToolbar provides textToolbar) {
-                        val noteTextEditorValue = remember {
-                            TextEditorValue(noteText.text)
-                        }
-                        PienoteTextEditor(
-                            modifier = Modifier.fillMaxWidth(),
-                            value = noteTextEditorValue
-                        )
-//                        PienoteTextField(
-//                            modifier = Modifier
-//                                .padding(horizontal = 14.dp)
-//                                .fillMaxWidth()
-//                                .weight(1f)
-//                                .focusRequester(noteFocusRequester)
-//                                .onFocusChanged {
-//                                    if (it.isFocused) {
-//                                        onFocusRequestTypeChanged(FocusRequestType.Note)
-//                                    }
-//                                },
-//                            value = noteText,
-//                            onValueChange = { noteText = it },
-//                            placeHolderText = stringResource(R.string.label_write_here),
-//                            textStyle = PienoteTheme.typography.bodyLarge
-//                        )
-                    }
                 } else {
                     Text(
                         modifier = Modifier
@@ -467,7 +408,15 @@ fun NoteScreen(
                             }
                             .padding(vertical = 16.dp, horizontal = 30.dp)
                             .fillMaxWidth(),
-                        text = state.note.note ?: "",
+                        text = if (state.note.note.isNullOrEmpty()) {
+                            buildAnnotatedString {
+                                append(
+                                    stringResource(R.string.label_untitled)
+                                )
+                            }
+                        } else {
+                            noteText.annotatedString
+                        },
                         style = PienoteTheme.typography.bodyLarge,
                         color = PienoteTheme.colors.onBackground
                     )
