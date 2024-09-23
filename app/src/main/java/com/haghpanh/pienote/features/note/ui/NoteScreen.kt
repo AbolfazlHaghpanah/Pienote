@@ -65,8 +65,8 @@ import com.haghpanh.pienote.commonui.utils.toComposeColor
 import com.haghpanh.pienote.features.note.ui.component.CategoryChipSection
 import com.haghpanh.pienote.features.note.ui.component.ImageCoverSection
 import com.haghpanh.pienote.features.note.ui.component.NoteColorSection
-import com.haghpanh.pienote.features.note.ui.component.PienoteTextEditor
-import com.haghpanh.pienote.features.note.ui.component.rememberTextEditorValue
+import com.haghpanh.pienote.features.textEditor.compose.PienoteTextEditor
+import com.haghpanh.pienote.features.textEditor.base.rememberTextEditorValue
 import com.haghpanh.pienote.features.note.utils.FocusRequestType
 import com.haghpanh.pienote.features.note.utils.rememberNoteNestedScrollConnection
 
