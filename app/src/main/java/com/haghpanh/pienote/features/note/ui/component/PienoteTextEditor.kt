@@ -1,11 +1,15 @@
 package com.haghpanh.pienote.features.note.ui.component
 
-import android.util.Log
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -13,11 +17,18 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.focus.onFocusEvent
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalTextToolbar
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.text.AnnotatedString
@@ -32,11 +43,12 @@ import androidx.compose.ui.text.input.getSelectedText
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.sp
 import com.haghpanh.pienote.R
-import com.haghpanh.pienote.commonui.component.PienoteTextField
 import com.haghpanh.pienote.commonui.theme.PienoteTheme
 import com.haghpanh.pienote.commonui.utils.PienoteTextToolBar
 import com.haghpanh.pienote.commonui.utils.getPrefixOrNull
 import com.haghpanh.pienote.commonui.utils.performAction
+import com.haghpanh.pienote.features.note.ui.component.TextEditorValue.Companion.Action.TodoListComplete
+import com.haghpanh.pienote.features.note.ui.component.TextEditorValue.Companion.Action.TodoListNotComplete
 import com.haghpanh.pienote.features.note.ui.component.TextEditorValue.Companion.getTextStyle
 
 @Composable
@@ -48,11 +60,23 @@ fun PienoteTextEditor(
         derivedStateOf { value.getRenderedTexts() }
     }
 
-    LaunchedEffect(key1 = textFields) {
-        Log.d(
-            "mmd",
-            "PienoteTextEditor: ${textFields.joinToString { it.second.getSelectedText() }}"
-        )
+    val focusManager = LocalFocusManager.current
+
+    // based on the value we decide whether should we move focus down or not.
+    var hasAddedSection by remember {
+        mutableStateOf(false)
+    }
+
+    // keeps focusItem Index to perform adding section based on it.
+    var focusedItemIndex: Int by remember {
+        mutableIntStateOf(-1)
+    }
+
+    LaunchedEffect(key1 = textFields.size) {
+        if (hasAddedSection) {
+            focusManager.moveFocus(FocusDirection.Down)
+            hasAddedSection = false
+        }
     }
 
     Column(modifier = modifier) {
@@ -60,15 +84,36 @@ fun PienoteTextEditor(
 
             // give us bold, code and underline options on actionMenu
             // that appear when selecting a text.
+            // todo check
             val textToolbar = buildPienoteTextTool(value = item.second) {
                 value.onEachValueChange(index, it)
             }
 
             CompositionLocalProvider(LocalTextToolbar provides textToolbar) {
-                PienoteTextField(
+                TextEditorField(
+                    modifier = Modifier.onFocusEvent {
+                        if (it.isFocused) {
+                            focusedItemIndex = index
+                        }
+                    },
+                    icon = if (
+                        item.first in setOf(
+                            TodoListComplete,
+                            TodoListNotComplete
+                        )
+                    ) {
+                        {
+                            Checkbox(
+                                checked = item.first == TodoListComplete,
+                                onCheckedChange = { value.onCheckTodo(index) }
+                            )
+                        }
+                    } else {
+                        null
+                    },
                     value = item.second,
                     onValueChange = { value.onEachValueChange(index, it) },
-                    textStyle = item.first?.getTextStyle() ?: PienoteTheme.typography.titleMedium
+                    textStyle = item.first?.getTextStyle() ?: TextStyle.Default
                 )
             }
         }
@@ -76,12 +121,63 @@ fun PienoteTextEditor(
         LazyRow(modifier = Modifier.fillMaxWidth()) {
             items(TextEditorValue.Companion.Action.entries) {
                 Box(modifier = Modifier.fillMaxWidth()) {
-                    TextButton(onClick = { value.addSection(it) }) {
+                    TextButton(
+                        onClick = {
+                            value.addSection(
+                                action = it,
+                                index = focusedItemIndex.takeIf { it != -1 }
+                            )
+                            hasAddedSection = true
+                        }
+                    ) {
                         Text(text = it.name)
                     }
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun TextEditorField(
+    value: TextFieldValue,
+    onValueChange: (TextFieldValue) -> Unit,
+    modifier: Modifier = Modifier,
+    icon: (@Composable () -> Unit)? = null,
+    textStyle: TextStyle = TextStyle.Default,
+    placeHolderText: String? = null,
+    contentColor: Color = PienoteTheme.colors.onBackground
+) {
+    CompositionLocalProvider(
+        value = LocalContentColor provides contentColor
+    ) {
+        BasicTextField(
+            modifier = modifier,
+            value = value,
+            onValueChange = onValueChange,
+            textStyle = textStyle.copy(color = contentColor),
+            cursorBrush = SolidColor(contentColor),
+            decorationBox = { content ->
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Start
+                ) {
+                    icon?.let {
+                        icon()
+                    }
+
+                    if (value.text.isEmpty() && placeHolderText != null) {
+                        Text(
+                            text = placeHolderText,
+                            color = LocalContentColor.current.copy(alpha = 0.6f),
+                            style = textStyle
+                        )
+                    }
+
+                    content()
+                }
+            }
+        )
     }
 }
 
@@ -108,13 +204,32 @@ class TextEditorValue(
     fun getRenderedTexts(): List<Pair<Action?, TextFieldValue>> =
         renderedTexts.map { it.first to it.second }
 
-    fun addSection(action: Action) {
-        renderedTexts.add(action to TextFieldValue())
+    fun addSection(action: Action, index: Int? = null) {
+        if (index != null) {
+            renderedTexts.add(index + 1, action to TextFieldValue())
+        } else {
+            renderedTexts.add(action to TextFieldValue())
+        }
     }
 
     fun onEachValueChange(index: Int, value: TextFieldValue) {
-        Log.d("mmd", "onEachValueChange: $index + $value")
         renderedTexts[index] = renderedTexts[index].copy(second = value)
+    }
+
+    fun onCheckTodo(index: Int) {
+        val renderedText = renderedTexts[index]
+
+        if (renderedText.first !in setOf(TodoListComplete, TodoListNotComplete)) return
+
+        val newValue = renderedText.copy(
+            first = if (renderedText.first == TodoListComplete) {
+                TodoListNotComplete
+            } else {
+                TodoListComplete
+            }
+        )
+
+        renderedTexts[index] = newValue
     }
 
     fun updateMarkdown(value: String) {
@@ -146,7 +261,7 @@ class TextEditorValue(
         annotatedString = buildAnnotatedString {
             var count = 0
             renderedTexts.forEach { renderedText ->
-                append(renderedText.second.text + "\n")
+                append(renderedText.second.text)
 
                 renderedText.first?.getTextStyle()?.let { textStyle ->
                     addStyle(
@@ -154,9 +269,15 @@ class TextEditorValue(
                         end = count + renderedText.second.text.length,
                         style = textStyle.toSpanStyle()
                     )
+
+                    addStyle(
+                        start = count,
+                        end = count + renderedText.second.text.length,
+                        style = textStyle.toParagraphStyle()
+                    )
                 }
 
-                count += (renderedText.second.text.length + 1)
+                count += (renderedText.second.text.length)
             }
         }
     }
@@ -174,6 +295,7 @@ class TextEditorValue(
 
     companion object {
         private val robotoRegularFont = FontFamily(Font(R.font.roboto_regular, FontWeight.Normal))
+        private val robotoBoldFont = FontFamily(Font(R.font.roboto_bold, FontWeight.Normal))
 
         enum class Action(val key: String) {
             Non(""),
@@ -181,9 +303,9 @@ class TextEditorValue(
             H2("## "),
             H3("### "),
             H4("#### "),
+            DotList("- "),
             TodoListNotComplete("- [ ] "),
             TodoListComplete("- [x] "),
-            DotList("- "),
 
             // TODO: find the way
             NumberList(".1 ")
@@ -192,37 +314,41 @@ class TextEditorValue(
         fun Action.getTextStyle(): TextStyle {
             return when (this) {
                 Action.H1 -> TextStyle.Default.copy(
-                    fontFamily = robotoRegularFont,
+                    fontFamily = robotoBoldFont,
                     fontSize = 32.sp,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
+                    lineHeight = 28.sp
                 )
 
                 Action.H2 -> TextStyle.Default.copy(
-                    fontFamily = robotoRegularFont,
+                    fontFamily = robotoBoldFont,
                     fontSize = 28.sp,
-                    fontWeight = FontWeight.SemiBold
+                    fontWeight = FontWeight.SemiBold,
+                    lineHeight = 18.sp
                 )
 
                 Action.H3 -> TextStyle.Default.copy(
-                    fontFamily = robotoRegularFont,
+                    fontFamily = robotoBoldFont,
                     fontSize = 24.sp,
-                    fontWeight = FontWeight.Medium
+                    fontWeight = FontWeight.Medium,
+                    lineHeight = 16.sp
                 )
 
                 Action.H4 -> TextStyle.Default.copy(
-                    fontFamily = robotoRegularFont,
+                    fontFamily = robotoBoldFont,
                     fontSize = 20.sp,
-                    fontWeight = FontWeight.Normal
+                    fontWeight = FontWeight.Normal,
+                    lineHeight = 16.sp
                 )
 
-                Action.TodoListNotComplete -> TextStyle.Default.copy(
+                TodoListNotComplete -> TextStyle.Default.copy(
                     fontFamily = robotoRegularFont,
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Normal,
-                    textDecoration = TextDecoration.None
+                    textDecoration = TextDecoration.None,
                 )
 
-                Action.TodoListComplete -> TextStyle.Default.copy(
+                TodoListComplete -> TextStyle.Default.copy(
                     fontFamily = robotoRegularFont,
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Normal,
@@ -282,12 +408,11 @@ class TextEditorValue(
         }
 
         private fun String.removePrefix(): String {
+            var newValue = this
             Action.entries.reversed().forEach { action ->
-                if (this.startsWith(action.key)) {
-                    return this.removePrefix(action.key)
-                }
+                newValue = newValue.removePrefix(action.key)
             }
-            return this
+            return newValue
         }
     }
 }

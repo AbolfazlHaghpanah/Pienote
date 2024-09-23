@@ -35,7 +35,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -364,42 +363,38 @@ fun NoteScreen(
                     )
                 }
 
-                if (state.isEditing) {
-                    SideEffect {
-                        if (state.focusRequestType is FocusRequestType.Note) {
-                            noteFocusRequester.requestFocus()
-                        }
-                    }
+                PienoteTextEditor(
+                    modifier = Modifier
+                        .padding(vertical = 16.dp, horizontal = 30.dp)
+                        .focusRequester(noteFocusRequester)
+                        .fillMaxWidth(),
+                    value = noteText
+                )
 
-                    PienoteTextEditor(
-                        modifier = Modifier
-                            .padding(horizontal = 14.dp)
-                            .focusRequester(noteFocusRequester)
-                            .fillMaxWidth(),
-                        value = noteText
-                    )
-                } else {
-                    val note by remember {
-                        derivedStateOf {
-                            noteText.await().annotatedString
-                        }
-                    }
-
-                    Text(
-                        modifier = Modifier
-                            .clickable(
-                                interactionSource = interactionSource,
-                                indication = null
-                            ) {
-                                onSwitchEditMode(FocusRequestType.Note)
-                            }
-                            .padding(vertical = 16.dp, horizontal = 30.dp)
-                            .fillMaxWidth(),
-                        text = note,
-                        style = PienoteTheme.typography.bodyLarge,
-                        color = PienoteTheme.colors.onBackground
-                    )
-                }
+//                if (state.isEditing) {
+//
+//                } else {
+//                    val note by remember {
+//                        derivedStateOf {
+//                            noteText.await().annotatedString
+//                        }
+//                    }
+//
+//                    Text(
+//                        modifier = Modifier
+//                            .clickable(
+//                                interactionSource = interactionSource,
+//                                indication = null
+//                            ) {
+//                                onSwitchEditMode(FocusRequestType.Note)
+//                            }
+//                            .padding(vertical = 16.dp, horizontal = 30.dp)
+//                            .fillMaxWidth(),
+//                        text = note,
+//                        style = PienoteTheme.typography.bodyLarge,
+//                        color = PienoteTheme.colors.onBackground
+//                    )
+//                }
             }
         }
     }
