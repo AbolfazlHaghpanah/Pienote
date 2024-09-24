@@ -9,8 +9,6 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -34,7 +32,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -65,10 +62,10 @@ import com.haghpanh.pienote.commonui.utils.toComposeColor
 import com.haghpanh.pienote.features.note.ui.component.CategoryChipSection
 import com.haghpanh.pienote.features.note.ui.component.ImageCoverSection
 import com.haghpanh.pienote.features.note.ui.component.NoteColorSection
-import com.haghpanh.pienote.features.textEditor.compose.PienoteTextEditor
-import com.haghpanh.pienote.features.textEditor.base.rememberTextEditorValue
 import com.haghpanh.pienote.features.note.utils.FocusRequestType
 import com.haghpanh.pienote.features.note.utils.rememberNoteNestedScrollConnection
+import com.haghpanh.pienote.features.texteditor.compose.PienoteTextEditor
+import com.haghpanh.pienote.features.texteditor.utils.rememberTextEditorValue
 
 @Composable
 fun NoteScreen(
@@ -147,8 +144,6 @@ fun NoteScreen(
     val nestedScrollConnection = rememberNoteNestedScrollConnection()
     val titleFocusRequester = remember { FocusRequester() }
     val noteFocusRequester = remember { FocusRequester() }
-    val interactionSource = remember { MutableInteractionSource() }
-
     val noteText = rememberTextEditorValue(initialMarkdown = state.note.note.orEmpty())
 
     LaunchedEffect(state.note.note) {
@@ -293,58 +288,37 @@ fun NoteScreen(
                 modifier = Modifier
                     .heightIn(min = localConfig.screenHeightDp.dp - 24.dp)
             ) {
-                if (state.isEditing) {
-                    var title by remember {
-                        mutableStateOf(state.note.title)
-                    }
-
-                    DisposableEffect(title) {
-                        onDispose {
-                            title?.let(onUpdateTitle)
-                        }
-                    }
-
-                    SideEffect {
-                        if (state.focusRequestType is FocusRequestType.Title) {
-                            titleFocusRequester.requestFocus()
-                        }
-                    }
-
-                    PienoteTextField(
-                        modifier = Modifier
-                            .padding(horizontal = 14.dp)
-                            .fillMaxWidth()
-                            .focusRequester(titleFocusRequester)
-                            .onFocusChanged {
-                                if (it.isFocused) {
-                                    onFocusRequestTypeChanged(FocusRequestType.Title)
-                                }
-                            },
-                        value = title.orEmpty(),
-                        onValueChange = { title = it },
-                        placeHolderText = stringResource(R.string.label_untitled),
-                        textStyle = PienoteTheme.typography.displaySmall
-                    )
-                } else {
-                    Text(
-                        modifier = Modifier
-                            .clickable(
-                                interactionSource = interactionSource,
-                                indication = null
-                            ) {
-                                onSwitchEditMode(FocusRequestType.Title)
-                            }
-                            .padding(vertical = 16.dp, horizontal = 30.dp)
-                            .fillMaxWidth(),
-                        text = if (state.note.title.isNullOrEmpty()) {
-                            stringResource(R.string.label_untitled)
-                        } else {
-                            state.note.title
-                        },
-                        style = PienoteTheme.typography.displaySmall,
-                        color = PienoteTheme.colors.onBackground
-                    )
+                var title by remember {
+                    mutableStateOf(state.note.title)
                 }
+
+                LaunchedEffect(state.note.title) {
+                    state.note.title?.let {
+                        title = it
+                    }
+                }
+
+                DisposableEffect(title) {
+                    onDispose {
+                        title?.let(onUpdateTitle)
+                    }
+                }
+
+                PienoteTextField(
+                    modifier = Modifier
+                        .padding(horizontal = 14.dp)
+                        .fillMaxWidth()
+                        .focusRequester(titleFocusRequester)
+                        .onFocusChanged {
+                            if (it.isFocused) {
+                                onFocusRequestTypeChanged(FocusRequestType.Title)
+                            }
+                        },
+                    value = title.orEmpty(),
+                    onValueChange = { title = it },
+                    placeHolderText = stringResource(R.string.label_untitled),
+                    textStyle = PienoteTheme.typography.displaySmall
+                )
 
                 AnimatedVisibility(visible = state.isEditing || state.category != null) {
                     CategoryChipSection(
@@ -352,10 +326,10 @@ fun NoteScreen(
                         isEditing = state.isEditing,
                         categories = state.categories,
                         onCategorySelect = onUpdateCategory,
-                        onClickCategory = {
+                        onClickCategory = { categoryId ->
                             navigateToRoute(
                                 AppScreens.CategoryScreen.createRoute(
-                                    it,
+                                    categoryId,
                                     state.note.title ?: ""
                                 )
                             )
@@ -368,33 +342,9 @@ fun NoteScreen(
                         .padding(vertical = 16.dp, horizontal = 30.dp)
                         .focusRequester(noteFocusRequester)
                         .fillMaxWidth(),
-                    value = noteText
+                    value = noteText,
+                    shouldShowEditingOptions = state.isEditing
                 )
-
-//                if (state.isEditing) {
-//
-//                } else {
-//                    val note by remember {
-//                        derivedStateOf {
-//                            noteText.await().annotatedString
-//                        }
-//                    }
-//
-//                    Text(
-//                        modifier = Modifier
-//                            .clickable(
-//                                interactionSource = interactionSource,
-//                                indication = null
-//                            ) {
-//                                onSwitchEditMode(FocusRequestType.Note)
-//                            }
-//                            .padding(vertical = 16.dp, horizontal = 30.dp)
-//                            .fillMaxWidth(),
-//                        text = note,
-//                        style = PienoteTheme.typography.bodyLarge,
-//                        color = PienoteTheme.colors.onBackground
-//                    )
-//                }
             }
         }
     }

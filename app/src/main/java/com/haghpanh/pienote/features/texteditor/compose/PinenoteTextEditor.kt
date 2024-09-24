@@ -1,14 +1,19 @@
-package com.haghpanh.pienote.features.textEditor.compose
+package com.haghpanh.pienote.features.texteditor.compose
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.material3.Checkbox
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -23,6 +28,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.onFocusEvent
 import androidx.compose.ui.graphics.Color
@@ -30,23 +36,28 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalTextToolbar
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.getSelectedText
+import androidx.compose.ui.unit.dp
 import com.haghpanh.pienote.commonui.theme.PienoteTheme
 import com.haghpanh.pienote.commonui.utils.PienoteTextToolBar
 import com.haghpanh.pienote.commonui.utils.getPrefixOrNull
 import com.haghpanh.pienote.commonui.utils.performAction
-import com.haghpanh.pienote.features.textEditor.base.Action
-import com.haghpanh.pienote.features.textEditor.base.TextEditorValue
-import com.haghpanh.pienote.features.textEditor.base.getTextStyle
-
+import com.haghpanh.pienote.features.texteditor.utils.CreateIcon
+import com.haghpanh.pienote.features.texteditor.utils.TextEditorAction
+import com.haghpanh.pienote.features.texteditor.utils.TextEditorValue
+import com.haghpanh.pienote.features.texteditor.utils.getNameStringId
+import com.haghpanh.pienote.features.texteditor.utils.getPlaceHolderStringId
+import com.haghpanh.pienote.features.texteditor.utils.getTextStyle
 
 @Composable
 fun PienoteTextEditor(
     value: TextEditorValue,
     modifier: Modifier = Modifier,
+    shouldShowEditingOptions: Boolean
 ) {
     val textFields by remember {
         derivedStateOf { value.getRenderedTexts() }
@@ -83,46 +94,69 @@ fun PienoteTextEditor(
 
             CompositionLocalProvider(LocalTextToolbar provides textToolbar) {
                 TextEditorField(
-                    modifier = Modifier.onFocusEvent {
-                        if (it.isFocused) {
-                            focusedItemIndex = index
+                    modifier = Modifier
+                        .onFocusEvent {
+                            if (it.isFocused) {
+                                focusedItemIndex = index
+                            }
+                        },
+                    icon = {
+                        item.first?.CreateIcon {
+                            if (item.first in setOf(
+                                    TextEditorAction.TodoListNotComplete,
+                                    TextEditorAction.TodoListComplete
+                                )
+                            ) {
+                                value.onCheckTodo(index)
+                            }
                         }
-                    },
-                    icon = if (
-                        item.first in setOf(
-                            Action.TodoListComplete,
-                            Action.TodoListNotComplete
-                        )
-                    ) {
-                        {
-                            Checkbox(
-                                checked = item.first == Action.TodoListComplete,
-                                onCheckedChange = { value.onCheckTodo(index) }
-                            )
-                        }
-                    } else {
-                        null
                     },
                     value = item.second,
                     onValueChange = { value.onEachValueChange(index, it) },
-                    textStyle = item.first?.getTextStyle() ?: TextStyle.Default
+                    textStyle = item.first?.getTextStyle() ?: TextStyle.Default,
+                    placeHolderText = if (shouldShowEditingOptions) {
+                        item.first
+                            ?.getPlaceHolderStringId()
+                            ?.let { stringResource(id = it) }
+                    } else {
+                        null
+                    }
                 )
             }
         }
 
-        LazyRow(modifier = Modifier.fillMaxWidth()) {
-            items(Action.entries) {
-                Box(modifier = Modifier.fillMaxWidth()) {
-                    TextButton(
-                        onClick = {
-                            value.addSection(
-                                action = it,
-                                index = focusedItemIndex.takeIf { it != -1 }
-                            )
-                            hasAddedSection = true
+        Spacer(modifier = Modifier.height(32.dp))
+
+        AnimatedVisibility(visible = shouldShowEditingOptions) {
+            LazyRow(
+                modifier = Modifier
+                    .clip(PienoteTheme.shapes.rounded)
+                    .background(PienoteTheme.colors.surface)
+                    .fillMaxWidth(),
+                contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp)
+            ) {
+                items(
+                    items = TextEditorAction.entries.filter {
+                        it !in setOf(
+                            TextEditorAction.Non,
+                            TextEditorAction.TodoListComplete
+                        )
+                    }
+                ) { action ->
+                    Box(modifier = Modifier.fillMaxWidth()) {
+                        TextButton(
+                            onClick = {
+                                value.addSection(
+                                    action = action,
+                                    index = focusedItemIndex.takeIf { it != -1 }
+                                )
+                                hasAddedSection = true
+                            }
+                        ) {
+                            action.getNameStringId()?.let {
+                                Text(text = stringResource(id = it))
+                            }
                         }
-                    ) {
-                        Text(text = it.name)
                     }
                 }
             }
@@ -135,7 +169,7 @@ private fun TextEditorField(
     value: TextFieldValue,
     onValueChange: (TextFieldValue) -> Unit,
     modifier: Modifier = Modifier,
-    icon: (@Composable () -> Unit)? = null,
+    icon: @Composable () -> Unit = {},
     textStyle: TextStyle = TextStyle.Default,
     placeHolderText: String? = null,
     contentColor: Color = PienoteTheme.colors.onBackground
@@ -151,22 +185,23 @@ private fun TextEditorField(
             cursorBrush = SolidColor(contentColor),
             decorationBox = { content ->
                 Row(
+                    modifier = Modifier.padding(vertical = 2.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Start
                 ) {
-                    icon?.let {
-                        icon()
-                    }
+                    icon()
 
-                    if (value.text.isEmpty() && placeHolderText != null) {
-                        Text(
-                            text = placeHolderText,
-                            color = LocalContentColor.current.copy(alpha = 0.6f),
-                            style = textStyle
-                        )
-                    }
+                    Box {
+                        if (value.text.isEmpty() && placeHolderText != null) {
+                            Text(
+                                text = placeHolderText,
+                                color = LocalContentColor.current.copy(alpha = 0.6f),
+                                style = textStyle
+                            )
+                        }
 
-                    content()
+                        content()
+                    }
                 }
             }
         )

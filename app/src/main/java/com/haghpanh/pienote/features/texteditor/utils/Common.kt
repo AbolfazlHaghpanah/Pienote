@@ -1,4 +1,4 @@
-package com.haghpanh.pienote.features.textEditor.base
+package com.haghpanh.pienote.features.texteditor.utils
 
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.buildAnnotatedString
@@ -26,8 +26,8 @@ fun renderMarkdownToAnnotatedString(markdownInput: String): AnnotatedString {
     }
 }
 
-fun String.getActionOrNull(): Action? {
-    Action.entries.reversed().forEach { action ->
+fun String.getActionOrNull(): TextEditorAction? {
+    TextEditorAction.entries.reversed().forEach { action ->
         if (this.startsWith(action.key)) {
             return action
         }
@@ -37,7 +37,7 @@ fun String.getActionOrNull(): Action? {
 
 fun String.removePrefix(): String {
     var newValue = this
-    Action.entries.reversed().forEach { action ->
+    TextEditorAction.entries.reversed().forEach { action ->
         newValue = newValue.removePrefix(action.key)
     }
     return newValue

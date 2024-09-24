@@ -21,5 +21,17 @@
     <string name="label_underline">Under Line</string>
     <string name="label_code">Code</string>
     <string name="label_add">Add</string>
-    <string name="label_unnamed">Unnamed...</string>
+    <string name="label_unnamed">Unnamed…</string>
+    <string name="label_write_three_dot">Write…</string>
+    <string name="label_header1">Header 1</string>
+    <string name="label_header2">Header 2</string>
+    <string name="label_header3">Header 3</string>
+    <string name="label_header4">Header 4</string>
+    <string name="label_h1">H1</string>
+    <string name="label_h2">H2</string>
+    <string name="label_h3">H3</string>
+    <string name="label_h4">H4</string>
+    <string name="label_list">List</string>
+    <string name="label_to_do">To-Do</string>
+    <string name="label_ordered_list">Ordered List</string>
 </resources>

@@ -1,10 +1,11 @@
-package com.haghpanh.pienote.features.textEditor.base
+package com.haghpanh.pienote.features.texteditor.utils
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.Saver
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.input.TextFieldValue
@@ -17,7 +18,7 @@ class TextEditorValue(
     var annotatedString by mutableStateOf(renderMarkdownToAnnotatedString(markdown))
         private set
 
-    private val renderedTexts = mutableStateListOf<Pair<Action?, TextFieldValue>>().also { list ->
+    private val renderedTexts = mutableStateListOf<Pair<TextEditorAction?, TextFieldValue>>().also { list ->
         if (initialMarkdown.isNotEmpty()) {
             initialMarkdown.split("\n\n")
                 .filter { it.isNotBlank() }
@@ -26,18 +27,24 @@ class TextEditorValue(
                     val action = it.getActionOrNull()
                     list.add(action to TextFieldValue(text))
                 }
+        } else {
+            list.add(TextEditorAction.Non to TextFieldValue())
         }
     }
 
-    fun getRenderedTexts(): List<Pair<Action?, TextFieldValue>> =
+    fun getRenderedTexts(): List<Pair<TextEditorAction?, TextFieldValue>> =
         renderedTexts.map { it.first to it.second }
 
-    fun addSection(action: Action, index: Int? = null) {
+    fun addSection(action: TextEditorAction, index: Int? = null) {
         if (index != null) {
             renderedTexts.add(index + 1, action to TextFieldValue())
         } else {
             renderedTexts.add(action to TextFieldValue())
         }
+    }
+
+    fun updateAction(index: Int, newAction: TextEditorAction) {
+        renderedTexts[index] = renderedTexts[index].copy(first = newAction)
     }
 
     fun onEachValueChange(index: Int, value: TextFieldValue) {
@@ -47,13 +54,19 @@ class TextEditorValue(
     fun onCheckTodo(index: Int) {
         val renderedText = renderedTexts[index]
 
-        if (renderedText.first !in setOf(Action.TodoListComplete, Action.TodoListNotComplete)) return
+        if (renderedText.first !in setOf(
+                TextEditorAction.TodoListComplete,
+                TextEditorAction.TodoListNotComplete
+            )
+        ) {
+            return
+        }
 
         val newValue = renderedText.copy(
-            first = if (renderedText.first == Action.TodoListComplete) {
-                Action.TodoListNotComplete
+            first = if (renderedText.first == TextEditorAction.TodoListComplete) {
+                TextEditorAction.TodoListNotComplete
             } else {
-                Action.TodoListComplete
+                TextEditorAction.TodoListComplete
             }
         )
 
@@ -120,13 +133,24 @@ class TextEditorValue(
     private fun emptyMarkdown() {
         markdown = ""
     }
+
+    companion object {
+        val saver = Saver<TextEditorValue, String>(
+            save = { value ->
+                value.markdown
+            },
+            restore = { markdown ->
+                TextEditorValue(markdown)
+            }
+        )
+    }
 }
 
 @Composable
 fun rememberTextEditorValue(
     initialMarkdown: String
 ): TextEditorValue {
-    return remember {
+    return rememberSaveable(saver = TextEditorValue.saver) {
         TextEditorValue(initialMarkdown)
     }
 }
