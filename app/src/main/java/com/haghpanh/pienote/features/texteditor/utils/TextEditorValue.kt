@@ -1,6 +1,8 @@
 package com.haghpanh.pienote.features.texteditor.utils
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -19,33 +21,33 @@ class TextEditorValue(
         private set
 
     private val renderedTexts =
-        mutableStateListOf<Pair<TextEditorAction?, TextFieldValue>>().also { list ->
+        mutableStateListOf<RenderedText>().also { list ->
             if (initialMarkdown.isNotEmpty()) {
                 initialMarkdown.split("\n\n")
                     .filter { it.isNotBlank() }
                     .forEach {
                         val text = it.removePrefix()
                         val action = it.getActionOrNull()
-                        list.add(action to TextFieldValue(text))
+                        list.add(RenderedText(action, TextFieldValue(text)))
                     }
             } else {
-                list.add(TextEditorAction.Non to TextFieldValue())
+                list.add(RenderedText(TextEditorAction.Non, TextFieldValue()))
             }
         }
 
-    fun getRenderedTexts(): List<Pair<TextEditorAction?, TextFieldValue>> =
-        renderedTexts.map { it.first to it.second }
+    fun getRenderedTexts(): List<RenderedText> =
+        renderedTexts.map { RenderedText(it.action, it.value) }
 
     fun addSection(action: TextEditorAction, index: Int? = null) {
         if (index != null) {
-            renderedTexts.add(index + 1, action to TextFieldValue())
+            renderedTexts.add(index + 1, RenderedText(action, TextFieldValue()))
         } else {
-            renderedTexts.add(action to TextFieldValue())
+            renderedTexts.add(RenderedText(action, TextFieldValue()))
         }
     }
 
     fun updateAction(index: Int, newAction: TextEditorAction) {
-        renderedTexts[index] = renderedTexts[index].copy(first = newAction)
+        renderedTexts[index] = renderedTexts[index].copy(action = newAction)
     }
 
     fun removeSection(index: Int) {
@@ -53,13 +55,13 @@ class TextEditorValue(
     }
 
     fun onEachValueChange(index: Int, value: TextFieldValue) {
-        renderedTexts[index] = renderedTexts[index].copy(second = value)
+        renderedTexts[index] = renderedTexts[index].copy(value = value)
     }
 
     fun onCheckTodo(index: Int) {
         val renderedText = renderedTexts[index]
 
-        if (renderedText.first !in setOf(
+        if (renderedText.action !in setOf(
                 TextEditorAction.TodoListComplete,
                 TextEditorAction.TodoListNotComplete
             )
@@ -68,7 +70,7 @@ class TextEditorValue(
         }
 
         val newValue = renderedText.copy(
-            first = if (renderedText.first == TextEditorAction.TodoListComplete) {
+            action = if (renderedText.action == TextEditorAction.TodoListComplete) {
                 TextEditorAction.TodoListNotComplete
             } else {
                 TextEditorAction.TodoListComplete
@@ -98,7 +100,7 @@ class TextEditorValue(
                 .forEach {
                     val text = it.removePrefix()
                     val action = it.getActionOrNull()
-                    renderedTexts.add(action to TextFieldValue(text))
+                    renderedTexts.add(RenderedText(action, TextFieldValue(text)))
                 }
         }
     }
@@ -107,23 +109,23 @@ class TextEditorValue(
         annotatedString = buildAnnotatedString {
             var count = 0
             renderedTexts.forEach { renderedText ->
-                append(renderedText.second.text)
+                append(renderedText.value.text)
 
-                renderedText.first?.getTextStyle()?.let { textStyle ->
+                renderedText.action?.getTextStyle()?.let { textStyle ->
                     addStyle(
                         start = count,
-                        end = count + renderedText.second.text.length,
+                        end = count + renderedText.value.text.length,
                         style = textStyle.toSpanStyle()
                     )
 
                     addStyle(
                         start = count,
-                        end = count + renderedText.second.text.length,
+                        end = count + renderedText.value.text.length,
                         style = textStyle.toParagraphStyle()
                     )
                 }
 
-                count += (renderedText.second.text.length)
+                count += (renderedText.value.text.length)
             }
         }
     }
@@ -131,7 +133,7 @@ class TextEditorValue(
     private fun syncMarkdownWithRenderedText() {
         emptyMarkdown()
         renderedTexts.forEach {
-            markdown += "${it.first?.key}${it.second.text}\n\n"
+            markdown += "${it.action?.key}${it.value.text}\n\n"
         }
     }
 
@@ -150,6 +152,11 @@ class TextEditorValue(
         )
     }
 }
+
+data class RenderedText(
+    val action: TextEditorAction?,
+    val value: TextFieldValue
+)
 
 @Composable
 fun rememberTextEditorValue(

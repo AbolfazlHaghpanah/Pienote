@@ -107,7 +107,7 @@ fun PienoteTextEditor(
             // give us bold, code and underline options on actionMenu
             // that appear when selecting a text.
             // todo check
-            val textToolbar = buildPienoteTextTool(value = item.second) {
+            val textToolbar = buildPienoteTextTool(value = item.value) {
                 value.onEachValueChange(index, it)
             }
 
@@ -116,7 +116,15 @@ fun PienoteTextEditor(
                     modifier = Modifier
                         .onKeyEvent {
                             if (it.key == Key.Backspace) {
-                                if (item.second.text.isEmpty()) {
+                                if (
+                                    item.action in setOf(
+                                        TodoListComplete,
+                                        TodoListNotComplete,
+                                        List
+                                    )
+                                ) {
+                                    value.updateAction(index, Non)
+                                } else if (item.value.text.isEmpty()) {
                                     value.removeSection(index)
                                     hasRemovedSection = true
                                 }
@@ -129,8 +137,8 @@ fun PienoteTextEditor(
                             }
                         },
                     icon = {
-                        item.first?.CreateIcon {
-                            if (item.first in setOf(
+                        item.action?.CreateIcon {
+                            if (item.action in setOf(
                                     TodoListNotComplete,
                                     TodoListComplete
                                 )
@@ -139,12 +147,12 @@ fun PienoteTextEditor(
                             }
                         }
                     },
-                    value = item.second,
+                    value = item.value,
                     onValueChange = { value.onEachValueChange(index, it) },
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                     keyboardAction = KeyboardActions(
                         onDone = {
-                            val action = when (item.first) {
+                            val action = when (item.action) {
                                 TodoListComplete,
                                 TodoListNotComplete -> TodoListNotComplete
 
@@ -160,9 +168,9 @@ fun PienoteTextEditor(
                             hasAddedSection = true
                         }
                     ),
-                    textStyle = item.first?.getTextStyle() ?: TextStyle.Default,
+                    textStyle = item.action?.getTextStyle() ?: TextStyle.Default,
                     placeHolderText = if (shouldShowEditingOptions) {
-                        item.first
+                        item.action
                             ?.getPlaceHolderStringId()
                             ?.let { stringResource(id = it) }
                     } else {
