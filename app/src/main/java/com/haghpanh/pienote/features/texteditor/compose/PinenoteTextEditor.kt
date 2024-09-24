@@ -1,7 +1,13 @@
 package com.haghpanh.pienote.features.texteditor.compose
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,11 +17,15 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Menu
+import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -63,6 +73,7 @@ import com.haghpanh.pienote.features.texteditor.utils.getNameStringId
 import com.haghpanh.pienote.features.texteditor.utils.getPlaceHolderStringId
 import com.haghpanh.pienote.features.texteditor.utils.getTextStyle
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun PienoteTextEditor(
     value: TextEditorValue,
@@ -71,6 +82,9 @@ fun PienoteTextEditor(
 ) {
     val textFields by remember {
         derivedStateOf { value.getRenderedTexts() }
+    }
+    var updatingItemIndex: Int? by remember {
+        mutableStateOf(null)
     }
 
     val focusManager = LocalFocusManager.current
@@ -103,7 +117,6 @@ fun PienoteTextEditor(
 
     Column(modifier = modifier) {
         textFields.forEachIndexed { index, item ->
-
             // give us bold, code and underline options on actionMenu
             // that appear when selecting a text.
             // todo check
@@ -114,6 +127,7 @@ fun PienoteTextEditor(
             CompositionLocalProvider(LocalTextToolbar provides textToolbar) {
                 TextEditorField(
                     modifier = Modifier
+                        .fillMaxWidth()
                         .onKeyEvent {
                             if (it.key == Key.Backspace) {
                                 if (
@@ -121,7 +135,7 @@ fun PienoteTextEditor(
                                         TodoListComplete,
                                         TodoListNotComplete,
                                         List
-                                    )
+                                    ) && item.value.text.isEmpty()
                                 ) {
                                     value.updateAction(index, Non)
                                 } else if (item.value.text.isEmpty()) {
@@ -149,6 +163,13 @@ fun PienoteTextEditor(
                     },
                     value = item.value,
                     onValueChange = { value.onEachValueChange(index, it) },
+                    onUpdateClick = if (focusedItemIndex == index && shouldShowEditingOptions) {
+                        {
+                            updatingItemIndex = index
+                        }
+                    } else {
+                        null
+                    },
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                     keyboardAction = KeyboardActions(
                         onDone = {
@@ -177,14 +198,52 @@ fun PienoteTextEditor(
                         null
                     }
                 )
+
+                AnimatedVisibility(visible = shouldShowEditingOptions && updatingItemIndex == index) {
+                    LazyRow(
+                        modifier = Modifier
+                            .padding(vertical = 16.dp, horizontal = 30.dp)
+                            .clip(PienoteTheme.shapes.rounded)
+                            .background(PienoteTheme.colors.surface)
+                            .fillMaxWidth(),
+                        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp)
+                    ) {
+                        items(
+                            items = TextEditorAction.entries
+                                .filter {
+                                    it !in setOf(
+                                        TodoListComplete
+                                    )
+                                }
+                        ) { action ->
+                            Box(modifier = Modifier.fillMaxWidth()) {
+                                TextButton(
+                                    onClick = {
+                                        value.updateAction(
+                                            newAction = action,
+                                            index = index
+                                        )
+                                        hasAddedSection = true
+                                        updatingItemIndex = null
+                                    }
+                                ) {
+                                    action.getNameStringId()?.let {
+                                        Text(text = stringResource(id = it))
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
 
         Spacer(modifier = Modifier.height(32.dp))
 
-        AnimatedVisibility(visible = shouldShowEditingOptions) {
+        AnimatedVisibility(visible = shouldShowEditingOptions && updatingItemIndex == null) {
             LazyRow(
                 modifier = Modifier
+                    .padding(horizontal = 30.dp)
                     .clip(PienoteTheme.shapes.rounded)
                     .background(PienoteTheme.colors.surface)
                     .fillMaxWidth(),
@@ -193,7 +252,6 @@ fun PienoteTextEditor(
                 items(
                     items = TextEditorAction.entries.filter {
                         it !in setOf(
-                            Non,
                             TodoListComplete
                         )
                     }
@@ -225,6 +283,7 @@ private fun TextEditorField(
     onValueChange: (TextFieldValue) -> Unit,
     modifier: Modifier = Modifier,
     icon: @Composable () -> Unit = {},
+    onUpdateClick: (() -> Unit)? = null,
     textStyle: TextStyle = TextStyle.Default,
     placeHolderText: String? = null,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
@@ -235,7 +294,7 @@ private fun TextEditorField(
         value = LocalContentColor provides contentColor
     ) {
         BasicTextField(
-            modifier = modifier,
+            modifier = modifier.padding(end = 30.dp),
             value = value,
             onValueChange = onValueChange,
             textStyle = textStyle.copy(color = contentColor),
@@ -248,6 +307,27 @@ private fun TextEditorField(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Start
                 ) {
+                    AnimatedContent(
+                        targetState = onUpdateClick != null,
+                        transitionSpec = { fadeIn().togetherWith(fadeOut()) },
+                        label = "show "
+                    ) {
+                        if (it) {
+                            Icon(
+                                modifier = Modifier
+                                    .clip(PienoteTheme.shapes.verySmall)
+                                    .size(30.dp)
+                                    .padding(4.dp)
+                                    .clickable { onUpdateClick?.invoke() },
+                                tint = PienoteTheme.colors.onBackground.copy(alpha = 0.3f),
+                                imageVector = Icons.Rounded.Menu,
+                                contentDescription = null
+                            )
+                        } else {
+                            Spacer(modifier = Modifier.size(30.dp))
+                        }
+                    }
+
                     icon()
 
                     Box {

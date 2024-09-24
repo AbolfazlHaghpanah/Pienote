@@ -341,7 +341,7 @@ fun NoteScreen(
                 PienoteTextEditor(
                     modifier = Modifier
                         .imePadding()
-                        .padding(vertical = 16.dp, horizontal = 30.dp)
+                        .padding(vertical = 16.dp)
                         .focusRequester(noteFocusRequester)
                         .fillMaxWidth(),
                     value = noteText,

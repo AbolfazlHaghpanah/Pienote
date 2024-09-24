@@ -100,6 +100,7 @@ fun TextEditorAction.getTextStyle(): TextStyle {
 
 fun TextEditorAction.getNameStringId(): Int? {
     return when (this) {
+        TextEditorAction.Non -> R.string.label_t
         TextEditorAction.H1 -> R.string.label_h1
         TextEditorAction.H2 -> R.string.label_h2
         TextEditorAction.H3 -> R.string.label_h3
