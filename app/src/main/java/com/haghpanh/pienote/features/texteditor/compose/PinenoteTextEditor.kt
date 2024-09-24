@@ -14,6 +14,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -33,12 +35,16 @@ import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.onFocusEvent
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.key
+import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalTextToolbar
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.getSelectedText
 import androidx.compose.ui.unit.dp
@@ -48,6 +54,10 @@ import com.haghpanh.pienote.commonui.utils.getPrefixOrNull
 import com.haghpanh.pienote.commonui.utils.performAction
 import com.haghpanh.pienote.features.texteditor.utils.CreateIcon
 import com.haghpanh.pienote.features.texteditor.utils.TextEditorAction
+import com.haghpanh.pienote.features.texteditor.utils.TextEditorAction.List
+import com.haghpanh.pienote.features.texteditor.utils.TextEditorAction.Non
+import com.haghpanh.pienote.features.texteditor.utils.TextEditorAction.TodoListComplete
+import com.haghpanh.pienote.features.texteditor.utils.TextEditorAction.TodoListNotComplete
 import com.haghpanh.pienote.features.texteditor.utils.TextEditorValue
 import com.haghpanh.pienote.features.texteditor.utils.getNameStringId
 import com.haghpanh.pienote.features.texteditor.utils.getPlaceHolderStringId
@@ -69,6 +79,10 @@ fun PienoteTextEditor(
     var hasAddedSection by remember {
         mutableStateOf(false)
     }
+    // based on the value we decide whether should we move focus up or not.
+    var hasRemovedSection by remember {
+        mutableStateOf(false)
+    }
 
     // keeps focusItem Index to perform adding section based on it.
     var focusedItemIndex: Int by remember {
@@ -79,6 +93,11 @@ fun PienoteTextEditor(
         if (hasAddedSection) {
             focusManager.moveFocus(FocusDirection.Down)
             hasAddedSection = false
+        }
+
+        if (hasRemovedSection) {
+            focusManager.moveFocus(FocusDirection.Up)
+            hasRemovedSection = false
         }
     }
 
@@ -95,6 +114,15 @@ fun PienoteTextEditor(
             CompositionLocalProvider(LocalTextToolbar provides textToolbar) {
                 TextEditorField(
                     modifier = Modifier
+                        .onKeyEvent {
+                            if (it.key == Key.Backspace) {
+                                if (item.second.text.isEmpty()) {
+                                    value.removeSection(index)
+                                    hasRemovedSection = true
+                                }
+                            }
+                            true
+                        }
                         .onFocusEvent {
                             if (it.isFocused) {
                                 focusedItemIndex = index
@@ -103,8 +131,8 @@ fun PienoteTextEditor(
                     icon = {
                         item.first?.CreateIcon {
                             if (item.first in setOf(
-                                    TextEditorAction.TodoListNotComplete,
-                                    TextEditorAction.TodoListComplete
+                                    TodoListNotComplete,
+                                    TodoListComplete
                                 )
                             ) {
                                 value.onCheckTodo(index)
@@ -113,6 +141,25 @@ fun PienoteTextEditor(
                     },
                     value = item.second,
                     onValueChange = { value.onEachValueChange(index, it) },
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                    keyboardAction = KeyboardActions(
+                        onDone = {
+                            val action = when (item.first) {
+                                TodoListComplete,
+                                TodoListNotComplete -> TodoListNotComplete
+
+                                List -> List
+                                else -> Non
+                            }
+
+                            value.addSection(
+                                action = action,
+                                index = focusedItemIndex.takeIf { it != -1 }
+                            )
+
+                            hasAddedSection = true
+                        }
+                    ),
                     textStyle = item.first?.getTextStyle() ?: TextStyle.Default,
                     placeHolderText = if (shouldShowEditingOptions) {
                         item.first
@@ -138,8 +185,8 @@ fun PienoteTextEditor(
                 items(
                     items = TextEditorAction.entries.filter {
                         it !in setOf(
-                            TextEditorAction.Non,
-                            TextEditorAction.TodoListComplete
+                            Non,
+                            TodoListComplete
                         )
                     }
                 ) { action ->
@@ -172,6 +219,8 @@ private fun TextEditorField(
     icon: @Composable () -> Unit = {},
     textStyle: TextStyle = TextStyle.Default,
     placeHolderText: String? = null,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    keyboardAction: KeyboardActions = KeyboardActions.Default,
     contentColor: Color = PienoteTheme.colors.onBackground
 ) {
     CompositionLocalProvider(
@@ -183,6 +232,8 @@ private fun TextEditorField(
             onValueChange = onValueChange,
             textStyle = textStyle.copy(color = contentColor),
             cursorBrush = SolidColor(contentColor),
+            keyboardOptions = keyboardOptions,
+            keyboardActions = keyboardAction,
             decorationBox = { content ->
                 Row(
                     modifier = Modifier.padding(vertical = 2.dp),

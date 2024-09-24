@@ -18,19 +18,20 @@ class TextEditorValue(
     var annotatedString by mutableStateOf(renderMarkdownToAnnotatedString(markdown))
         private set
 
-    private val renderedTexts = mutableStateListOf<Pair<TextEditorAction?, TextFieldValue>>().also { list ->
-        if (initialMarkdown.isNotEmpty()) {
-            initialMarkdown.split("\n\n")
-                .filter { it.isNotBlank() }
-                .forEach {
-                    val text = it.removePrefix()
-                    val action = it.getActionOrNull()
-                    list.add(action to TextFieldValue(text))
-                }
-        } else {
-            list.add(TextEditorAction.Non to TextFieldValue())
+    private val renderedTexts =
+        mutableStateListOf<Pair<TextEditorAction?, TextFieldValue>>().also { list ->
+            if (initialMarkdown.isNotEmpty()) {
+                initialMarkdown.split("\n\n")
+                    .filter { it.isNotBlank() }
+                    .forEach {
+                        val text = it.removePrefix()
+                        val action = it.getActionOrNull()
+                        list.add(action to TextFieldValue(text))
+                    }
+            } else {
+                list.add(TextEditorAction.Non to TextFieldValue())
+            }
         }
-    }
 
     fun getRenderedTexts(): List<Pair<TextEditorAction?, TextFieldValue>> =
         renderedTexts.map { it.first to it.second }
@@ -45,6 +46,10 @@ class TextEditorValue(
 
     fun updateAction(index: Int, newAction: TextEditorAction) {
         renderedTexts[index] = renderedTexts[index].copy(first = newAction)
+    }
+
+    fun removeSection(index: Int) {
+        renderedTexts.removeAt(index)
     }
 
     fun onEachValueChange(index: Int, value: TextFieldValue) {
