@@ -1,7 +1,7 @@
 package com.haghpanh.pienote.features.note.ui
 
 import androidx.compose.runtime.Immutable
-import com.haghpanh.pienote.features.note.utils.FocusRequestType
+import com.haghpanh.pienote.commonui.utils.annotation.EffectState
 
 @Immutable
 data class NoteViewState(
@@ -9,9 +9,10 @@ data class NoteViewState(
     val category: Category? = null,
     val isEditing: Boolean = false,
     val categories: List<Category> = emptyList(),
-    val focusRequestType: FocusRequestType = FocusRequestType.Title,
     val noteId: Int?,
-    val isExist: Boolean
+    val isExist: Boolean,
+    @EffectState
+    val canNavigateBack: Boolean? = null,
 ) {
     val isEmptyNote = note.title.isNullOrEmpty() && note.note.isNullOrEmpty()
 }

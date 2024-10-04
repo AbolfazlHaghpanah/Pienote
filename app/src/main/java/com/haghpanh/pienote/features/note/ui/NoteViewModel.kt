@@ -11,7 +11,6 @@ import com.haghpanh.pienote.features.note.domain.usecase.NoteInsertNoteUseCase
 import com.haghpanh.pienote.features.note.domain.usecase.NoteObserveNoteInfoUseCase
 import com.haghpanh.pienote.features.note.domain.usecase.NoteUpdateNoteImageUseCase
 import com.haghpanh.pienote.features.note.domain.usecase.NoteUpdateNoteUseCase
-import com.haghpanh.pienote.features.note.utils.FocusRequestType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -42,14 +41,36 @@ class NoteViewModel @Inject constructor(
         super.onCleared()
     }
 
-    fun switchEditMode(focusRequestType: FocusRequestType = FocusRequestType.Non) {
+    fun switchEditMode() {
         if (getCurrentState().isEmptyNote) return
 
         updateState {
+            copy(isEditing = !isEditing)
+        }
+    }
+
+    fun onNavigateBackRequest(
+        currentNoteTitle: String,
+        currentNoteMarkdown: String
+    ) {
+        updateState {
             copy(
-                isEditing = !isEditing,
-                focusRequestType = focusRequestType
+                note = getCurrentState().note.copy(
+                    note = currentNoteMarkdown,
+                    title = currentNoteTitle
+                )
             )
+        }
+
+        updateOrInsertNote()
+
+        if (getCurrentState().isEditing && !getCurrentState().isEmptyNote) {
+            switchEditMode()
+        } else if (!getCurrentState().isEmptyNote) {
+            updateOrInsertNote()
+            updateState { copy(canNavigateBack = true) }
+        } else {
+            updateState { copy(canNavigateBack = true) }
         }
     }
 
@@ -58,7 +79,7 @@ class NoteViewModel @Inject constructor(
         updateOrInsertNote()
     }
 
-    fun updateOrInsertNote() {
+    private fun updateOrInsertNote() {
         if (getCurrentState().isExist) {
             updateCurrentNote()
         } else {
@@ -142,12 +163,6 @@ class NoteViewModel @Inject constructor(
                     note = Note()
                 )
             }
-        }
-    }
-
-    fun updateFocusRequester(type: FocusRequestType) {
-        updateState {
-            copy(focusRequestType = type)
         }
     }
 

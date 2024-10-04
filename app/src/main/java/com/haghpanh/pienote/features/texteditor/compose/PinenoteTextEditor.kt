@@ -5,7 +5,6 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -37,6 +36,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -73,37 +73,36 @@ import com.haghpanh.pienote.features.texteditor.utils.getNameStringId
 import com.haghpanh.pienote.features.texteditor.utils.getPlaceHolderStringId
 import com.haghpanh.pienote.features.texteditor.utils.getTextStyle
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun PienoteTextEditor(
     value: TextEditorValue,
+    shouldShowEditingOptions: Boolean,
     modifier: Modifier = Modifier,
-    shouldShowEditingOptions: Boolean
+    textFieldModifier: Modifier = Modifier,
 ) {
     val textFields by remember {
         derivedStateOf { value.getRenderedTexts() }
     }
-    var updatingItemIndex: Int? by remember {
+    var updatingItemIndex: Int? by rememberSaveable {
         mutableStateOf(null)
     }
 
     val focusManager = LocalFocusManager.current
 
     // based on the value we decide whether should we move focus down or not.
-    var hasAddedSection by remember {
+    var hasAddedSection by rememberSaveable {
         mutableStateOf(false)
     }
     // based on the value we decide whether should we move focus up or not.
-    var hasRemovedSection by remember {
+    var hasRemovedSection by rememberSaveable {
         mutableStateOf(false)
     }
-
     // keeps focusItem Index to perform adding section based on it.
-    var focusedItemIndex: Int by remember {
+    var focusedItemIndex: Int by rememberSaveable {
         mutableIntStateOf(-1)
     }
 
-    LaunchedEffect(key1 = textFields.size) {
+    LaunchedEffect(textFields.size) {
         if (hasAddedSection) {
             focusManager.moveFocus(FocusDirection.Down)
             hasAddedSection = false
@@ -126,7 +125,7 @@ fun PienoteTextEditor(
 
             CompositionLocalProvider(LocalTextToolbar provides textToolbar) {
                 TextEditorField(
-                    modifier = Modifier
+                    modifier = textFieldModifier
                         .fillMaxWidth()
                         .onKeyEvent {
                             if (it.key == Key.Backspace) {
@@ -143,7 +142,7 @@ fun PienoteTextEditor(
                                     hasRemovedSection = true
                                 }
                             }
-                            true
+                            false
                         }
                         .onFocusEvent {
                             if (it.isFocused) {

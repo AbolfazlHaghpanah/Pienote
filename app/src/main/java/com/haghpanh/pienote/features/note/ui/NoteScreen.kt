@@ -26,23 +26,19 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Done
 import androidx.compose.material.icons.rounded.Edit
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.scale
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -63,7 +59,6 @@ import com.haghpanh.pienote.commonui.utils.toComposeColor
 import com.haghpanh.pienote.features.note.ui.component.CategoryChipSection
 import com.haghpanh.pienote.features.note.ui.component.ImageCoverSection
 import com.haghpanh.pienote.features.note.ui.component.NoteColorSection
-import com.haghpanh.pienote.features.note.utils.FocusRequestType
 import com.haghpanh.pienote.features.note.utils.rememberNoteNestedScrollConnection
 import com.haghpanh.pienote.features.texteditor.compose.PienoteTextEditor
 import com.haghpanh.pienote.features.texteditor.utils.rememberTextEditorValue
@@ -79,78 +74,81 @@ fun NoteScreen(
 }
 
 @Composable
-fun NoteScreen(
+private fun NoteScreen(
     navController: NavController,
     viewModel: NoteViewModel
 ) {
     val state by viewModel.collectAsStateWithLifecycle()
     val parentScreen = viewModel.savedStateHandler<String>("parent")
+    val focusManager = LocalFocusManager.current
 
     val pickMedia = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia(),
         onResult = viewModel::updateNoteImage
     )
 
-    val onNavigateBack: () -> Unit = remember {
-        {
-            if (state.isEditing && !state.isEmptyNote) {
-                viewModel.switchEditMode()
-            } else if (!state.isEmptyNote) {
-                viewModel.updateOrInsertNote()
-                navController.popBackStack()
-            } else {
-                navController.popBackStack()
-            }
+    viewModel.handleEffectsDispose()
+
+    LaunchedEffect(state.canNavigateBack) {
+        if (state.canNavigateBack == true) {
+            navController.navigateUp()
         }
     }
 
-    BackHandler(onBack = onNavigateBack)
+    LaunchedEffect(state.isEditing) {
+        if (!state.isEditing) {
+            focusManager.clearFocus()
+        }
+    }
 
     NoteScreen(
         state = state,
         parentScreen = parentScreen,
-        onUpdateNote = viewModel::updateNoteText,
-        onUpdateTitle = viewModel::updateTitleText,
         onUpdateCategory = viewModel::updateCategory,
         onRequestToPickImage = {
             pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
         },
-        onFocusRequestTypeChanged = viewModel::updateFocusRequester,
         onSwitchEditMode = viewModel::switchEditMode,
         onUpdateColor = viewModel::updateNoteColor,
         navigateToRoute = { route -> navController.navigate(route) },
-        onBack = onNavigateBack
+        onBack = viewModel::onNavigateBackRequest
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NoteScreen(
+private fun NoteScreen(
     state: NoteViewState,
     parentScreen: String?,
-    onUpdateNote: (String) -> Unit,
-    onUpdateTitle: (String) -> Unit,
     onUpdateCategory: (Int?) -> Unit,
     onRequestToPickImage: () -> Unit,
-    onFocusRequestTypeChanged: (FocusRequestType) -> Unit,
-    onSwitchEditMode: (FocusRequestType) -> Unit,
+    onSwitchEditMode: () -> Unit,
     onUpdateColor: (String?) -> Unit,
     navigateToRoute: (String) -> Unit,
-    onBack: () -> Unit
+    onBack: (note: String, title: String) -> Unit
 ) {
-    val focusManager = LocalFocusManager.current
     val localConfig = LocalConfiguration.current
-
     val scrollState = rememberScrollState()
     val nestedScrollConnection = rememberNoteNestedScrollConnection()
-    val titleFocusRequester = remember { FocusRequester() }
-    val noteFocusRequester = remember { FocusRequester() }
-    val noteText = rememberTextEditorValue(initialMarkdown = state.note.note.orEmpty())
 
-    LaunchedEffect(state.note.note) {
+    val noteText = rememberTextEditorValue(initialMarkdown = state.note.note.orEmpty())
+    var titleText by rememberSaveable { mutableStateOf(state.note.title.orEmpty()) }
+
+    // updating note Ui when note has observed successfully from database
+    LaunchedEffect(key1 = state.note.title, key2 = state.note.note) {
+        state.note.title?.let {
+            titleText = it
+        }
+
         state.note.note?.let {
             noteText.updateMarkdown(it)
         }
+    }
+
+    BackHandler {
+        onBack(
+            titleText,
+            noteText.await().markdown
+        )
     }
 
     // changes fab color based on note color
@@ -171,22 +169,12 @@ fun NoteScreen(
                 animationSpec = tween(300)
             )
         }
-
-        if (!state.isEditing) {
-            onUpdateNote(noteText.await().markdown)
-        }
-
-        // as user changed edit mode resetting focus manager is necessary for
-        // next time user switching to edit mode without an specific focus request type.
-        if (state.focusRequestType is FocusRequestType.Non) {
-            focusManager.clearFocus()
-        }
     }
 
     PienoteScaffold(
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { onSwitchEditMode(FocusRequestType.Non) },
+                onClick = { onSwitchEditMode() },
                 containerColor = noteColor,
                 contentColor = PienoteTheme.colors.surface
             ) {
@@ -245,7 +233,12 @@ fun NoteScreen(
                 AnimatedVisibility(visible = !state.isEditing) {
                     PienoteChip(
                         modifier = Modifier.padding(start = 16.dp, top = 16.dp),
-                        onClick = onBack
+                        onClick = {
+                            onBack(
+                                titleText,
+                                noteText.await().markdown
+                            )
+                        }
                     ) {
                         Row(
                             modifier = Modifier.padding(6.dp),
@@ -289,34 +282,17 @@ fun NoteScreen(
                 modifier = Modifier
                     .heightIn(min = localConfig.screenHeightDp.dp - 24.dp)
             ) {
-                var title by remember {
-                    mutableStateOf(state.note.title)
-                }
-
-                LaunchedEffect(state.note.title) {
-                    state.note.title?.let {
-                        title = it
-                    }
-                }
-
-                DisposableEffect(title) {
-                    onDispose {
-                        title?.let(onUpdateTitle)
-                    }
-                }
-
                 PienoteTextField(
                     modifier = Modifier
                         .padding(horizontal = 14.dp)
                         .fillMaxWidth()
-                        .focusRequester(titleFocusRequester)
                         .onFocusChanged {
-                            if (it.isFocused) {
-                                onFocusRequestTypeChanged(FocusRequestType.Title)
+                            if (it.isFocused && !state.isEditing) {
+                                onSwitchEditMode()
                             }
                         },
-                    value = title.orEmpty(),
-                    onValueChange = { title = it },
+                    value = titleText,
+                    onValueChange = { titleText = it },
                     placeHolderText = stringResource(R.string.label_untitled),
                     textStyle = PienoteTheme.typography.displaySmall
                 )
@@ -342,10 +318,15 @@ fun NoteScreen(
                     modifier = Modifier
                         .imePadding()
                         .padding(vertical = 16.dp)
-                        .focusRequester(noteFocusRequester)
-                        .fillMaxWidth(),
+                        .fillMaxWidth()
+                        .onFocusChanged {
+                            if (it.isFocused && !state.isEditing) {
+                                onSwitchEditMode()
+                            }
+                        },
                     value = noteText,
-                    shouldShowEditingOptions = state.isEditing
+                    textFieldModifier = Modifier,
+                    shouldShowEditingOptions = state.isEditing,
                 )
             }
         }
