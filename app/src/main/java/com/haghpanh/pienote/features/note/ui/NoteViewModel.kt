@@ -41,7 +41,19 @@ class NoteViewModel @Inject constructor(
         super.onCleared()
     }
 
-    fun switchEditMode() {
+    fun switchEditMode(
+        currentNoteTitle: String,
+        currentNoteMarkdown: String
+    ) {
+        updateState {
+            copy(
+                note = getCurrentState().note.copy(
+                    note = currentNoteMarkdown,
+                    title = currentNoteTitle
+                )
+            )
+        }
+
         if (getCurrentState().isEmptyNote) return
 
         updateState {
@@ -65,7 +77,10 @@ class NoteViewModel @Inject constructor(
         updateOrInsertNote()
 
         if (getCurrentState().isEditing && !getCurrentState().isEmptyNote) {
-            switchEditMode()
+            switchEditMode(
+                currentNoteTitle = currentNoteTitle,
+                currentNoteMarkdown = currentNoteMarkdown
+            )
         } else if (!getCurrentState().isEmptyNote) {
             updateOrInsertNote()
             updateState { copy(canNavigateBack = true) }

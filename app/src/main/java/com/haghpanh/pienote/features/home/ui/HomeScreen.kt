@@ -205,6 +205,7 @@ fun HomeScreen(
         },
         bottomMenu = {
             AnimatedVisibility(
+                modifier = Modifier.padding(24.dp),
                 visible = isSelectingNote,
                 enter = slideInVertically(initialOffsetY = { it }),
                 exit = slideOutVertically(targetOffsetY = { it * 2 })

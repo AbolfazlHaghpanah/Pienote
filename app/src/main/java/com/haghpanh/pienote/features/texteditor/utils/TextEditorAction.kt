@@ -112,6 +112,20 @@ fun TextEditorAction.getNameStringId(): Int? {
     }
 }
 
+fun TextEditorAction.getFullNameStringId(): Int? {
+    return when (this) {
+        TextEditorAction.Non -> R.string.label_normal_text
+        TextEditorAction.H1 -> R.string.label_header1
+        TextEditorAction.H2 -> R.string.label_header2
+        TextEditorAction.H3 -> R.string.label_header3
+        TextEditorAction.H4 -> R.string.label_header4
+        TextEditorAction.List -> R.string.label_list
+        TextEditorAction.TodoListNotComplete -> R.string.label_to_do
+        TextEditorAction.OrderedList -> R.string.label_ordered_list
+        else -> null
+    }
+}
+
 fun TextEditorAction.getPlaceHolderStringId(): Int? {
     return when (this) {
         TextEditorAction.Non -> R.string.label_write_three_dot

@@ -8,10 +8,13 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -20,15 +23,18 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Done
 import androidx.compose.material.icons.rounded.Edit
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -38,7 +44,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -61,6 +69,8 @@ import com.haghpanh.pienote.features.note.ui.component.ImageCoverSection
 import com.haghpanh.pienote.features.note.ui.component.NoteColorSection
 import com.haghpanh.pienote.features.note.utils.rememberNoteNestedScrollConnection
 import com.haghpanh.pienote.features.texteditor.compose.PienoteTextEditor
+import com.haghpanh.pienote.features.texteditor.utils.TextEditorAction
+import com.haghpanh.pienote.features.texteditor.utils.getNameStringId
 import com.haghpanh.pienote.features.texteditor.utils.rememberTextEditorValue
 
 @Composable
@@ -121,17 +131,19 @@ private fun NoteScreen(
     parentScreen: String?,
     onUpdateCategory: (Int?) -> Unit,
     onRequestToPickImage: () -> Unit,
-    onSwitchEditMode: () -> Unit,
+    onSwitchEditMode: (String, String) -> Unit,
     onUpdateColor: (String?) -> Unit,
     navigateToRoute: (String) -> Unit,
     onBack: (note: String, title: String) -> Unit
 ) {
     val localConfig = LocalConfiguration.current
+    val focusManager = LocalFocusManager.current
     val scrollState = rememberScrollState()
     val nestedScrollConnection = rememberNoteNestedScrollConnection()
-
     val noteText = rememberTextEditorValue(initialMarkdown = state.note.note.orEmpty())
     var titleText by rememberSaveable { mutableStateOf(state.note.title.orEmpty()) }
+    var textEditorFocusedItemIndex: Int? by rememberSaveable { mutableStateOf(null) }
+    var hasAddedTextEditorSection: Boolean by rememberSaveable { mutableStateOf(false) }
 
     // updating note Ui when note has observed successfully from database
     LaunchedEffect(key1 = state.note.title, key2 = state.note.note) {
@@ -172,30 +184,7 @@ private fun NoteScreen(
     }
 
     PienoteScaffold(
-        floatingActionButton = {
-            FloatingActionButton(
-                onClick = { onSwitchEditMode() },
-                containerColor = noteColor,
-                contentColor = PienoteTheme.colors.surface
-            ) {
-                AnimatedContent(
-                    targetState = state.isEditing,
-                    label = "switch edit mode"
-                ) { isEditing ->
-                    if (isEditing) {
-                        Icon(
-                            imageVector = Icons.Rounded.Done,
-                            contentDescription = null
-                        )
-                    } else {
-                        Icon(
-                            imageVector = Icons.Rounded.Edit,
-                            contentDescription = null
-                        )
-                    }
-                }
-            }
-        },
+        modifier = Modifier.imePadding(),
         topBar = {
             if (state.note.color != null) {
                 AnimatedVisibility(visible = !state.isEditing) {
@@ -208,6 +197,53 @@ private fun NoteScreen(
                 }
             }
         },
+        bottomMenu = {
+            LaunchedEffect(noteText.getRenderedTexts().size) {
+                if (hasAddedTextEditorSection) {
+                    focusManager.moveFocus(FocusDirection.Down)
+                    hasAddedTextEditorSection = false
+                }
+            }
+
+            AnimatedVisibility(
+                visible = state.isEditing,
+                enter = expandVertically { -it },
+                exit = shrinkVertically { -it * 2 }
+            ) {
+                LazyRow(
+                    modifier = Modifier
+                        .padding(horizontal = 24.dp, vertical = 16.dp)
+                        .clip(PienoteTheme.shapes.rounded)
+                        .background(PienoteTheme.colors.surface)
+                        .fillMaxWidth(),
+                    contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp)
+                ) {
+                    items(
+                        items = TextEditorAction.entries.filter {
+                            it !in setOf(
+                                TextEditorAction.TodoListComplete
+                            )
+                        }
+                    ) { action ->
+                        Box(modifier = Modifier.fillMaxWidth()) {
+                            TextButton(
+                                onClick = {
+                                    noteText.addSection(
+                                        action = action,
+                                        index = textEditorFocusedItemIndex.takeIf { it != null }
+                                    )
+                                    hasAddedTextEditorSection = true
+                                }
+                            ) {
+                                action.getNameStringId()?.let {
+                                    Text(text = stringResource(id = it))
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     ) { paddingValue ->
         Column(
             modifier = Modifier
@@ -282,20 +318,54 @@ private fun NoteScreen(
                 modifier = Modifier
                     .heightIn(min = localConfig.screenHeightDp.dp - 24.dp)
             ) {
-                PienoteTextField(
-                    modifier = Modifier
-                        .padding(horizontal = 14.dp)
-                        .fillMaxWidth()
-                        .onFocusChanged {
-                            if (it.isFocused && !state.isEditing) {
-                                onSwitchEditMode()
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    PienoteTextField(
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(horizontal = 14.dp)
+                            .onFocusChanged {
+                                if (it.isFocused && !state.isEditing) {
+                                    onSwitchEditMode(titleText, noteText.await().markdown)
+                                }
+                            },
+                        value = titleText,
+                        onValueChange = { titleText = it },
+                        placeHolderText = stringResource(R.string.label_untitled),
+                        textStyle = PienoteTheme.typography.displaySmall
+                    )
+
+                    PienoteChip(
+                        modifier = Modifier
+                            .padding(28.dp)
+                            .size(42.dp),
+                        onClick = {
+                            onSwitchEditMode(titleText, noteText.await().markdown)
+                        }
+                    ) {
+                        AnimatedContent(
+                            targetState = state.isEditing,
+                            label = "switch edit mode",
+                        ) { isEditing ->
+                            if (isEditing) {
+                                Icon(
+                                    modifier = Modifier.padding(8.dp),
+                                    imageVector = Icons.Rounded.Done,
+                                    contentDescription = null
+                                )
+                            } else {
+                                Icon(
+                                    modifier = Modifier.padding(10.dp),
+                                    imageVector = Icons.Rounded.Edit,
+                                    contentDescription = null
+                                )
                             }
-                        },
-                    value = titleText,
-                    onValueChange = { titleText = it },
-                    placeHolderText = stringResource(R.string.label_untitled),
-                    textStyle = PienoteTheme.typography.displaySmall
-                )
+                        }
+                    }
+                }
 
                 AnimatedVisibility(visible = state.isEditing || state.category != null) {
                     CategoryChipSection(
@@ -316,17 +386,16 @@ private fun NoteScreen(
 
                 PienoteTextEditor(
                     modifier = Modifier
-                        .imePadding()
                         .padding(vertical = 16.dp)
-                        .fillMaxWidth()
+                        .fillMaxSize()
                         .onFocusChanged {
                             if (it.isFocused && !state.isEditing) {
-                                onSwitchEditMode()
+                                onSwitchEditMode(titleText, noteText.await().markdown)
                             }
                         },
                     value = noteText,
-                    textFieldModifier = Modifier,
                     shouldShowEditingOptions = state.isEditing,
+                    onFocusItemIndexChanged = { textEditorFocusedItemIndex = it }
                 )
             }
         }

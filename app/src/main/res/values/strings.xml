@@ -35,4 +35,6 @@
     <string name="label_to_do">To-Do</string>
     <string name="label_ordered_list">Ordered List</string>
     <string name="label_t">T</string>
+    <string name="label_normal_text">Normal Text</string>
+    <string name="label_change">Change</string>
 </resources>

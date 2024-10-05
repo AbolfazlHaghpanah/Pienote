@@ -1,14 +1,17 @@
 package com.haghpanh.pienote.commonui.component
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onGloballyPositioned
@@ -24,11 +27,9 @@ fun PienoteScaffold(
     bottomMenu: @Composable () -> Unit = {},
     floatingActionButtonAlignment: Alignment = Alignment.BottomEnd,
     topBar: @Composable () -> Unit = {},
-    content: @Composable (PaddingValues) -> Unit
+    content: @Composable BoxScope.(PaddingValues) -> Unit
 ) {
-    val paddingValues = remember {
-        mutableStateOf(PaddingValues(0.dp))
-    }
+    var paddingValues by remember { mutableStateOf(PaddingValues(0.dp)) }
     val density = LocalDensity.current
 
     Box(
@@ -42,7 +43,7 @@ fun PienoteScaffold(
             )
             .fillMaxSize()
     ) {
-        content(paddingValues.value)
+        content(paddingValues)
 
         Box(
             modifier = Modifier
@@ -54,14 +55,16 @@ fun PienoteScaffold(
 
         Box(
             modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .padding(24.dp)
-                .fillMaxWidth()
                 .onGloballyPositioned {
                     with(density) {
-                        paddingValues.value = PaddingValues(bottom = it.size.height.toDp())
+                        paddingValues = PaddingValues(
+                            top = paddingValues.calculateTopPadding(),
+                            bottom = it.size.height.toDp()
+                        )
                     }
                 }
+                .align(Alignment.BottomCenter)
+                .fillMaxWidth()
         ) {
             bottomMenu()
         }
@@ -76,13 +79,16 @@ fun PienoteScaffold(
 
         Box(
             modifier = Modifier
-                .align(Alignment.TopCenter)
-                .fillMaxWidth()
                 .onGloballyPositioned {
                     with(density) {
-                        paddingValues.value = PaddingValues(top = it.size.height.toDp())
+                        paddingValues = PaddingValues(
+                            top = it.size.height.toDp(),
+                            bottom = paddingValues.calculateBottomPadding()
+                        )
                     }
                 }
+                .align(Alignment.TopCenter)
+                .fillMaxWidth()
         ) {
             topBar()
         }

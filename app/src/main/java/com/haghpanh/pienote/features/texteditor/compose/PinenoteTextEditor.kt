@@ -1,39 +1,40 @@
 package com.haghpanh.pienote.features.texteditor.compose
 
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
-import androidx.compose.foundation.background
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.relocation.BringIntoViewRequester
+import androidx.compose.foundation.relocation.bringIntoViewRequester
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Menu
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -49,7 +50,6 @@ import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.platform.LocalTextToolbar
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
@@ -57,7 +57,10 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.getSelectedText
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.PopupProperties
+import com.haghpanh.pienote.R
 import com.haghpanh.pienote.commonui.theme.PienoteTheme
 import com.haghpanh.pienote.commonui.utils.PienoteTextToolBar
 import com.haghpanh.pienote.commonui.utils.getPrefixOrNull
@@ -69,25 +72,27 @@ import com.haghpanh.pienote.features.texteditor.utils.TextEditorAction.Non
 import com.haghpanh.pienote.features.texteditor.utils.TextEditorAction.TodoListComplete
 import com.haghpanh.pienote.features.texteditor.utils.TextEditorAction.TodoListNotComplete
 import com.haghpanh.pienote.features.texteditor.utils.TextEditorValue
-import com.haghpanh.pienote.features.texteditor.utils.getNameStringId
+import com.haghpanh.pienote.features.texteditor.utils.getFullNameStringId
 import com.haghpanh.pienote.features.texteditor.utils.getPlaceHolderStringId
 import com.haghpanh.pienote.features.texteditor.utils.getTextStyle
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun PienoteTextEditor(
     value: TextEditorValue,
     shouldShowEditingOptions: Boolean,
     modifier: Modifier = Modifier,
+    onFocusItemIndexChanged: ((Int?) -> Unit)? = null,
     textFieldModifier: Modifier = Modifier,
 ) {
+    val focusManager = LocalFocusManager.current
+    val bringIntoViewRequester = remember { BringIntoViewRequester() }
     val textFields by remember {
         derivedStateOf { value.getRenderedTexts() }
     }
     var updatingItemIndex: Int? by rememberSaveable {
         mutableStateOf(null)
     }
-
-    val focusManager = LocalFocusManager.current
 
     // based on the value we decide whether should we move focus down or not.
     var hasAddedSection by rememberSaveable {
@@ -98,8 +103,14 @@ fun PienoteTextEditor(
         mutableStateOf(false)
     }
     // keeps focusItem Index to perform adding section based on it.
-    var focusedItemIndex: Int by rememberSaveable {
-        mutableIntStateOf(-1)
+    var focusedItemIndex: Int? by rememberSaveable {
+        mutableStateOf(null)
+    }
+
+    LaunchedEffect(shouldShowEditingOptions) {
+        if (!shouldShowEditingOptions) {
+            focusedItemIndex = null
+        }
     }
 
     LaunchedEffect(textFields.size) {
@@ -114,162 +125,130 @@ fun PienoteTextEditor(
         }
     }
 
+    onFocusItemIndexChanged?.let { onChange ->
+        LaunchedEffect(focusedItemIndex) {
+            onChange(focusedItemIndex)
+        }
+    }
+
     Column(modifier = modifier) {
         textFields.forEachIndexed { index, item ->
-            // give us bold, code and underline options on actionMenu
-            // that appear when selecting a text.
-            // todo check
-            val textToolbar = buildPienoteTextTool(value = item.value) {
-                value.onEachValueChange(index, it)
-            }
-
-            CompositionLocalProvider(LocalTextToolbar provides textToolbar) {
-                TextEditorField(
-                    modifier = textFieldModifier
-                        .fillMaxWidth()
-                        .onKeyEvent {
-                            if (it.key == Key.Backspace) {
-                                if (
-                                    item.action in setOf(
-                                        TodoListComplete,
-                                        TodoListNotComplete,
-                                        List
-                                    ) && item.value.text.isEmpty()
-                                ) {
-                                    value.updateAction(index, Non)
-                                } else if (item.value.text.isEmpty()) {
-                                    value.removeSection(index)
-                                    hasRemovedSection = true
-                                }
-                            }
-                            false
-                        }
-                        .onFocusEvent {
-                            if (it.isFocused) {
-                                focusedItemIndex = index
-                            }
-                        },
-                    icon = {
-                        item.action?.CreateIcon {
-                            if (item.action in setOf(
+            TextEditorField(
+                modifier = textFieldModifier
+                    .bringIntoViewRequester(bringIntoViewRequester)
+                    .fillMaxWidth()
+                    .onKeyEvent {
+                        if (it.key == Key.Backspace) {
+                            if (
+                                item.action in setOf(
+                                    TodoListComplete,
                                     TodoListNotComplete,
-                                    TodoListComplete
-                                )
+                                    List
+                                ) && item.value.text.isEmpty()
                             ) {
-                                value.onCheckTodo(index)
+                                value.updateAction(index, Non)
+                            } else if (item.value.text.isEmpty() && index != 0) {
+                                value.removeSection(index)
+                                hasRemovedSection = true
                             }
                         }
-                    },
-                    value = item.value,
-                    onValueChange = { value.onEachValueChange(index, it) },
-                    onUpdateClick = if (focusedItemIndex == index && shouldShowEditingOptions) {
-                        {
-                            updatingItemIndex = index
-                        }
-                    } else {
-                        null
-                    },
-                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-                    keyboardAction = KeyboardActions(
-                        onDone = {
-                            val action = when (item.action) {
-                                TodoListComplete,
-                                TodoListNotComplete -> TodoListNotComplete
-
-                                List -> List
-                                else -> Non
-                            }
-
-                            value.addSection(
-                                action = action,
-                                index = focusedItemIndex.takeIf { it != -1 }
-                            )
-
-                            hasAddedSection = true
-                        }
-                    ),
-                    textStyle = item.action?.getTextStyle() ?: TextStyle.Default,
-                    placeHolderText = if (shouldShowEditingOptions) {
-                        item.action
-                            ?.getPlaceHolderStringId()
-                            ?.let { stringResource(id = it) }
-                    } else {
-                        null
+                        false
                     }
+                    .onFocusEvent {
+                        if (it.isFocused) {
+                            focusedItemIndex = index
+                        }
+                    },
+                icon = {
+                    item.action?.CreateIcon {
+                        if (item.action in setOf(
+                                TodoListNotComplete,
+                                TodoListComplete
+                            )
+                        ) {
+                            value.onCheckTodo(index)
+                        }
+                    }
+                },
+                value = item.value,
+                onValueChange = { value.onEachValueChange(index, it) },
+                onUpdateClick = if (focusedItemIndex == index && shouldShowEditingOptions) {
+                    { updatingItemIndex = index }
+                } else {
+                    null
+                },
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                keyboardAction = KeyboardActions(
+                    onDone = {
+                        val action = when (item.action) {
+                            TodoListComplete,
+                            TodoListNotComplete -> TodoListNotComplete
+
+                            List -> List
+                            else -> Non
+                        }
+
+                        value.addSection(
+                            action = action,
+                            index = focusedItemIndex.takeIf { it != -1 }
+                        )
+
+                        hasAddedSection = true
+                    }
+                ),
+                textStyle = item.action?.getTextStyle() ?: TextStyle.Default,
+                placeHolderText = if (shouldShowEditingOptions) {
+                    item.action
+                        ?.getPlaceHolderStringId()
+                        ?.let { stringResource(id = it) }
+                } else {
+                    null
+                }
+            )
+
+            DropdownMenu(
+                expanded = shouldShowEditingOptions && updatingItemIndex == index,
+                onDismissRequest = {
+                    updatingItemIndex = null
+                },
+                properties = PopupProperties(),
+                offset = DpOffset(x = (28).dp, y = 0.dp)
+            ) {
+                DropdownMenuItem(
+                    text = { Text(text = stringResource(R.string.label_change)) },
+                    onClick = { },
+                    enabled = false
                 )
 
-                AnimatedVisibility(visible = shouldShowEditingOptions && updatingItemIndex == index) {
-                    LazyRow(
-                        modifier = Modifier
-                            .padding(vertical = 16.dp, horizontal = 30.dp)
-                            .clip(PienoteTheme.shapes.rounded)
-                            .background(PienoteTheme.colors.surface)
-                            .fillMaxWidth(),
-                        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp)
-                    ) {
-                        items(
-                            items = TextEditorAction.entries
-                                .filter {
-                                    it !in setOf(
-                                        TodoListComplete
-                                    )
-                                }
-                        ) { action ->
-                            Box(modifier = Modifier.fillMaxWidth()) {
-                                TextButton(
-                                    onClick = {
-                                        value.updateAction(
-                                            newAction = action,
-                                            index = index
-                                        )
-                                        hasAddedSection = true
-                                        updatingItemIndex = null
-                                    }
-                                ) {
-                                    action.getNameStringId()?.let {
+                HorizontalDivider(modifier = Modifier.padding(horizontal = 8.dp))
+
+                Column(
+                    modifier = Modifier
+                        .heightIn(max = 160.dp)
+                        .verticalScroll(rememberScrollState())
+                ) {
+                    TextEditorAction.entries
+                        .filter {
+                            it !in setOf(
+                                TodoListComplete
+                            )
+                        }.forEach { action ->
+                            DropdownMenuItem(
+                                text = {
+                                    action.getFullNameStringId()?.let {
                                         Text(text = stringResource(id = it))
                                     }
+                                },
+                                onClick = {
+                                    value.updateAction(
+                                        newAction = action,
+                                        index = index
+                                    )
+                                    hasAddedSection = true
+                                    updatingItemIndex = null
                                 }
-                            }
+                            )
                         }
-                    }
-                }
-            }
-        }
-
-        Spacer(modifier = Modifier.height(32.dp))
-
-        AnimatedVisibility(visible = shouldShowEditingOptions && updatingItemIndex == null) {
-            LazyRow(
-                modifier = Modifier
-                    .padding(horizontal = 30.dp)
-                    .clip(PienoteTheme.shapes.rounded)
-                    .background(PienoteTheme.colors.surface)
-                    .fillMaxWidth(),
-                contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp)
-            ) {
-                items(
-                    items = TextEditorAction.entries.filter {
-                        it !in setOf(
-                            TodoListComplete
-                        )
-                    }
-                ) { action ->
-                    Box(modifier = Modifier.fillMaxWidth()) {
-                        TextButton(
-                            onClick = {
-                                value.addSection(
-                                    action = action,
-                                    index = focusedItemIndex.takeIf { it != -1 }
-                                )
-                                hasAddedSection = true
-                            }
-                        ) {
-                            action.getNameStringId()?.let {
-                                Text(text = stringResource(id = it))
-                            }
-                        }
-                    }
                 }
             }
         }
@@ -346,6 +325,8 @@ private fun TextEditorField(
     }
 }
 
+// TODO Use it to customize TextToolBar
+@Suppress("UnusedPrivateMember")
 @Composable
 private fun buildPienoteTextTool(
     value: TextFieldValue,
