@@ -74,8 +74,6 @@ class NoteViewModel @Inject constructor(
             )
         }
 
-        updateOrInsertNote()
-
         if (getCurrentState().isEditing && !getCurrentState().isEmptyNote) {
             switchEditMode(
                 currentNoteTitle = currentNoteTitle,
