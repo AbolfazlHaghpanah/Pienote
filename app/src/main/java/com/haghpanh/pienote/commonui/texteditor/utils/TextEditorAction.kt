@@ -1,4 +1,4 @@
-package com.haghpanh.pienote.features.texteditor.utils
+package com.haghpanh.pienote.commonui.texteditor.utils
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size

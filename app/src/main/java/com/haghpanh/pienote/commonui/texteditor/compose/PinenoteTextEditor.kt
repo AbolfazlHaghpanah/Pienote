@@ -1,4 +1,4 @@
-package com.haghpanh.pienote.features.texteditor.compose
+package com.haghpanh.pienote.commonui.texteditor.compose
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.fadeIn
@@ -57,24 +57,24 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.getSelectedText
-import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.PopupProperties
 import com.haghpanh.pienote.R
+import com.haghpanh.pienote.commonui.texteditor.utils.CreateIcon
+import com.haghpanh.pienote.commonui.texteditor.utils.TextEditorAction
+import com.haghpanh.pienote.commonui.texteditor.utils.TextEditorAction.List
+import com.haghpanh.pienote.commonui.texteditor.utils.TextEditorAction.Non
+import com.haghpanh.pienote.commonui.texteditor.utils.TextEditorAction.OrderedList
+import com.haghpanh.pienote.commonui.texteditor.utils.TextEditorAction.TodoListComplete
+import com.haghpanh.pienote.commonui.texteditor.utils.TextEditorAction.TodoListNotComplete
+import com.haghpanh.pienote.commonui.texteditor.utils.TextEditorValue
+import com.haghpanh.pienote.commonui.texteditor.utils.getFullNameStringId
+import com.haghpanh.pienote.commonui.texteditor.utils.getPlaceHolderStringId
+import com.haghpanh.pienote.commonui.texteditor.utils.getTextStyle
 import com.haghpanh.pienote.commonui.theme.PienoteTheme
 import com.haghpanh.pienote.commonui.utils.PienoteTextToolBar
 import com.haghpanh.pienote.commonui.utils.getPrefixOrNull
 import com.haghpanh.pienote.commonui.utils.performAction
-import com.haghpanh.pienote.features.texteditor.utils.CreateIcon
-import com.haghpanh.pienote.features.texteditor.utils.TextEditorAction
-import com.haghpanh.pienote.features.texteditor.utils.TextEditorAction.List
-import com.haghpanh.pienote.features.texteditor.utils.TextEditorAction.Non
-import com.haghpanh.pienote.features.texteditor.utils.TextEditorAction.TodoListComplete
-import com.haghpanh.pienote.features.texteditor.utils.TextEditorAction.TodoListNotComplete
-import com.haghpanh.pienote.features.texteditor.utils.TextEditorValue
-import com.haghpanh.pienote.features.texteditor.utils.getFullNameStringId
-import com.haghpanh.pienote.features.texteditor.utils.getPlaceHolderStringId
-import com.haghpanh.pienote.features.texteditor.utils.getTextStyle
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -82,8 +82,8 @@ fun PienoteTextEditor(
     value: TextEditorValue,
     shouldShowEditingOptions: Boolean,
     modifier: Modifier = Modifier,
-    onFocusItemIndexChanged: ((Int?) -> Unit)? = null,
     textFieldModifier: Modifier = Modifier,
+    onFocusItemIndexChanged: ((Int?) -> Unit)? = null,
 ) {
     val focusManager = LocalFocusManager.current
     val bringIntoViewRequester = remember { BringIntoViewRequester() }
@@ -113,14 +113,15 @@ fun PienoteTextEditor(
         }
     }
 
+    // handles delay between adding a section and showing it on textField for focus on
     LaunchedEffect(textFields.size) {
         if (hasAddedSection) {
-            focusManager.moveFocus(FocusDirection.Down)
+            focusManager.moveFocus(FocusDirection.Next)
             hasAddedSection = false
         }
 
         if (hasRemovedSection) {
-            focusManager.moveFocus(FocusDirection.Up)
+            focusManager.moveFocus(FocusDirection.Previous)
             hasRemovedSection = false
         }
     }
@@ -133,122 +134,124 @@ fun PienoteTextEditor(
 
     Column(modifier = modifier) {
         textFields.forEachIndexed { index, item ->
-            TextEditorField(
-                modifier = textFieldModifier
-                    .bringIntoViewRequester(bringIntoViewRequester)
-                    .fillMaxWidth()
-                    .onKeyEvent {
-                        if (it.key == Key.Backspace) {
-                            if (
-                                item.action in setOf(
-                                    TodoListComplete,
+            Box {
+                TextEditorField(
+                    modifier = textFieldModifier
+                        .bringIntoViewRequester(bringIntoViewRequester)
+                        .fillMaxWidth()
+                        .onKeyEvent {
+                            if (it.key == Key.Backspace) {
+                                if (
+                                    item.action in setOf(
+                                        TodoListComplete,
+                                        TodoListNotComplete,
+                                        List
+                                    ) && item.value.text.isEmpty()
+                                ) {
+                                    value.updateAction(index, Non)
+                                } else if (item.value.text.isEmpty() && index != 0) {
+                                    value.removeSection(index)
+                                    hasRemovedSection = true
+                                }
+                            }
+                            false
+                        }
+                        .onFocusEvent {
+                            if (it.isFocused) {
+                                focusedItemIndex = index
+                            }
+                        },
+                    icon = {
+                        item.action?.CreateIcon {
+                            if (item.action in setOf(
                                     TodoListNotComplete,
-                                    List
-                                ) && item.value.text.isEmpty()
+                                    TodoListComplete
+                                )
                             ) {
-                                value.updateAction(index, Non)
-                            } else if (item.value.text.isEmpty() && index != 0) {
-                                value.removeSection(index)
-                                hasRemovedSection = true
+                                value.onCheckTodo(index)
                             }
                         }
-                        false
-                    }
-                    .onFocusEvent {
-                        if (it.isFocused) {
-                            focusedItemIndex = index
-                        }
                     },
-                icon = {
-                    item.action?.CreateIcon {
-                        if (item.action in setOf(
-                                TodoListNotComplete,
-                                TodoListComplete
+                    value = item.value,
+                    onValueChange = { value.onEachValueChange(index, it) },
+                    onUpdateClick = if (focusedItemIndex == index && shouldShowEditingOptions) {
+                        { updatingItemIndex = index }
+                    } else {
+                        null
+                    },
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                    keyboardAction = KeyboardActions(
+                        onDone = {
+                            val action = when (item.action) {
+                                TodoListComplete,
+                                TodoListNotComplete -> TodoListNotComplete
+
+                                List -> List
+                                else -> Non
+                            }
+
+                            value.addSection(
+                                action = action,
+                                index = focusedItemIndex.takeIf { it != -1 }
                             )
-                        ) {
-                            value.onCheckTodo(index)
+
+                            hasAddedSection = true
                         }
+                    ),
+                    textStyle = item.action?.getTextStyle() ?: TextStyle.Default,
+                    placeHolderText = if (shouldShowEditingOptions) {
+                        item.action
+                            ?.getPlaceHolderStringId()
+                            ?.let { stringResource(id = it) }
+                    } else {
+                        null
                     }
-                },
-                value = item.value,
-                onValueChange = { value.onEachValueChange(index, it) },
-                onUpdateClick = if (focusedItemIndex == index && shouldShowEditingOptions) {
-                    { updatingItemIndex = index }
-                } else {
-                    null
-                },
-                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-                keyboardAction = KeyboardActions(
-                    onDone = {
-                        val action = when (item.action) {
-                            TodoListComplete,
-                            TodoListNotComplete -> TodoListNotComplete
-
-                            List -> List
-                            else -> Non
-                        }
-
-                        value.addSection(
-                            action = action,
-                            index = focusedItemIndex.takeIf { it != -1 }
-                        )
-
-                        hasAddedSection = true
-                    }
-                ),
-                textStyle = item.action?.getTextStyle() ?: TextStyle.Default,
-                placeHolderText = if (shouldShowEditingOptions) {
-                    item.action
-                        ?.getPlaceHolderStringId()
-                        ?.let { stringResource(id = it) }
-                } else {
-                    null
-                }
-            )
-
-            DropdownMenu(
-                expanded = shouldShowEditingOptions && updatingItemIndex == index,
-                onDismissRequest = {
-                    updatingItemIndex = null
-                },
-                properties = PopupProperties(),
-                offset = DpOffset(x = (28).dp, y = 0.dp)
-            ) {
-                DropdownMenuItem(
-                    text = { Text(text = stringResource(R.string.label_change)) },
-                    onClick = { },
-                    enabled = false
                 )
 
-                HorizontalDivider(modifier = Modifier.padding(horizontal = 8.dp))
-
-                Column(
-                    modifier = Modifier
-                        .heightIn(max = 160.dp)
-                        .verticalScroll(rememberScrollState())
+                DropdownMenu(
+                    expanded = shouldShowEditingOptions && updatingItemIndex == index,
+                    onDismissRequest = {
+                        updatingItemIndex = null
+                    },
+                    properties = PopupProperties(),
                 ) {
-                    TextEditorAction.entries
-                        .filter {
-                            it !in setOf(
-                                TodoListComplete
-                            )
-                        }.forEach { action ->
-                            DropdownMenuItem(
-                                text = {
-                                    action.getFullNameStringId()?.let {
-                                        Text(text = stringResource(id = it))
+                    DropdownMenuItem(
+                        text = { Text(text = stringResource(R.string.label_change)) },
+                        onClick = { },
+                        enabled = false
+                    )
+
+                    HorizontalDivider(modifier = Modifier.padding(horizontal = 8.dp))
+
+                    Column(
+                        modifier = Modifier
+                            .heightIn(max = 160.dp)
+                            .verticalScroll(rememberScrollState())
+                    ) {
+                        TextEditorAction.entries
+                            .filter {
+                                it !in setOf(
+                                    TodoListComplete,
+                                    OrderedList
+                                )
+                            }.forEach { action ->
+                                DropdownMenuItem(
+                                    text = {
+                                        action.getFullNameStringId()?.let {
+                                            Text(text = stringResource(id = it))
+                                        }
+                                    },
+                                    onClick = {
+                                        value.updateAction(
+                                            newAction = action,
+                                            index = index
+                                        )
+                                        hasAddedSection = true
+                                        updatingItemIndex = null
                                     }
-                                },
-                                onClick = {
-                                    value.updateAction(
-                                        newAction = action,
-                                        index = index
-                                    )
-                                    hasAddedSection = true
-                                    updatingItemIndex = null
-                                }
-                            )
-                        }
+                                )
+                            }
+                    }
                 }
             }
         }
@@ -288,7 +291,7 @@ private fun TextEditorField(
                     AnimatedContent(
                         targetState = onUpdateClick != null,
                         transitionSpec = { fadeIn().togetherWith(fadeOut()) },
-                        label = "show "
+                        label = "show change icon"
                     ) {
                         if (it) {
                             Icon(

@@ -14,7 +14,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -24,8 +23,6 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -34,7 +31,6 @@ import androidx.compose.material.icons.rounded.Done
 import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -44,7 +40,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.onFocusChanged
@@ -62,16 +57,15 @@ import com.haghpanh.pienote.commonui.component.PienoteChip
 import com.haghpanh.pienote.commonui.component.PienoteScaffold
 import com.haghpanh.pienote.commonui.component.PienoteTextField
 import com.haghpanh.pienote.commonui.navigation.AppScreens
+import com.haghpanh.pienote.commonui.texteditor.compose.PienoteTextEditor
+import com.haghpanh.pienote.commonui.texteditor.compose.TextEditorActionBar
+import com.haghpanh.pienote.commonui.texteditor.utils.rememberTextEditorValue
 import com.haghpanh.pienote.commonui.theme.PienoteTheme
 import com.haghpanh.pienote.commonui.utils.toComposeColor
 import com.haghpanh.pienote.features.note.ui.component.CategoryChipSection
 import com.haghpanh.pienote.features.note.ui.component.ImageCoverSection
 import com.haghpanh.pienote.features.note.ui.component.NoteColorSection
 import com.haghpanh.pienote.features.note.utils.rememberNoteNestedScrollConnection
-import com.haghpanh.pienote.features.texteditor.compose.PienoteTextEditor
-import com.haghpanh.pienote.features.texteditor.utils.TextEditorAction
-import com.haghpanh.pienote.features.texteditor.utils.getNameStringId
-import com.haghpanh.pienote.features.texteditor.utils.rememberTextEditorValue
 
 @Composable
 fun NoteScreen(
@@ -145,7 +139,7 @@ private fun NoteScreen(
     var textEditorFocusedItemIndex: Int? by rememberSaveable { mutableStateOf(null) }
     var hasAddedTextEditorSection: Boolean by rememberSaveable { mutableStateOf(false) }
 
-    // updating note Ui when note has observed successfully from database
+    // Updating note Ui when note has observed successfully from database
     LaunchedEffect(key1 = state.note.title, key2 = state.note.note) {
         state.note.title?.let {
             titleText = it
@@ -210,38 +204,11 @@ private fun NoteScreen(
                 enter = expandVertically { -it },
                 exit = shrinkVertically { -it * 2 }
             ) {
-                LazyRow(
-                    modifier = Modifier
-                        .padding(horizontal = 24.dp, vertical = 16.dp)
-                        .clip(PienoteTheme.shapes.rounded)
-                        .background(PienoteTheme.colors.surface)
-                        .fillMaxWidth(),
-                    contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp)
-                ) {
-                    items(
-                        items = TextEditorAction.entries.filter {
-                            it !in setOf(
-                                TextEditorAction.TodoListComplete
-                            )
-                        }
-                    ) { action ->
-                        Box(modifier = Modifier.fillMaxWidth()) {
-                            TextButton(
-                                onClick = {
-                                    noteText.addSection(
-                                        action = action,
-                                        index = textEditorFocusedItemIndex.takeIf { it != null }
-                                    )
-                                    hasAddedTextEditorSection = true
-                                }
-                            ) {
-                                action.getNameStringId()?.let {
-                                    Text(text = stringResource(id = it))
-                                }
-                            }
-                        }
-                    }
-                }
+                TextEditorActionBar(
+                    textEditorValue = noteText,
+                    textEditorFocusedItemIndex = textEditorFocusedItemIndex,
+                    onAddSection = { hasAddedTextEditorSection = true }
+                )
             }
         }
     ) { paddingValue ->
