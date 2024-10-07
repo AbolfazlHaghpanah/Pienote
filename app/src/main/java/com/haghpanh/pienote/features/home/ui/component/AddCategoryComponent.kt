@@ -146,13 +146,8 @@ fun AddCategoryComponent(
         PienoteTextField(
             modifier = modifier.fillMaxWidth(),
             value = categoryName.orEmpty(),
-            onValueChange = { value -> categoryName = value },
-            placeHolder = {
-                Text(
-                    text = "Unnamed...",
-                    style = PienoteTheme.typography.headlineMedium
-                )
-            },
+            onValueChange = { categoryName = it },
+            placeHolderText = stringResource(R.string.label_unnamed),
             textStyle = PienoteTheme.typography.headlineMedium
         )
 
@@ -178,7 +173,7 @@ fun AddCategoryComponent(
                     contentColor = PienoteTheme.colors.onTertiaryContainer
                 )
             ) {
-                Text(text = "Add")
+                Text(text = stringResource(R.string.label_add))
             }
 
             OutlinedButton(
@@ -191,7 +186,7 @@ fun AddCategoryComponent(
                     color = PienoteTheme.colors.onErrorContainer
                 )
             ) {
-                Text(text = "Discard")
+                Text(text = stringResource(R.string.label_discard))
             }
         }
     }
