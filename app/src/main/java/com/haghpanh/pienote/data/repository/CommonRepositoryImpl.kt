@@ -7,7 +7,7 @@ import com.haghpanh.pienote.data.dao.NoteDao
 import com.haghpanh.pienote.data.entity.CategoryEntity
 import com.haghpanh.pienote.data.utils.toEntity
 
-class CommonRepositoryImpl (
+class CommonRepositoryImpl(
     private val noteDao: NoteDao,
     private val categoryDao: CategoryDao
 ) : CommonRepository {

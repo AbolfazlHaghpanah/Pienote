@@ -18,7 +18,6 @@ import com.haghpanh.pienote.commonui.navigation.AppScreens
 import com.haghpanh.pienote.commonui.navigation.mainNavGraph
 import com.haghpanh.pienote.commonui.theme.PienoteTheme
 
-
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

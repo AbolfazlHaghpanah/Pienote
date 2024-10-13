@@ -10,7 +10,7 @@ import com.haghpanh.pienote.features.category.domain.repository.CategoryReposito
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-class CategoryRepositoryImpl (
+class CategoryRepositoryImpl(
     private val categoryDao: CategoryDao,
     private val noteDao: NoteDao
 ) : CategoryRepository {

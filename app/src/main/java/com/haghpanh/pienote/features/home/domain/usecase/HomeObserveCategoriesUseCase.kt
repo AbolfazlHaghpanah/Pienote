@@ -4,7 +4,7 @@ import com.haghpanh.pienote.features.home.domain.model.CategoryWithNotesCountDom
 import com.haghpanh.pienote.features.home.domain.repository.HomeRepository
 import kotlinx.coroutines.flow.Flow
 
-class HomeObserveCategoriesUseCase (
+class HomeObserveCategoriesUseCase(
     private val homeRepository: HomeRepository
 ) {
     operator fun invoke(): Flow<List<CategoryWithNotesCountDomainModel>> =

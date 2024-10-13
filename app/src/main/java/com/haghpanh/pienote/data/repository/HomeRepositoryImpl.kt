@@ -9,7 +9,7 @@ import com.haghpanh.pienote.features.home.domain.repository.HomeRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-class HomeRepositoryImpl (
+class HomeRepositoryImpl(
     private val noteDao: NoteDao,
     private val categoryDao: CategoryDao
 ) : HomeRepository {

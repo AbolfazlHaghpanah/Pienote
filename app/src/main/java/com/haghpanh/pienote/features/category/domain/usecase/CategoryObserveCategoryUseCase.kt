@@ -4,7 +4,7 @@ import com.haghpanh.pienote.features.category.domain.model.CategoryWithNotesDoma
 import com.haghpanh.pienote.features.category.domain.repository.CategoryRepository
 import kotlinx.coroutines.flow.Flow
 
-class CategoryObserveCategoryUseCase (
+class CategoryObserveCategoryUseCase(
     private val categoryRepository: CategoryRepository
 ) {
     operator fun invoke(id: Int): Flow<CategoryWithNotesDomainModel> =

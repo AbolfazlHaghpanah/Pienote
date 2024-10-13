@@ -16,8 +16,6 @@ import com.haghpanh.pienote.features.home.domain.usecase.HomeObserveNotesUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import org.koin.android.annotation.KoinViewModel
-import org.koin.java.KoinJavaComponent.inject
 
 class HomeViewModel(
     savedStateHandle: SavedStateHandle,
