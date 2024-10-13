@@ -18,12 +18,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import com.haghpanh.pienote.R
 import com.haghpanh.pienote.commonui.component.PienoteSnackbar
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.receiveAsFlow
-import javax.inject.Inject
 import kotlin.math.abs
 
 /**
@@ -33,8 +31,8 @@ import kotlin.math.abs
  *
  * @param context The application context for accessing resources.
  */
-class SnackbarManager @Inject constructor(
-    @ApplicationContext private val context: Context
+class SnackbarManager(
+    private val context: Context
 ) {
     private val _currentMessage = Channel<SnackbarData?>(Channel.BUFFERED)
     val currentMessage = _currentMessage.receiveAsFlow()

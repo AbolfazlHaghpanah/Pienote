@@ -45,7 +45,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.haghpanh.pienote.R
@@ -62,6 +61,7 @@ import com.haghpanh.pienote.features.category.ui.utils.CATEGORY_DIALOG_ITEM_EDIT
 import com.haghpanh.pienote.features.category.ui.utils.DialogState
 import com.haghpanh.pienote.features.category.ui.utils.categoryDialogItems
 import com.haghpanh.pienote.features.home.ui.component.HomeNoteItem
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun CategoryScreen(
@@ -69,7 +69,7 @@ fun CategoryScreen(
 ) {
     CategoryScreen(
         navController = navController,
-        viewModel = hiltViewModel()
+        viewModel = koinViewModel()
     )
 }
 

@@ -17,9 +17,8 @@ import androidx.navigation.compose.rememberNavController
 import com.haghpanh.pienote.commonui.navigation.AppScreens
 import com.haghpanh.pienote.commonui.navigation.mainNavGraph
 import com.haghpanh.pienote.commonui.theme.PienoteTheme
-import dagger.hilt.android.AndroidEntryPoint
 
-@AndroidEntryPoint
+
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

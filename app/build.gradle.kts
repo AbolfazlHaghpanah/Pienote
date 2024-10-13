@@ -5,9 +5,8 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.kotlinAndroid)
     alias(libs.plugins.ksp)
-    alias(libs.plugins.hilt)
+//    alias(libs.plugins.hilt)
     alias(libs.plugins.detekt)
-    kotlin("kapt")
 }
 
 detekt {
@@ -65,28 +64,29 @@ android {
             signingConfig = signingConfigs.getByName("debug")
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_21
         targetCompatibility = JavaVersion.VERSION_21
     }
+
     kotlinOptions {
         jvmTarget = "21"
     }
+
     buildFeatures {
         compose = true
     }
+
     composeOptions {
         kotlinCompilerExtensionVersion = libs.versions.composeCompiler.orNull
     }
+
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
-}
-
-kapt {
-    correctErrorTypes = true
 }
 
 dependencies {
@@ -108,13 +108,13 @@ dependencies {
     implementation(libs.pagingCompose)
     implementation(kotlin("reflect"))
 
+    //koin
+    implementation(libs.bundles.koin)
+    implementation(libs.koin.annotations)
+    ksp(libs.koin.ksp.compiler)
+
     //material
     implementation(libs.material)
-
-    //hilt
-    implementation(libs.hilt)
-    implementation(libs.hiltNavigationCompose)
-    kapt(libs.hiltCompiler)
 
     //room
     implementation(libs.bundles.room)

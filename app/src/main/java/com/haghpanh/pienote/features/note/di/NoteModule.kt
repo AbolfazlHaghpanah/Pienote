@@ -2,14 +2,26 @@ package com.haghpanh.pienote.features.note.di
 
 import com.haghpanh.pienote.data.repository.NoteRepositoryImpl
 import com.haghpanh.pienote.features.note.domain.repository.NoteRepository
-import dagger.Binds
-import dagger.Module
-import dagger.hilt.InstallIn
-import dagger.hilt.components.SingletonComponent
+import com.haghpanh.pienote.features.note.domain.usecase.NoteGetCategoriesUseCase
+import com.haghpanh.pienote.features.note.domain.usecase.NoteInsertNoteUseCase
+import com.haghpanh.pienote.features.note.domain.usecase.NoteObserveNoteInfoUseCase
+import com.haghpanh.pienote.features.note.domain.usecase.NoteUpdateNoteImageUseCase
+import com.haghpanh.pienote.features.note.domain.usecase.NoteUpdateNoteUseCase
+import com.haghpanh.pienote.features.note.ui.NoteViewModel
+import org.koin.core.module.dsl.factoryOf
+import org.koin.core.module.dsl.viewModelOf
+import org.koin.dsl.bind
+import org.koin.dsl.module
 
-@Module
-@InstallIn(SingletonComponent::class)
-abstract class NoteModule {
-    @Binds
-    abstract fun bindsNoteRepository(noteRepositoryImpl: NoteRepositoryImpl): NoteRepository
+val noteModule = module {
+    factoryOf(::NoteRepositoryImpl) bind NoteRepository::class
+
+    factoryOf(::NoteGetCategoriesUseCase)
+    factoryOf(::NoteInsertNoteUseCase)
+    factoryOf(::NoteUpdateNoteUseCase)
+    factoryOf(::NoteObserveNoteInfoUseCase)
+    factoryOf(::NoteUpdateNoteImageUseCase)
+    factoryOf(::NoteUpdateNoteUseCase)
+
+    viewModelOf(::NoteViewModel)
 }

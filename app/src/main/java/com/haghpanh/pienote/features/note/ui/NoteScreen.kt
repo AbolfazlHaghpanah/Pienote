@@ -50,7 +50,6 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.haghpanh.pienote.R
 import com.haghpanh.pienote.commonui.component.PienoteChip
@@ -66,6 +65,7 @@ import com.haghpanh.pienote.features.note.ui.component.CategoryChipSection
 import com.haghpanh.pienote.features.note.ui.component.ImageCoverSection
 import com.haghpanh.pienote.features.note.ui.component.NoteColorSection
 import com.haghpanh.pienote.features.note.utils.rememberNoteNestedScrollConnection
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun NoteScreen(
@@ -73,7 +73,7 @@ fun NoteScreen(
 ) {
     NoteScreen(
         navController = navController,
-        viewModel = hiltViewModel()
+        viewModel = koinViewModel()
     )
 }
 

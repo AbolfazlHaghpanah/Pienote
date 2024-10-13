@@ -42,7 +42,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.haghpanh.pienote.R
 import com.haghpanh.pienote.commonui.component.PienoteScaffold
@@ -61,8 +60,7 @@ import com.haghpanh.pienote.features.home.ui.component.SelectingNoteOptions
 import com.haghpanh.pienote.features.home.ui.component.SelectingNoteOptions.AddCategory
 import com.haghpanh.pienote.features.home.ui.component.SelectingNoteOptions.DeleteNotes
 import com.haghpanh.pienote.features.home.ui.component.SelectingNoteOptions.MoveToCategory
-
-const val HOME_SCREEN_NAME = "Home"
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun HomeScreen(
@@ -70,7 +68,7 @@ fun HomeScreen(
 ) {
     HomeScreen(
         navController = navController,
-        viewModel = hiltViewModel()
+        viewModel = koinViewModel()
     )
 }
 
@@ -80,13 +78,11 @@ private fun HomeScreen(
     viewModel: HomeViewModel
 ) {
     val state by viewModel.collectAsStateWithLifecycle()
-    val parent = viewModel.savedStateHandler<String>("parent")
 
     viewModel.handleEffectsDispose()
 
     HomeScreen(
         state = state,
-        parent = parent,
         snackbarManager = viewModel.snackbarManager,
         navigateToRoute = { route ->
             navController.navigate(route = route) {
@@ -106,13 +102,13 @@ private fun HomeScreen(
 @Composable
 fun HomeScreen(
     state: HomeViewState,
-    parent: String?,
     snackbarManager: SnackbarManager,
     navigateToRoute: (String) -> Unit,
     onDeleteNote: (Note) -> Unit,
     onAddNewCategory: (List<Int>, String, Uri?) -> Unit,
     onAddNotesToCategory: (noteIds: List<Int>, categoryId: Int) -> Unit
 ) {
+    val context = LocalContext.current
     val listState = rememberLazyListState()
     val selectedNotes = remember { mutableStateListOf<Note>() }
     val shouldExpandFAB by remember {
@@ -161,7 +157,7 @@ fun HomeScreen(
                     navigateToRoute(
                         AppScreens.CategoryScreen.createRoute(
                             id,
-                            HOME_SCREEN_NAME
+                            context.getString(R.string.label_home)
                         )
                     )
                 },
@@ -186,7 +182,7 @@ fun HomeScreen(
                             NoteScreen.createRoute(
                                 id = -1,
                                 isExist = false,
-                                parent = HOME_SCREEN_NAME
+                                parent = context.getString(R.string.label_home)
                             )
                         )
                     },
@@ -265,21 +261,10 @@ fun HomeScreen(
             state = listState
         ) {
             item {
-                if (parent != null) {
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    PienoteTopBar(
-                        title = stringResource(R.string.label_home),
-                        icon = R.drawable.home,
-                        parent = parent,
-                        onBack = { navigateToRoute(AppScreens.LibraryScreen.route) }
-                    )
-                } else {
-                    PienoteTopBar(
-                        title = stringResource(R.string.label_home),
-                        icon = R.drawable.home,
-                    )
-                }
+                PienoteTopBar(
+                    title = stringResource(R.string.label_home),
+                    icon = R.drawable.home,
+                )
             }
 
             items(
@@ -313,7 +298,7 @@ fun HomeScreen(
                             navigateToRoute(
                                 AppScreens.CategoryScreen.createRoute(
                                     category.id,
-                                    parent = HOME_SCREEN_NAME
+                                    parent = context.getString(R.string.label_home)
                                 )
                             )
                         }
@@ -355,7 +340,7 @@ fun HomeScreen(
                                 NoteScreen.createRoute(
                                     id = note.id,
                                     isExist = true,
-                                    parent = HOME_SCREEN_NAME
+                                    parent = context.getString(R.string.label_home)
                                 )
                             )
                         }
@@ -409,7 +394,6 @@ fun HomeScreenPreview() {
                     )
                 )
             ),
-            "Parent",
             SnackbarManager(LocalContext.current),
             {},
             {},

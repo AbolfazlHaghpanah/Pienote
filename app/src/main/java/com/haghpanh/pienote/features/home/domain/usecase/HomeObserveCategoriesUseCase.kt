@@ -3,9 +3,8 @@ package com.haghpanh.pienote.features.home.domain.usecase
 import com.haghpanh.pienote.features.home.domain.model.CategoryWithNotesCountDomainModel
 import com.haghpanh.pienote.features.home.domain.repository.HomeRepository
 import kotlinx.coroutines.flow.Flow
-import javax.inject.Inject
 
-class HomeObserveCategories @Inject constructor(
+class HomeObserveCategoriesUseCase (
     private val homeRepository: HomeRepository
 ) {
     operator fun invoke(): Flow<List<CategoryWithNotesCountDomainModel>> =

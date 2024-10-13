@@ -4,14 +4,12 @@ import android.content.Context
 import android.net.Uri
 import androidx.core.net.toUri
 import com.haghpanh.pienote.features.note.utils.IMAGE_COVER_DIR_NAME
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
-import javax.inject.Inject
 
-class SaveImageUriInCacheUseCase @Inject constructor(
-    @ApplicationContext private val context: Context
+class SaveImageUriInCacheUseCase(
+    private val context: Context
 ) {
     // TODO Check for permission in lower apis
     suspend operator fun invoke(uri: Uri?): Uri? = withContext(Dispatchers.IO) {
