@@ -4,9 +4,8 @@ import android.net.Uri
 import com.haghpanh.pienote.commondomain.model.CategoryDomainModel
 import com.haghpanh.pienote.commondomain.usecase.SaveImageUriInCacheUseCase
 import com.haghpanh.pienote.features.category.domain.repository.CategoryRepository
-import javax.inject.Inject
 
-class CategoryUpdateImageUseCase @Inject constructor(
+class CategoryUpdateImageUseCase(
     private val categoryRepository: CategoryRepository,
     private val saveImageUriInCacheUseCase: SaveImageUriInCacheUseCase
 ) {

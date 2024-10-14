@@ -4,9 +4,8 @@ import android.net.Uri
 import com.haghpanh.pienote.commondomain.model.NoteDomainModel
 import com.haghpanh.pienote.commondomain.usecase.SaveImageUriInCacheUseCase
 import com.haghpanh.pienote.features.note.domain.repository.NoteRepository
-import javax.inject.Inject
 
-class NoteUpdateNoteImageUseCase @Inject constructor(
+class NoteUpdateNoteImageUseCase(
     private val noteRepository: NoteRepository,
     private val saveImageUriInCacheUseCase: SaveImageUriInCacheUseCase
 ) {

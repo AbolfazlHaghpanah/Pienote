@@ -3,9 +3,8 @@ package com.haghpanh.pienote.features.home.domain.usecase
 import android.net.Uri
 import com.haghpanh.pienote.commondomain.repository.CommonRepository
 import com.haghpanh.pienote.commondomain.usecase.SaveImageUriInCacheUseCase
-import javax.inject.Inject
 
-class HomeInsertCategoryUseCase @Inject constructor(
+class HomeInsertCategoryUseCase(
     private val commonRepository: CommonRepository,
     private val saveImageUriInCacheUseCase: SaveImageUriInCacheUseCase
 ) {

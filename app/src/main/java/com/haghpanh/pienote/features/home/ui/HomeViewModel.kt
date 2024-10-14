@@ -11,20 +11,17 @@ import com.haghpanh.pienote.features.home.domain.model.CategoryWithNotesCountDom
 import com.haghpanh.pienote.features.home.domain.usecase.HomeAddNotesToCategoryUseCase
 import com.haghpanh.pienote.features.home.domain.usecase.HomeDeleteNoteUseCase
 import com.haghpanh.pienote.features.home.domain.usecase.HomeInsertCategoryUseCase
-import com.haghpanh.pienote.features.home.domain.usecase.HomeObserveCategories
+import com.haghpanh.pienote.features.home.domain.usecase.HomeObserveCategoriesUseCase
 import com.haghpanh.pienote.features.home.domain.usecase.HomeObserveNotesUseCase
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
-class HomeViewModel @Inject constructor(
+class HomeViewModel(
     savedStateHandle: SavedStateHandle,
     val snackbarManager: SnackbarManager,
     private val homeObserveNotesUseCase: HomeObserveNotesUseCase,
-    private val homeObserveCategories: HomeObserveCategories,
+    private val homeObserveCategoriesUseCase: HomeObserveCategoriesUseCase,
     private val homeDeleteNoteUseCase: HomeDeleteNoteUseCase,
     private val insertCategoryUseCase: HomeInsertCategoryUseCase,
     private val addNotesToCategoryUseCase: HomeAddNotesToCategoryUseCase,
@@ -105,7 +102,7 @@ class HomeViewModel @Inject constructor(
 
     private fun observeCategories() {
         viewModelScope.launch(Dispatchers.IO) {
-            homeObserveCategories().collect { categories ->
+            homeObserveCategoriesUseCase().collect { categories ->
                 val mappedCategories = categories.map { category ->
                     category.toUiModel()
                 }

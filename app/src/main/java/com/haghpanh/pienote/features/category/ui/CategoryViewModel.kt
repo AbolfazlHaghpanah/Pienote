@@ -14,13 +14,10 @@ import com.haghpanh.pienote.features.category.domain.usecase.CategoryObserveCate
 import com.haghpanh.pienote.features.category.domain.usecase.CategoryUpdateCategoryUseCase
 import com.haghpanh.pienote.features.category.domain.usecase.CategoryUpdateImageUseCase
 import com.haghpanh.pienote.features.note.ui.Note
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
-class CategoryViewModel @Inject constructor(
+class CategoryViewModel(
     val snackbarManager: SnackbarManager,
     private val getCategoryUseCase: CategoryObserveCategoryUseCase,
     private val updateCategoryUseCase: CategoryUpdateCategoryUseCase,

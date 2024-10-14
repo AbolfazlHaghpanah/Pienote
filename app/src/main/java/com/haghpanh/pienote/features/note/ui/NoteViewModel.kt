@@ -11,13 +11,10 @@ import com.haghpanh.pienote.features.note.domain.usecase.NoteInsertNoteUseCase
 import com.haghpanh.pienote.features.note.domain.usecase.NoteObserveNoteInfoUseCase
 import com.haghpanh.pienote.features.note.domain.usecase.NoteUpdateNoteImageUseCase
 import com.haghpanh.pienote.features.note.domain.usecase.NoteUpdateNoteUseCase
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
-class NoteViewModel @Inject constructor(
+class NoteViewModel(
     private val observeNoteInfoUseCase: NoteObserveNoteInfoUseCase,
     private val getCategoriesUseCase: NoteGetCategoriesUseCase,
     private val insertNoteUseCase: NoteInsertNoteUseCase,

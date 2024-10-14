@@ -1,7 +1,7 @@
 package com.haghpanh.pienote.features.category.ui
 
+import androidx.compose.runtime.Immutable
 import com.haghpanh.pienote.features.note.ui.Note
-import javax.annotation.concurrent.Immutable
 
 @Immutable
 data class CategoryViewState(

@@ -9,9 +9,8 @@ import com.haghpanh.pienote.features.note.domain.model.NoteWithCategoryDomainMod
 import com.haghpanh.pienote.features.note.domain.repository.NoteRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import javax.inject.Inject
 
-class NoteRepositoryImpl @Inject constructor(
+class NoteRepositoryImpl(
     private val noteDao: NoteDao,
     private val categoryDao: CategoryDao
 ) : NoteRepository {

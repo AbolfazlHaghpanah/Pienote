@@ -8,9 +8,8 @@ import com.haghpanh.pienote.features.home.domain.model.CategoryWithNotesCountDom
 import com.haghpanh.pienote.features.home.domain.repository.HomeRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import javax.inject.Inject
 
-class HomeRepositoryImpl @Inject constructor(
+class HomeRepositoryImpl(
     private val noteDao: NoteDao,
     private val categoryDao: CategoryDao
 ) : HomeRepository {
