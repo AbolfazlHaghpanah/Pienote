@@ -23,7 +23,6 @@ kotlin {
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
-            implementation(libs.sqldelite.android.driver)
             implementation(libs.koin.android)
         }
         commonMain.dependencies {
@@ -37,18 +36,14 @@ kotlin {
             implementation(libs.androidx.navigation.compose)
             implementation(libs.kotlin.serialization)
             implementation(libs.androidx.material)
-            implementation(libs.kotlin.reflect)
-            implementation(libs.coil.compose)
             implementation(libs.koin.core)
             implementation(libs.koin.viewmodel)
             implementation(libs.koin.viewmodel.navigation)
-            implementation(libs.sqldelite.coroutines.extensions)
             implementation(project(":ui"))
             implementation(project(":data"))
             implementation(project(":domain"))
         }
         desktopMain.dependencies {
-            implementation(libs.sqldelite.driver)
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutines.swing)
         }

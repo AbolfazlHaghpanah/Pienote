@@ -39,6 +39,7 @@ kotlin {
             implementation(libs.koin.core)
             implementation(libs.koin.viewmodel)
             implementation(libs.koin.viewmodel.navigation)
+            implementation(project(":domain"))
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
@@ -79,5 +80,6 @@ compose {
 }
 
 dependencies {
+    implementation(libs.androidx.navigation.runtime.ktx)
     debugImplementation(compose.uiTooling)
 }

@@ -25,6 +25,7 @@ material = "1.10.0"
 runner = "1.0.2"
 espressoCore = "3.0.2"
 appcompatV7 = "28.0.0"
+navigationRuntimeKtx = "2.8.3"
 
 [libraries]
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coilCompose" }
@@ -56,6 +57,7 @@ material = { group = "com.google.android.material", name = "material", version.r
 runner = { group = "com.android.support.test", name = "runner", version.ref = "runner" }
 espresso-core = { group = "com.android.support.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 appcompat-v7 = { group = "com.android.support", name = "appcompat-v7", version.ref = "appcompatV7" }
+androidx-navigation-runtime-ktx = { group = "androidx.navigation", name = "navigation-runtime-ktx", version.ref = "navigationRuntimeKtx" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
