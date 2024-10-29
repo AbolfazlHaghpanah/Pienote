@@ -1,0 +1,50 @@
+CREATE TABLE IF NOT EXISTS notes (
+  id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+  title TEXT NOT NULL,
+  markdown TEXT NOT NULL,
+  image TEXT,
+  added_time TEXT NOT NULL,
+  last_changed_time TEXT,
+  category_id INTEGER,
+  color TEXT,
+  FOREIGN KEY (category_id) REFERENCES categories(id)
+);
+
+getNotes:
+SELECT * FROM notes;
+
+getNoteWithCategoryById:
+SELECT * FROM notes
+LEFT JOIN categories
+WHERE notes.id = ? ;
+
+getNotesByCategoryId:
+SELECT * FROM notes
+WHERE category_id = ?
+ORDER BY id DESC;
+
+isTableEmpty:
+SELECT (
+    SELECT COUNT(*) FROM notes
+) = 0;
+
+deleteNote:
+DELETE FROM notes
+WHERE notes.id =?;
+
+addMockNotes:
+INSERT INTO notes (title, markdown, image, added_time, last_changed_time, category_id, color) VALUES
+('Shopping List', 'Groceries for the week.', NULL, '2024-10-26 08:00:00', '2024-10-26 08:05:00', 1, '#FFB6C1'),
+('Meeting Notes', 'Project discussion and next steps.', 'meeting.png', '2024-10-26 09:00:00', '2024-10-26 09:15:00', 2, '#ADD8E6'),
+('Recipe', 'Instructions for making pasta.', NULL, '2024-10-26 10:00:00', NULL, 3, '#FFA07A'),
+('Workout Plan', 'Weekly exercise schedule.', NULL, '2024-10-26 11:00:00', '2024-10-26 11:05:00', 4, '#90EE90'),
+('Travel Itinerary', 'Weekend trip plan.', 'itinerary.jpg', '2024-10-26 12:00:00', '2024-10-26 12:15:00', 5, '#FF69B4'),
+('Book Notes', 'Thoughts on recent reads.', NULL, '2024-10-26 13:00:00', NULL, 1, '#9370DB'),
+('To-Do List', 'Tasks to complete by the weekend.', NULL, '2024-10-26 14:00:00', '2024-10-26 14:10:00', 2, '#4682B4'),
+('Recipe Ideas', 'Ideas for new dishes.', 'recipe.jpg', '2024-10-26 15:00:00', '2024-10-26 15:05:00', 3, '#FFD700'),
+('Work Goals', 'Goals for the quarter.', NULL, '2024-10-26 16:00:00', NULL, 4, '#FF4500'),
+('Personal Journal', 'Daily reflections and thoughts.', 'journal.png', '2024-10-26 17:00:00', '2024-10-26 17:10:00', 5, '#708090');
+
+addItem:
+INSERT INTO notes (title, markdown, image, added_time, last_changed_time, category_id, color) VALUES
+('Personal Journal', 'Daily reflections and thoughts.', 'journal.png', '2024-10-26 17:00:00', '2024-10-26 17:10:00', 5, '#708090');

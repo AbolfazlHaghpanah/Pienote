@@ -1,7 +1,9 @@
 package com.haghpanah.pienote
 
 import android.app.Application
-import com.haghpanah.pienote.feature.home.di.homeModule
+import com.haghpanah.pienote.di.databaseModule
+import org.koin.android.ext.koin.androidContext
+import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
 
 class PienoteApplication : Application() {
@@ -9,7 +11,11 @@ class PienoteApplication : Application() {
         super.onCreate()
 
         startKoin {
-            homeModule
+            androidLogger()
+            androidContext(this@PienoteApplication)
+            modules(
+                databaseModule
+            )
         }
     }
 }

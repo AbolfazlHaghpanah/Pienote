@@ -1,0 +1,19 @@
+CREATE TABLE IF NOT EXISTS categories (
+  id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+  name TEXT NOT NULL,
+  priority INTEGER,
+  image TEXT
+);
+
+addMockCategories:
+INSERT INTO categories (name, priority, image) VALUES
+('Personal', 1, 'personal_icon.png'),
+('Work', 2, 'work_icon.png'),
+('Recipes', 3, NULL),
+('Fitness', 4, 'fitness_icon.png'),
+('Travel', 5, 'travel_icon.png'),
+('Reading', 3, 'reading_icon.png'),
+('Finance', 2, NULL),
+('Hobbies', 4, 'hobbies_icon.png'),
+('Goals', 1, 'goals_icon.png'),
+('Shopping', 2, 'shopping_icon.png');
