@@ -21,10 +21,14 @@ kotlin-serialization = "1.7.3"
 koin = "4.0.0"
 sqldelite = "2.0.2"
 sqliteDriver = "2.0.2"
+material = "1.10.0"
+runner = "1.0.2"
+espressoCore = "3.0.2"
+appcompatV7 = "28.0.0"
 
 [libraries]
-android-driver = { module = "app.cash.sqldelight:android-driver", version.ref = "sqldelite" }
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coilCompose" }
+koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -38,13 +42,20 @@ androidx-activity-compose = { module = "androidx.activity:activity-compose", ver
 androidx-lifecycle-viewmodel = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-viewmodel", version.ref = "androidx-lifecycle" }
 androidx-lifecycle-runtime-compose = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "androidx-lifecycle" }
 androidx-navigation-compose = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "andoridx-navigation" }
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
 kotlinx-coroutines-swing = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-swing", version.ref = "kotlinx-coroutines" }
 kotlin-serialization = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlin-serialization" }
 kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
 koin-viewmodel = { module = "io.insert-koin:koin-compose-viewmodel", version.ref = "koin" }
 koin-viewmodel-navigation = { module = "io.insert-koin:koin-compose-viewmodel-navigation", version.ref = "koin" }
-sqlite-driver = { module = "app.cash.sqldelight:sqlite-driver", version.ref = "sqldelite" }
+sqldelite-driver = { module = "app.cash.sqldelight:sqlite-driver", version.ref = "sqldelite" }
+sqldelite-coroutines-extensions = { module = "app.cash.sqldelight:coroutines-extensions", version.ref = "sqldelite" }
+sqldelite-android-driver = { module = "app.cash.sqldelight:android-driver", version.ref = "sqldelite" }
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+runner = { group = "com.android.support.test", name = "runner", version.ref = "runner" }
+espresso-core = { group = "com.android.support.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
+appcompat-v7 = { group = "com.android.support", name = "appcompat-v7", version.ref = "appcompatV7" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
@@ -54,3 +65,4 @@ composeCompiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "k
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 sqldelite = { id = "app.cash.sqldelight", version.ref = "sqldelite" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
