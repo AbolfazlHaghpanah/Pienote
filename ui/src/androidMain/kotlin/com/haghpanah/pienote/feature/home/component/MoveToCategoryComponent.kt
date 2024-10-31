@@ -20,12 +20,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import com.haghpanah.pienote.core.theme.PienoteTheme
-import com.haghpanah.pienote.domain.model.CategoryDomainModel
+import com.haghpanah.pienote.model.CategoryDomainModel
 
 @Composable
 fun MoveToCategoryComponent(
     modifier: Modifier = Modifier,
-    onCategorySelected: (Int) -> Unit,
+    onCategorySelected: (Long) -> Unit,
     categories: List<List<CategoryDomainModel>>?,
     onDiscard: () -> Unit
 ) {

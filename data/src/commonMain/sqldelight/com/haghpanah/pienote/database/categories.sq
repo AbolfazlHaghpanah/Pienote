@@ -5,6 +5,14 @@ CREATE TABLE IF NOT EXISTS categories (
   image TEXT
 );
 
+getCategories:
+SELECT * FROM categories;
+
+addCategory:
+INSERT INTO
+categories (name, priority, image)
+VALUES ?;
+
 addMockCategories:
 INSERT INTO categories (name, priority, image) VALUES
 ('Personal', 1, 'personal_icon.png'),

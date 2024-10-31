@@ -25,6 +25,8 @@ fun PienoteTheme(
 }
 
 object PienoteTheme {
+
+
     val colors: ColorScheme
         @Composable
         @ReadOnlyComposable
@@ -36,7 +38,10 @@ object PienoteTheme {
 
     val typography: Typography
         @Composable
-        get() = pienoteTypography
+        get() {
+            PienoteFontProvider.Initialize()
+            return createPienoteTypography()
+        }
 
     val icon: PienoteIcons
         @Composable

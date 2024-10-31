@@ -3,7 +3,7 @@ package com.haghpanah.pienote.feature.home
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.navigation.NavController
-import com.haghpanah.pienote.domain.model.NoteDomainModel
+import com.haghpanah.pienote.model.NoteDomainModel
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -48,6 +48,6 @@ internal expect fun HomeScreen(
 //    snackbarManager: SnackbarManager,
     navigateToRoute: (String) -> Unit,
     onDeleteNote: (NoteDomainModel) -> Unit,
-    onAddNewCategory: (List<Int>, String, String) -> Unit,
-    onAddNotesToCategory: (noteIds: List<Int>, categoryId: Int) -> Unit
+    onAddNewCategory: (List<Long>, String, String) -> Unit,
+    onAddNotesToCategory: (noteIds: List<Long>, categoryId: Long) -> Unit
 )
