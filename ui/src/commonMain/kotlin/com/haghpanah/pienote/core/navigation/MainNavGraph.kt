@@ -5,10 +5,12 @@ import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.haghpanah.pienote.feature.home.HomeScreen
+import com.haghpanah.pienote.feature.note.NoteScreen
 
-fun NavGraphBuilder.mainNavGraph(navHostController: NavHostController){
+fun NavGraphBuilder.mainNavGraph(navHostController: NavHostController) {
     composable(PienoteScreens.HomeScreen.route) {
-//        HomeScreen(navController = navHostController)
+        HomeScreen(navController = navHostController)
     }
 
     composable(
@@ -36,6 +38,6 @@ fun NavGraphBuilder.mainNavGraph(navHostController: NavHostController){
             }
         )
     ) {
-
+        NoteScreen(navHostController)
     }
 }

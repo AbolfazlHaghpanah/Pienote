@@ -114,7 +114,8 @@ fun Modifier.swipeHandler(
             LaunchedEffect(state.directionalSwipe.isOffsetAchieveThreshold && shouldVibrateOnAchieveThreshold) {
                 if (state.directionalSwipe.isOffsetAchieveThreshold) {
                     (context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator?)?.apply {
-                        vibrate(100)
+                        //TODO
+//                        vibrate(100)
                     }
                 }
             }

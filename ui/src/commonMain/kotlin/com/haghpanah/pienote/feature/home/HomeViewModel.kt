@@ -1,15 +1,14 @@
 package com.haghpanah.pienote.feature.home
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.haghpanah.pienote.core.utlis.BaseViewModel
 import com.haghpanah.pienote.core.utlis.chunkedEven
-import com.haghpanah.pienote.domain.model.NoteDomainModel
-import com.haghpanah.pienote.domain.usecase.HomeAddNotesToCategoryUseCase
-import com.haghpanah.pienote.domain.usecase.HomeDeleteNoteUseCase
-import com.haghpanah.pienote.domain.usecase.HomeInsertCategoryUseCase
-import com.haghpanah.pienote.domain.usecase.HomeObserveCategoriesUseCase
-import com.haghpanah.pienote.domain.usecase.HomeObserveNotesUseCase
+import com.haghpanah.pienote.model.NoteDomainModel
+import com.haghpanah.pienote.usecase.home.HomeAddNotesToCategoryUseCase
+import com.haghpanah.pienote.usecase.home.HomeDeleteNoteUseCase
+import com.haghpanah.pienote.usecase.home.HomeInsertCategoryUseCase
+import com.haghpanah.pienote.usecase.home.HomeObserveCategoriesUseCase
+import com.haghpanah.pienote.usecase.home.HomeObserveNotesUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -36,7 +35,7 @@ class HomeViewModel(
     }
 
     fun addNewCategory(
-        noteIds: List<Int>,
+        noteIds: List<Long>,
         name: String,
         image: String?
     ) {
@@ -69,8 +68,8 @@ class HomeViewModel(
     }
 
     fun addNoteToCategory(
-        noteIds: List<Int>,
-        categoryId: Int
+        noteIds: List<Long>,
+        categoryId: Long
     ) {
         viewModelScope.launch(Dispatchers.IO) {
             runCatching {

@@ -9,9 +9,10 @@ plugins {
 }
 
 kotlin {
-    @OptIn(ExperimentalKotlinGradlePluginApi::class)
-    compilerOptions {
-        androidTarget()
+    android {
+        compilations.all {
+            kotlinOptions.jvmTarget = "21"
+        }
     }
 
     jvm("desktop")
@@ -24,6 +25,7 @@ kotlin {
             implementation(libs.androidx.activity.compose)
         }
         commonMain.dependencies {
+            implementation("com.eygraber:uri-kmp:0.0.18")
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.ui)
@@ -67,8 +69,8 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
 }
 
