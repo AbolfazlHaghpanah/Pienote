@@ -11,7 +11,9 @@ CREATE TABLE IF NOT EXISTS notes (
 );
 
 getNotes:
-SELECT * FROM notes;
+SELECT * FROM notes
+WHERE notes.category_id ISNULL
+ORDER BY notes.id DESC;
 
 getNoteWithCategoryById:
 SELECT * FROM notes
@@ -38,7 +40,7 @@ SELECT last_insert_rowid();
 
 addOrReplaceNote:
 INSERT OR REPLACE INTO
-notes (title, markdown, image, added_time, last_changed_time, category_id, color)
+notes (id,title, markdown, image, added_time, last_changed_time, category_id, color)
 VALUES :note;
 
 deleteNote:
@@ -49,6 +51,17 @@ addNotesToCategory:
 UPDATE notes
 SET category_id = :categoryId
 WHERE notes.id IN :noteIds;
+
+nullCategoryId:
+UPDATE notes
+SET category_id = NULL
+WHERE notes.id = ?;
+
+getNotesWithoutCategory:
+SELECT * FROM notes
+WHERE notes.category_id ISNULL;
+
+
 
 addMockNotes:
 INSERT INTO notes (title, markdown, image, added_time, last_changed_time, category_id, color) VALUES

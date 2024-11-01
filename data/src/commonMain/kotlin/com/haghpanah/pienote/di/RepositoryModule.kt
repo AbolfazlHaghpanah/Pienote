@@ -1,5 +1,7 @@
 package com.haghpanah.pienote.di
 
+import com.haghpanah.pienote.repository.CategoryRepository
+import com.haghpanah.pienote.repository.CategoryRepositoryImpl
 import com.haghpanah.pienote.repository.CommonRepository
 import com.haghpanah.pienote.repository.CommonRepositoryImpl
 import com.haghpanah.pienote.repository.HomeRepository
@@ -14,4 +16,5 @@ val repositoryModule = module {
     factoryOf(::HomeRepositoryImpl) bind HomeRepository::class
     factoryOf(::CommonRepositoryImpl) bind CommonRepository::class
     factoryOf(::NoteRepositoryImpl) bind NoteRepository::class
+    factoryOf(::CategoryRepositoryImpl) bind CategoryRepository::class
 }

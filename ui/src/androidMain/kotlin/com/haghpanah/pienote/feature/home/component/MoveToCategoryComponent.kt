@@ -1,4 +1,4 @@
-package com.haghpanh.pienote.features.home.ui.component
+package com.haghpanah.pienote.feature.home.component
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.BorderStroke
@@ -20,13 +20,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import com.haghpanah.pienote.core.theme.PienoteTheme
-import com.haghpanah.pienote.model.CategoryDomainModel
+import com.haghpanah.pienote.model.CategoryWithNotesCountDomainModel
+import com.haghpanh.pienote.features.home.ui.component.SelectingNoteOptions
 
 @Composable
 fun MoveToCategoryComponent(
     modifier: Modifier = Modifier,
     onCategorySelected: (Long) -> Unit,
-    categories: List<List<CategoryDomainModel>>?,
+    categories: List<List<CategoryWithNotesCountDomainModel>>?,
     onDiscard: () -> Unit
 ) {
     BackHandler(onBack = onDiscard)
