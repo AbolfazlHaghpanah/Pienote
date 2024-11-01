@@ -8,7 +8,7 @@ internal actual fun HomeScreen(
     state: HomeViewState,
     navigateToRoute: (String) -> Unit,
     onDeleteNote: (NoteDomainModel) -> Unit,
-    onAddNewCategory: (List<Long>, String, String) -> Unit,
+    onAddNewCategory: (List<Long>, String, String?) -> Unit,
     onAddNotesToCategory: (noteIds: List<Long>, categoryId: Long) -> Unit
 ) {
 

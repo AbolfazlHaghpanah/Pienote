@@ -1,10 +1,16 @@
 package com.haghpanah.pienote.feature.home
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.slideOutVertically
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -30,27 +36,24 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.haghpanah.pienote.core.component.PienoteScaffold
 import com.haghpanah.pienote.core.component.PienoteTopBar
 import com.haghpanah.pienote.core.navigation.PienoteScreens
 import com.haghpanah.pienote.core.theme.PienoteTheme
+import com.haghpanah.pienote.feature.home.component.AddCategoryComponent
 import com.haghpanah.pienote.model.NoteDomainModel
 import com.haghpanah.pienote.feature.home.component.HomeCategoryItem
 import com.haghpanah.pienote.feature.home.component.HomeNoteItem
-import com.haghpanah.pienote.ui.R
+import com.haghpanah.pienote.feature.home.component.MoveToCategoryComponent
+import com.haghpanh.pienote.features.home.ui.component.SelectingNoteBottomMenu
 import com.haghpanh.pienote.features.home.ui.component.SelectingNoteOptions
 import org.jetbrains.compose.resources.stringResource
 import pienote.ui.generated.resources.Res
 import pienote.ui.generated.resources.home
 import pienote.ui.generated.resources.label_add_note
 import pienote.ui.generated.resources.label_home
-import pienote.ui.generated.resources.roboto_bold
-import kotlin.io.path.Path
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -58,7 +61,7 @@ internal actual fun HomeScreen(
     state: HomeViewState,
     navigateToRoute: (String) -> Unit,
     onDeleteNote: (NoteDomainModel) -> Unit,
-    onAddNewCategory: (List<Long>, String, String) -> Unit,
+    onAddNewCategory: (List<Long>, String, String?) -> Unit,
     onAddNotesToCategory: (noteIds: List<Long>, categoryId: Long) -> Unit
 ) {
     val context = LocalContext.current
@@ -153,58 +156,58 @@ internal actual fun HomeScreen(
             }
         },
         bottomMenu = {
-//            AnimatedVisibility(
-//                modifier = Modifier.padding(24.dp),
-//                visible = isSelectingNote,
-//                enter = slideInVertically(initialOffsetY = { it }),
-//                exit = slideOutVertically(targetOffsetY = { it * 2 })
-//            ) {
-//                AnimatedContent(
-//                    targetState = bottomMenuContentType,
-//                    label = "bottom menu options",
-//                    transitionSpec = { fadeIn().togetherWith(fadeOut()) }
-//                ) { options ->
-//                    when (options) {
-//                        null -> {
-//                            SelectingNoteBottomMenu {
-//                                bottomMenuContentType = it
-//                            }
-//                        }
-//
-//                        AddCategory -> {
-//                            AddCategoryComponent(
-//                                onAddNewCategory = { name, image ->
-//                                    onAddNewCategory(
-//                                        selectedNotes.map { note -> note.id },
-//                                        name,
-//                                        image
-//                                    )
-//                                },
-//                                onDiscard = { bottomMenuContentType = null }
-//                            )
-//                        }
-//
-//                        MoveToCategory -> {
-//                            MoveToCategoryComponent(
-//                                onCategorySelected = { catId ->
-//                                    onAddNotesToCategory(
-//                                        selectedNotes.map { note -> note.id },
-//                                        catId
-//                                    )
-//                                },
-//                                categories = state.categoriesChunked,
-//                                onDiscard = { bottomMenuContentType = null }
-//                            )
-//                        }
-//
-//                        DeleteNotes -> {
-//                            // TODO implement This
-//                        }
-//
-//                        else -> {}
-//                    }
-//                }
-//            }
+            AnimatedVisibility(
+                modifier = Modifier.padding(24.dp),
+                visible = isSelectingNote,
+                enter = slideInVertically(initialOffsetY = { it }),
+                exit = slideOutVertically(targetOffsetY = { it * 2 })
+            ) {
+                AnimatedContent(
+                    targetState = bottomMenuContentType,
+                    label = "bottom menu options",
+                    transitionSpec = { fadeIn().togetherWith(fadeOut()) }
+                ) { options ->
+                    when (options) {
+                        null -> {
+                            SelectingNoteBottomMenu {
+                                bottomMenuContentType = it
+                            }
+                        }
+
+                        SelectingNoteOptions.AddCategory -> {
+                            AddCategoryComponent(
+                                onAddNewCategory = { name, image ->
+                                    onAddNewCategory(
+                                        selectedNotes.map { note -> note.id },
+                                        name,
+                                        image?.path
+                                    )
+                                },
+                                onDiscard = { bottomMenuContentType = null }
+                            )
+                        }
+
+                        SelectingNoteOptions.MoveToCategory -> {
+                            MoveToCategoryComponent(
+                                onCategorySelected = { catId ->
+                                    onAddNotesToCategory(
+                                        selectedNotes.map { note -> note.id },
+                                        catId
+                                    )
+                                },
+                                categories = state.categoriesChunked,
+                                onDiscard = { bottomMenuContentType = null }
+                            )
+                        }
+
+                        SelectingNoteOptions.DeleteNotes -> {
+                            // TODO implement This
+                        }
+
+                        else -> {}
+                    }
+                }
+            }
         }
     ) { paddingValue ->
         LazyColumn(
@@ -224,13 +227,15 @@ internal actual fun HomeScreen(
                 items = state.categoriesChunked ?: emptyList(),
                 key = { item -> item.first().id + (item.lastOrNull()?.id ?: 0) }
             ) { categoriesInARow ->
-                Modifier
-                    .padding(horizontal = 24.dp)
+                Modifier.padding(horizontal = 24.dp)
                 Row(
-                    modifier = Modifier.animateItem(
-                        //TODO
-                        fadeInSpec = null, fadeOutSpec = null, placementSpec = tween<IntOffset>(300)
-                    ),
+                    modifier = Modifier
+                        .animateItem(
+                            //TODO
+                            fadeInSpec = null,
+                            fadeOutSpec = null,
+                            placementSpec = tween<IntOffset>(300)
+                        ),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
@@ -247,7 +252,7 @@ internal actual fun HomeScreen(
                                 ),
                             name = category.name,
                             image = category.image,
-                            noteCount = 2
+                            noteCount = category.noteCount
                         ) {
                             navigateToRoute(
                                 PienoteScreens.CategoryScreen.createRoute(

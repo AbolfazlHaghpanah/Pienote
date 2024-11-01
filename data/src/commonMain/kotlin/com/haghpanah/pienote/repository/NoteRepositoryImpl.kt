@@ -7,12 +7,11 @@ import com.haghpanah.pienote.model.CategoryDomainModel
 import com.haghpanah.pienote.model.NoteDomainModel
 import com.haghpanah.pienote.model.NoteWithCategoryDomainModel
 import com.haghpanah.pienote.utils.categoryMapper
-import com.haghpanah.pienote.utils.toDomainModel
+import com.haghpanah.pienote.utils.toCategoryDomainModel
 import com.haghpanah.pienote.utils.toNotes
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.mapLatest
 
 internal class NoteRepositoryImpl(
     private val database: PienoteDatabase
@@ -23,7 +22,7 @@ internal class NoteRepositoryImpl(
             .asFlow()
             .mapToOneNotNull(Dispatchers.IO)
             .map { noteWithCategory ->
-                noteWithCategory.toDomainModel()
+                noteWithCategory.toCategoryDomainModel()
             }
 
     override suspend fun getCategories(): List<CategoryDomainModel> =
