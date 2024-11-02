@@ -7,13 +7,16 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.rememberNavController
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContent {
-            MainScreen()
+            val navController = rememberNavController()
+
+            MainScreen(navController)
 
             SideEffect {
                 enableEdgeToEdge()
@@ -21,10 +24,4 @@ class MainActivity : ComponentActivity() {
         }
 
     }
-}
-
-@Preview
-@Composable
-fun AppAndroidPreview() {
-    MainScreen()
 }

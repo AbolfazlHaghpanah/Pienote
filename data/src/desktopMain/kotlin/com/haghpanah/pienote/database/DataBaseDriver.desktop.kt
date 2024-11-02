@@ -6,7 +6,7 @@ import java.util.Properties
 actual class PienoteDatabaseDriverFactory {
     actual fun createDriver(): SqlDriver {
         val driver: SqlDriver = JdbcSqliteDriver(
-            url = JdbcSqliteDriver.IN_MEMORY,
+            url = "jdbc:sqlite:pienote.db",
             properties = Properties().apply { put("foreign_keys", "true") }
         )
         PienoteDatabase.Schema.create(driver)

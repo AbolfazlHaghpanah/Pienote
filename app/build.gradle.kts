@@ -79,6 +79,7 @@ android {
 }
 
 dependencies {
+    implementation(libs.androidx.ui.unit.desktop)
     debugImplementation(compose.uiTooling)
 }
 
