@@ -114,13 +114,6 @@ internal fun GetCategoryWithNoteCount.toDomainModel() = CategoryWithNotesCountDo
     noteCount = COUNT.toInt()
 )
 
-internal fun Categories.toDomainModel() = CategoryDomainModel(
-    id = id,
-    name = name,
-    priority = priority?.toInt(),
-    image = image
-)
-
 internal fun CategoryDomainModel.toSqlCategories() = Categories(
     id = id,
     name = name,

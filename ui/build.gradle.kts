@@ -1,4 +1,4 @@
-import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 
 plugins {
     alias(libs.plugins.androidLibrary)
@@ -25,12 +25,13 @@ kotlin {
             implementation(libs.androidx.activity.compose)
         }
         commonMain.dependencies {
-            implementation("com.eygraber:uri-kmp:0.0.18")
+            implementation(libs.uri.kmp)
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
+            implementation(libs.ui.util)
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
             implementation(libs.androidx.navigation.compose)
@@ -78,6 +79,18 @@ compose {
     resources {
         publicResClass = true
         generateResClass = auto
+    }
+
+    desktop {
+        application {
+            mainClass = "com.haghpanah.pienote.MainKt"
+
+            nativeDistributions {
+                targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
+                packageName = "com.haghpanah.pienote"
+                packageVersion = "1.0.0"
+            }
+        }
     }
 }
 

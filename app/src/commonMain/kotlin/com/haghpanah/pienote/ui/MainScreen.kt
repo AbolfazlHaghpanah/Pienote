@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.haghpanah.pienote.core.navigation.PienoteScreens
@@ -15,10 +17,8 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 @Preview
-fun MainScreen() {
+fun MainScreen(navController: NavHostController) {
     PienoteTheme {
-        val navController = rememberNavController()
-
         Box(
             modifier = Modifier
                 .background(PienoteTheme.colors.background)
