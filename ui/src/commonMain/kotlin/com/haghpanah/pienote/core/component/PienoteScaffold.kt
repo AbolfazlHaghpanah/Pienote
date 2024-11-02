@@ -24,7 +24,7 @@ fun PienoteScaffold(
     includeSystemBarsPadding: Boolean = true,
     snackbarHost: @Composable () -> Unit = {},
     floatingActionButton: @Composable () -> Unit = {},
-    bottomMenu: @Composable () -> Unit = {},
+    bottomMenu: @Composable BoxScope.() -> Unit = {},
     floatingActionButtonAlignment: Alignment = Alignment.BottomEnd,
     topBar: @Composable () -> Unit = {},
     content: @Composable BoxScope.(PaddingValues) -> Unit
