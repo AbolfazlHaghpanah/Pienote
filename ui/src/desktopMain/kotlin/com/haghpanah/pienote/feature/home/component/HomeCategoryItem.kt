@@ -1,5 +1,6 @@
 package com.haghpanah.pienote.feature.home.component
 
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -7,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.BlurredEdgeTreatment
@@ -27,15 +29,19 @@ fun HomeCategoryItem(
     noteCount: Int,
     onClick: () -> Unit
 ) {
+    val backgroundColor by animateColorAsState(
+        if (isShowing) {
+            PienoteTheme.colors.surfaceBright
+        } else {
+            PienoteTheme.colors.surfaceContainerLowest
+        }
+    )
+
     Box(
         modifier = modifier
             .clip(PienoteTheme.shapes.small)
             .background(
-                color = if (isShowing) {
-                    PienoteTheme.colors.surfaceDim
-                } else {
-                    PienoteTheme.colors.surfaceContainerLowest
-                },
+                color = backgroundColor,
                 shape = PienoteTheme.shapes.medium
             )
             .clickable(onClick = onClick)

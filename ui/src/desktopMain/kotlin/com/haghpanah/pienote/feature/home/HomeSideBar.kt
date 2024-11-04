@@ -13,6 +13,7 @@ import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
@@ -45,10 +46,12 @@ import com.haghpanah.pienote.core.component.PienoteChip
 import com.haghpanah.pienote.core.component.PienoteScaffold
 import com.haghpanah.pienote.core.navigation.PienoteScreens
 import com.haghpanah.pienote.core.theme.PienoteTheme
-import com.haghpanah.pienote.feature.desktopcore.KeyboardShortcutsManager
-import com.haghpanah.pienote.feature.desktopcore.KeyboardShortcutsManager.addKeyboardShortcut
+import com.haghpanah.pienote.feature.utils.KeyboardShortcutsManager.addKeyboardShortcut
+import com.haghpanah.pienote.feature.home.component.AddCategoryComponent
 import com.haghpanah.pienote.feature.home.component.HomeCategoryItem
 import com.haghpanah.pienote.feature.home.component.HomeNoteItem
+import com.haghpanah.pienote.feature.home.component.HomeShowingItem
+import com.haghpanah.pienote.feature.home.component.MoveToCategoryComponent
 import com.haghpanah.pienote.model.NoteDomainModel
 import com.haghpanh.pienote.features.home.ui.component.SelectingNoteBottomMenu
 import com.haghpanh.pienote.features.home.ui.component.SelectingNoteOptions
@@ -117,6 +120,7 @@ private fun HomeSideBar(
     }
     val animatedWidth by animateDpAsState(if (isSelectingNote) 500.dp else 300.dp)
 
+
     // When clicking on each selected notes menu options this should set
     // the content of bottom menu set based on this value.
     var bottomMenuContentType: SelectingNoteOptions? by remember {
@@ -173,29 +177,29 @@ private fun HomeSideBar(
                             }
 
                             SelectingNoteOptions.AddCategory -> {
-//                                AddCategoryComponent(
-//                                    onAddNewCategory = { name, image ->
-//                                        onAddNewCategory(
-//                                            selectedNotes.map { note -> note.id },
-//                                            name,
-//                                            image?.path
-//                                        )
-//                                    },
-//                                    onDiscard = { bottomMenuContentType = null }
-//                                )
+                                AddCategoryComponent(
+                                    onAddNewCategory = { name, image ->
+                                        onAddNewCategory(
+                                            selectedNotes.map { note -> note.id },
+                                            name,
+                                            image
+                                        )
+                                    },
+                                    onDiscard = { bottomMenuContentType = null }
+                                )
                             }
 
                             SelectingNoteOptions.MoveToCategory -> {
-//                                MoveToCategoryComponent(
-//                                    onCategorySelected = { catId ->
-//                                        onAddNotesToCategory(
-//                                            selectedNotes.map { note -> note.id },
-//                                            catId
-//                                        )
-//                                    },
-//                                    categories = state.categoriesChunked,
-//                                    onDiscard = { bottomMenuContentType = null }
-//                                )
+                                MoveToCategoryComponent(
+                                    onCategorySelected = { catId ->
+                                        onAddNotesToCategory(
+                                            selectedNotes.map { note -> note.id },
+                                            catId
+                                        )
+                                    },
+                                    categories = state.categoriesChunked,
+                                    onDiscard = { bottomMenuContentType = null }
+                                )
                             }
 
                             SelectingNoteOptions.DeleteNotes -> {
@@ -280,7 +284,7 @@ private fun HomeSideBar(
                     Modifier.padding(horizontal = 24.dp)
 
                     HomeCategoryItem(
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier.fillMaxWidth().aspectRatio(3.14f),
                         name = category.name,
                         image = category.image,
                         isShowing = showingItem?.isEqualToCategory(category.id) ?: false,
@@ -311,6 +315,8 @@ private fun HomeSideBar(
 
                     HomeNoteItem(
                         modifier = Modifier
+                            .fillMaxWidth()
+                            .aspectRatio(2.4f)
                             .animateItem(
                                 fadeInSpec = tween(),
                                 fadeOutSpec = tween(),
@@ -352,16 +358,4 @@ private fun HomeSideBar(
             }
         }
     }
-}
-
-@Immutable
-data class HomeShowingItem(
-    val isNote: Boolean,
-    val id: Long
-) {
-    fun isEqualToCategory(id: Long): Boolean =
-        !isNote && this.id == id
-
-    fun isEqualToNote(id: Long): Boolean =
-        isNote && this.id == id
 }

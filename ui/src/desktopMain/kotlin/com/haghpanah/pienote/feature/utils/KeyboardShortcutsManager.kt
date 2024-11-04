@@ -1,4 +1,4 @@
-package com.haghpanah.pienote.feature.desktopcore
+package com.haghpanah.pienote.feature.utils
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
