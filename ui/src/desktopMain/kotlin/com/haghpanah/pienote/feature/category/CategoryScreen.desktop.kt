@@ -7,15 +7,19 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ContextualFlowRow
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
@@ -52,6 +56,7 @@ import com.haghpanah.pienote.feature.category.component.CategoryDialogItem
 import com.haghpanah.pienote.feature.category.component.DialogState
 import com.haghpanah.pienote.feature.category.component.categoryDialogItems
 import com.haghpanah.pienote.feature.home.component.HomeNoteItem
+import kotlinx.serialization.Contextual
 import org.jetbrains.compose.resources.stringResource
 import pienote.ui.generated.resources.Res
 import pienote.ui.generated.resources.label_discard
@@ -59,6 +64,7 @@ import pienote.ui.generated.resources.label_done
 import pienote.ui.generated.resources.message_select_note_to_add
 import pienote.ui.generated.resources.notes
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 internal actual fun CategoryScreen(
     state: CategoryViewState,
@@ -87,121 +93,121 @@ internal actual fun CategoryScreen(
         }
     }
 
+    when (dialogState) {
+        DialogState.MainDialog -> {
+            PienoteDialog(
+                titleSection = {
+                    Column {
+                        Text(
+                            modifier = Modifier
+                                .padding(start = 14.dp)
+                                .fillMaxWidth(),
+                            text = state.name,
+                            style = PienoteTheme.typography.headlineSmall,
+                            color = PienoteTheme.colors.onSurface
+                        )
+
+                        Text(
+                            modifier = Modifier
+                                .padding(horizontal = 14.dp, vertical = 8.dp)
+                                .fillMaxWidth(),
+                            text = stringResource(Res.string.notes, state.notes.size),
+                            style = PienoteTheme.typography.titleMedium,
+                            color = PienoteTheme.colors.onSurface
+                        )
+                    }
+                },
+                image = state.image?.toUri() ?: state.notes.firstOrNull()?.image?.toUri(),
+                content = {
+                    categoryDialogItems.forEach {
+                        CategoryDialogItem(
+                            title = it.title,
+                            icon = it.icon
+                        ) {
+                            dialogItemsAction(it.id)
+                        }
+                    }
+                },
+                onDismissRequest = { dialogState = DialogState.Dismiss }
+            )
+        }
+
+        DialogState.ChangeName -> {
+            PienoteDialog(onDismissRequest = { dialogState = DialogState.Dismiss }) {
+                var categoryNameText by remember { mutableStateOf(state.name) }
+
+                Column {
+                    OutlinedTextField(
+                        modifier = Modifier
+                            .padding(16.dp)
+                            .fillMaxWidth(),
+                        value = categoryNameText,
+                        onValueChange = { categoryNameText = it },
+                        label = { Text(text = "Category Name") }
+                    )
+
+                    Spacer(modifier = Modifier.weight(1f))
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceEvenly
+                    ) {
+                        TextButton(
+                            onClick = { dialogState = DialogState.Dismiss }
+                        ) {
+                            Text(text = stringResource(Res.string.label_discard))
+                        }
+
+                        TextButton(
+                            onClick = {
+                                onUpdateCategoryName(categoryNameText)
+                                dialogState = DialogState.Dismiss
+                            }
+                        ) {
+                            Text(text = stringResource(Res.string.label_done))
+                        }
+                    }
+                }
+            }
+        }
+
+        DialogState.AddNote -> {
+            PienoteDialog(onDismissRequest = { dialogState = DialogState.Dismiss }) {
+                LazyColumn(
+                    modifier = Modifier
+                        .padding(14.dp)
+                        .fillMaxWidth()
+                ) {
+                    item {
+                        Text(
+                            modifier = Modifier.padding(vertical = 8.dp),
+                            text = stringResource(Res.string.message_select_note_to_add),
+                            style = PienoteTheme.typography.headlineSmall
+                        )
+                    }
+
+                    items(state.availableNotesToAdd) {
+                        HorizontalDivider()
+
+                        Text(
+                            modifier = Modifier.padding(vertical = 8.dp),
+                            text = it.title,
+                            style = PienoteTheme.typography.bodyLarge
+                        )
+                    }
+                }
+            }
+        }
+
+        else -> {}
+    }
+
     PienoteScaffold(
         snackbarHost = {
 //            PienoteSnackbarHost(manager = snackbarManager)
         }
     ) { paddingValues ->
-        when (dialogState) {
-            DialogState.MainDialog -> {
-                PienoteDialog(
-                    titleSection = {
-                        Column {
-                            Text(
-                                modifier = Modifier
-                                    .padding(start = 14.dp)
-                                    .fillMaxWidth(),
-                                text = state.name,
-                                style = PienoteTheme.typography.headlineSmall,
-                                color = PienoteTheme.colors.onSurface
-                            )
-
-                            Text(
-                                modifier = Modifier
-                                    .padding(horizontal = 14.dp, vertical = 8.dp)
-                                    .fillMaxWidth(),
-                                text = stringResource(Res.string.notes, state.notes.size),
-                                style = PienoteTheme.typography.titleMedium,
-                                color = PienoteTheme.colors.onSurface
-                            )
-                        }
-                    },
-                    image = state.image?.toUri() ?: state.notes.firstOrNull()?.image?.toUri(),
-                    content = {
-                        categoryDialogItems.forEach {
-                            CategoryDialogItem(
-                                title = it.title,
-                                icon = it.icon
-                            ) {
-                                dialogItemsAction(it.id)
-                            }
-                        }
-                    },
-                    onDismissRequest = { dialogState = DialogState.Dismiss }
-                )
-            }
-
-            DialogState.ChangeName -> {
-                PienoteDialog(onDismissRequest = { dialogState = DialogState.Dismiss }) {
-                    var categoryNameText by remember { mutableStateOf(state.name) }
-
-                    Column {
-                        OutlinedTextField(
-                            modifier = Modifier
-                                .padding(16.dp)
-                                .fillMaxWidth(),
-                            value = categoryNameText,
-                            onValueChange = { categoryNameText = it },
-                            label = { Text(text = "Category Name") }
-                        )
-
-                        Spacer(modifier = Modifier.weight(1f))
-
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceEvenly
-                        ) {
-                            TextButton(
-                                onClick = { dialogState = DialogState.Dismiss }
-                            ) {
-                                Text(text = stringResource( Res.string.label_discard))
-                            }
-
-                            TextButton(
-                                onClick = {
-                                    onUpdateCategoryName(categoryNameText)
-                                    dialogState = DialogState.Dismiss
-                                }
-                            ) {
-                                Text(text = stringResource(Res.string.label_done))
-                            }
-                        }
-                    }
-                }
-            }
-
-            DialogState.AddNote -> {
-                PienoteDialog(onDismissRequest = { dialogState = DialogState.Dismiss }) {
-                    LazyColumn(
-                        modifier = Modifier
-                            .padding(14.dp)
-                            .fillMaxWidth()
-                    ) {
-                        item {
-                            Text(
-                                modifier = Modifier.padding(vertical = 8.dp),
-                                text = stringResource(Res.string.message_select_note_to_add),
-                                style = PienoteTheme.typography.headlineSmall
-                            )
-                        }
-
-                        items(state.availableNotesToAdd) {
-                            HorizontalDivider()
-
-                            Text(
-                                modifier = Modifier.padding(vertical = 8.dp),
-                                text = it.title,
-                                style = PienoteTheme.typography.bodyLarge
-                            )
-                        }
-                    }
-                }
-            }
-
-            else -> {}
-        }
-
         LazyColumn(
             modifier = Modifier.padding(paddingValues)
         ) {
@@ -221,14 +227,14 @@ internal actual fun CategoryScreen(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .then(
-                                    if (image != null) {
+                                    if (!image.isNullOrEmpty()) {
                                         Modifier.aspectRatio(1f)
                                     } else {
                                         Modifier.height(180.dp)
                                     }
                                 )
                         ) {
-                            if (image != null) {
+                            if (image.isNullOrEmpty()) {
                                 AsyncImage(
                                     modifier = Modifier
                                         .fillMaxSize(),
@@ -259,12 +265,12 @@ internal actual fun CategoryScreen(
                                             .align(Alignment.TopStart)
                                             .padding(start = 16.dp, top = 16.dp),
                                         onClick = onBack,
-                                        backgroundColor = if (image != null) {
+                                        backgroundColor = if (!image.isNullOrEmpty()) {
                                             PienoteTheme.colors.background.copy(alpha = 0.3f)
                                         } else {
                                             PienoteTheme.colors.background
                                         },
-                                        border = if (image != null) {
+                                        border = if (!image.isNullOrEmpty()) {
                                             null
                                         } else {
                                             BorderStroke(
@@ -307,7 +313,8 @@ internal actual fun CategoryScreen(
                                     text = state.name,
                                     style = PienoteTheme.typography.headlineLarge,
                                     maxLines = 1,
-                                    overflow = TextOverflow.Ellipsis
+                                    overflow = TextOverflow.Ellipsis,
+                                    color = PienoteTheme.colors.onBackground
                                 )
 
                                 PienoteChip(
@@ -319,12 +326,12 @@ internal actual fun CategoryScreen(
                                     onClick = {
                                         dialogState = DialogState.MainDialog
                                     },
-                                    backgroundColor = if (image != null) {
+                                    backgroundColor = if (!image.isNullOrEmpty()) {
                                         PienoteTheme.colors.background.copy(alpha = 0.3f)
                                     } else {
                                         PienoteTheme.colors.background
                                     },
-                                    border = if (image != null) {
+                                    border = if (!image.isNullOrEmpty()) {
                                         null
                                     } else {
                                         BorderStroke(
@@ -349,24 +356,32 @@ internal actual fun CategoryScreen(
             }
 
             if (state.notes.isNotEmpty()) {
-                items(state.notes) { note ->
-                    HomeNoteItem(
-                        modifier = Modifier.padding(horizontal = 24.dp, vertical = 14.dp),
-                        title = note.title,
-                        note = note.markdown,
-                        color = note.color,
-                        onClick = {
-                            navigateToRoute(
-                                PienoteScreens.NoteScreen.createRoute(
-                                    id = note.id.toInt(),
-                                    isExist = true,
-                                    parent = state.name
+                item {
+                    ContextualFlowRow(
+                        itemCount = state.notes.size,
+                        maxItemsInEachRow = 3
+                    ) {
+                        HomeNoteItem(
+                            modifier = Modifier
+                                .widthIn(200.dp)
+                                .heightIn(max = 240.dp)
+                                .padding(14.dp),
+                            title = state.notes[it].title,
+                            note = state.notes[it].markdown,
+                            color = state.notes[it].color,
+                            onClick = {
+                                navigateToRoute(
+                                    PienoteScreens.NoteScreen.createRoute(
+                                        id = state.notes[it].id.toInt(),
+                                        isExist = true,
+                                        parent = state.name
+                                    )
                                 )
-                            )
-                        },
-                        isSelected = false,
-                        isShowing = false
-                    )
+                            },
+                            isSelected = false,
+                            isShowing = false
+                        )
+                    }
                 }
             } else {
                 item {

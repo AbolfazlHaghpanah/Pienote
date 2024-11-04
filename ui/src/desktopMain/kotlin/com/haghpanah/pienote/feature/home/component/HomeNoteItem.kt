@@ -1,5 +1,6 @@
 package com.haghpanah.pienote.feature.home.component
 
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateSizeAsState
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -52,17 +53,18 @@ fun HomeNoteItem(
         },
         label = "is selected label size"
     )
+    val backgroundColor by animateColorAsState(
+        if (isShowing) {
+            PienoteTheme.colors.surfaceBright
+        } else {
+            PienoteTheme.colors.surfaceContainerLowest
+        }
+    )
 
     Column(
         modifier = modifier
             .clip(PienoteTheme.shapes.medium)
-            .background(
-                if (isShowing) {
-                    PienoteTheme.colors.surfaceDim
-                } else {
-                    PienoteTheme.colors.surfaceContainerLowest
-                }
-            )
+            .background(backgroundColor)
             .combinedClickable(
                 onClick = onClick,
                 onLongClick = onLongClick

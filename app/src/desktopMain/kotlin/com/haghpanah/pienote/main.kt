@@ -28,8 +28,8 @@ import androidx.navigation.compose.rememberNavController
 import com.haghpanah.pienote.core.navigation.PienoteScreens
 import com.haghpanah.pienote.core.theme.PienoteTheme
 import com.haghpanah.pienote.di.createPienoteModules
-import com.haghpanah.pienote.feature.desktopcore.KeyboardShortcutsManager.addKeyboardShortcut
-import com.haghpanah.pienote.feature.desktopcore.KeyboardShortcutsManager.handleKeyEvent
+import com.haghpanah.pienote.feature.utils.KeyboardShortcutsManager.addKeyboardShortcut
+import com.haghpanah.pienote.feature.utils.KeyboardShortcutsManager.handleKeyEvent
 import com.haghpanah.pienote.feature.home.HomeSideBar
 import com.haghpanah.pienote.ui.MainScreen
 import org.jetbrains.compose.resources.painterResource
@@ -46,7 +46,7 @@ fun main() = application {
 
     val windowState = rememberWindowState(
         size = getPreferredWindowSize(1080, 720),
-        position = WindowPosition(alignment = Alignment.Center)
+        position = WindowPosition.Aligned(Alignment.Center)
     )
     val navController = rememberNavController()
 
@@ -112,7 +112,9 @@ fun main() = application {
                 }
 
                 Item("Enter Full Screen") {
-                    windowState.placement = WindowPlacement.Fullscreen
+                    windowState.apply {
+                        placement = WindowPlacement.Fullscreen
+                    }
                 }
 
                 Item("Minimize") {
@@ -155,4 +157,9 @@ private fun getPreferredWindowSize(desiredWidth: Int, desiredHeight: Int): DpSiz
     val width: Int = if (desiredWidth < preferredWidth) desiredWidth else preferredWidth
     val height: Int = if (desiredHeight < preferredHeight) desiredHeight else preferredHeight
     return DpSize(width.dp, height.dp)
+}
+
+private fun getFullScreenSize(): DpSize {
+    val screenSize: Dimension = Toolkit.getDefaultToolkit().screenSize
+    return DpSize(screenSize.width.dp, screenSize.height.dp)
 }

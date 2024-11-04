@@ -37,6 +37,7 @@ fun PienoteDialog(
     Dialog(onDismissRequest = onDismissRequest) {
         Column(
             modifier = Modifier
+                .padding(48.dp)
                 .aspectRatio(0.8f)
                 .background(
                     shape = PienoteTheme.shapes.huge,
@@ -92,6 +93,7 @@ fun PienoteDialog(
     Dialog(onDismissRequest = onDismissRequest) {
         Column(
             modifier = Modifier
+                .padding(48.dp)
                 .aspectRatio(0.8f)
                 .background(
                     shape = PienoteTheme.shapes.huge,
