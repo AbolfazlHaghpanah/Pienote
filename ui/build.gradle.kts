@@ -80,18 +80,6 @@ compose {
         publicResClass = true
         generateResClass = auto
     }
-
-    desktop {
-        application {
-            mainClass = "com.haghpanah.pienote.MainKt"
-
-            nativeDistributions {
-                targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-                packageName = "com.haghpanah.pienote"
-                packageVersion = "1.0.0"
-            }
-        }
-    }
 }
 
 dependencies {

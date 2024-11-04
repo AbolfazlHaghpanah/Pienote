@@ -5,15 +5,16 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -22,29 +23,35 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.ArrowBack
-import androidx.compose.material.icons.rounded.ArrowForward
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.haghpanah.pienote.core.component.PienoteChip
+import com.haghpanah.pienote.core.component.PienoteScaffold
 import com.haghpanah.pienote.core.navigation.PienoteScreens
 import com.haghpanah.pienote.core.theme.PienoteTheme
+import com.haghpanah.pienote.feature.desktopcore.KeyboardShortcutsManager
+import com.haghpanah.pienote.feature.desktopcore.KeyboardShortcutsManager.addKeyboardShortcut
 import com.haghpanah.pienote.feature.home.component.HomeCategoryItem
 import com.haghpanah.pienote.feature.home.component.HomeNoteItem
 import com.haghpanah.pienote.model.NoteDomainModel
+import com.haghpanh.pienote.features.home.ui.component.SelectingNoteBottomMenu
+import com.haghpanh.pienote.features.home.ui.component.SelectingNoteOptions
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -105,137 +112,256 @@ private fun HomeSideBar(
     val isSelectingNote by remember {
         derivedStateOf { selectedNotes.isNotEmpty() }
     }
+    var showingItem: HomeShowingItem? by remember {
+        mutableStateOf(null)
+    }
+    val animatedWidth by animateDpAsState(if (isSelectingNote) 500.dp else 300.dp)
+
+    // When clicking on each selected notes menu options this should set
+    // the content of bottom menu set based on this value.
+    var bottomMenuContentType: SelectingNoteOptions? by remember {
+        mutableStateOf(null)
+    }
+
+    // we should sync notes that is available on screen with selected notes
+    // so when we perform actions on selected notes that leads to remove some notes
+    // from screen they should remove from selected list to.
+    LaunchedEffect(state.notes) {
+        selectedNotes.removeAll {
+            state.notes?.contains(it) == false
+        }
+    }
+
+    // if we don't do this after one time selecting notes and unselect them contentType
+    // is steel saved last state and if user select notes again bottom menu may show
+    // wrong content.
+    LaunchedEffect(isSelectingNote) {
+        if (!isSelectingNote) {
+            bottomMenuContentType = null
+        }
+    }
 
     AnimatedVisibility(
         visible = visible
     ) {
-        LazyColumn(
-            modifier = Modifier.widthIn(max = 300.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            contentPadding = PaddingValues(16.dp)
-        ) {
-            item {
-                TopAppBar(
-                    colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = Color.Transparent,
-                        titleContentColor = PienoteTheme.colors.onBackground
-                    ),
-                    title = {
-                        Text(
-                            text = "Pienote",
-                            style = PienoteTheme.typography.headlineMedium,
-                            color = PienoteTheme.colors.onBackground
-                        )
-                    },
-                    actions = {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(8.dp)
-                        ) {
-                            PienoteChip(
-                                backgroundColor = Color.Transparent,
-                                onClick = {
-                                    navigateToRoute(
-                                        PienoteScreens.NoteScreen.createRoute(
-                                            id = -1,
-                                            isExist = false,
-                                            parent = "Home",
-                                        )
-                                    )
-                                },
-                                content = {
-                                    Icon(
-                                        modifier = Modifier.padding(4.dp),
-                                        imageVector = Icons.Rounded.Add,
-                                        contentDescription = null,
-                                        tint = PienoteTheme.colors.onBackground
-                                    )
-                                }
-                            )
-
-                            PienoteChip(
-                                backgroundColor = Color.Transparent,
-                                onClick = {
-                                    onChangeVisibility(false)
-                                },
-                                content = {
-                                    Icon(
-                                        modifier = Modifier.padding(4.dp),
-                                        imageVector = Icons.Rounded.ArrowBack,
-                                        contentDescription = null,
-                                        tint = PienoteTheme.colors.onBackground
-                                    )
-                                }
-                            )
-                        }
-                    },
-                    scrollBehavior = null,
-                )
-            }
-
-            items(
-                items = state.categoriesChunked?.flatten() ?: emptyList(),
-                key = { item -> item.id.hashCode() }
-            ) { category ->
-                Modifier.padding(horizontal = 24.dp)
-
-                HomeCategoryItem(
-                    modifier = Modifier.fillMaxWidth(),
-                    name = category.name,
-                    image = category.image,
-                    noteCount = category.noteCount
+        PienoteScaffold(
+            modifier = Modifier.widthIn(max = animatedWidth),
+            bottomMenu = {
+                AnimatedVisibility(
+                    modifier = Modifier.padding(24.dp),
+                    visible = isSelectingNote,
+                    enter = slideInVertically(initialOffsetY = { it }),
+                    exit = slideOutVertically(targetOffsetY = { it * 2 })
                 ) {
-                    navigateToRoute(
-                        PienoteScreens.CategoryScreen.createRoute(
-                            category.id.toInt(),
-                            parent = "Home"
-                        )
+                    addKeyboardShortcut(
+                        key = Key.Escape
+                    ) {
+                        selectedNotes.removeAll { true }
+                        true
+                    }
+
+                    AnimatedContent(
+                        targetState = bottomMenuContentType,
+                        label = "bottom menu options",
+                        transitionSpec = { fadeIn().togetherWith(fadeOut()) }
+                    ) { options ->
+                        when (options) {
+                            null -> {
+                                SelectingNoteBottomMenu {
+                                    bottomMenuContentType = it
+                                }
+                            }
+
+                            SelectingNoteOptions.AddCategory -> {
+//                                AddCategoryComponent(
+//                                    onAddNewCategory = { name, image ->
+//                                        onAddNewCategory(
+//                                            selectedNotes.map { note -> note.id },
+//                                            name,
+//                                            image?.path
+//                                        )
+//                                    },
+//                                    onDiscard = { bottomMenuContentType = null }
+//                                )
+                            }
+
+                            SelectingNoteOptions.MoveToCategory -> {
+//                                MoveToCategoryComponent(
+//                                    onCategorySelected = { catId ->
+//                                        onAddNotesToCategory(
+//                                            selectedNotes.map { note -> note.id },
+//                                            catId
+//                                        )
+//                                    },
+//                                    categories = state.categoriesChunked,
+//                                    onDiscard = { bottomMenuContentType = null }
+//                                )
+                            }
+
+                            SelectingNoteOptions.DeleteNotes -> {
+                                // TODO implement This
+                            }
+
+                            else -> {}
+                        }
+                    }
+                }
+
+            }
+        ) {
+            LazyColumn(
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                contentPadding = PaddingValues(16.dp)
+            ) {
+                item {
+                    TopAppBar(
+                        colors = TopAppBarDefaults.topAppBarColors(
+                            containerColor = Color.Transparent,
+                            titleContentColor = PienoteTheme.colors.onBackground
+                        ),
+                        title = {
+                            Text(
+                                text = "Pienote",
+                                style = PienoteTheme.typography.headlineMedium,
+                                color = PienoteTheme.colors.onBackground
+                            )
+                        },
+                        actions = {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                PienoteChip(
+                                    backgroundColor = Color.Transparent,
+                                    onClick = {
+                                        navigateToRoute(
+                                            PienoteScreens.NoteScreen.createRoute(
+                                                id = -1,
+                                                isExist = false,
+                                                parent = "Home",
+                                            )
+                                        )
+                                    },
+                                    content = {
+                                        Icon(
+                                            modifier = Modifier.padding(4.dp),
+                                            imageVector = Icons.Rounded.Add,
+                                            contentDescription = null,
+                                            tint = PienoteTheme.colors.onBackground
+                                        )
+                                    }
+                                )
+
+                                PienoteChip(
+                                    backgroundColor = Color.Transparent,
+                                    onClick = {
+                                        onChangeVisibility(false)
+                                    },
+                                    content = {
+                                        Icon(
+                                            modifier = Modifier.padding(4.dp),
+                                            imageVector = Icons.Rounded.ArrowBack,
+                                            contentDescription = null,
+                                            tint = PienoteTheme.colors.onBackground
+                                        )
+                                    }
+                                )
+                            }
+                        },
+                        scrollBehavior = null,
                     )
                 }
-            }
 
-            items(
-                items = state.notes ?: emptyList(),
-                key = { item -> "${item.id}_${item.title}" }
-            ) { note ->
-                val isNoteSelected by remember(selectedNotes.size) {
-                    derivedStateOf { selectedNotes.contains(note) }
-                }
+                items(
+                    items = state.categoriesChunked?.flatten() ?: emptyList(),
+                    key = { item -> item.id.hashCode() }
+                ) { category ->
+                    Modifier.padding(horizontal = 24.dp)
 
-                HomeNoteItem(
-                    modifier = Modifier
-                        .animateItem(
-                            fadeInSpec = tween(),
-                            fadeOutSpec = tween(),
-                            placementSpec = spring()
-                        ),
-                    title = note.title,
-                    note = note.markdown,
-                    color = note.color,
-                    isSelected = isNoteSelected,
-                    onClick = {
-                        if (isSelectingNote) {
-                            if (selectedNotes.contains(note)) {
-                                selectedNotes.remove(note)
-                            } else {
-                                selectedNotes.add(note)
-                            }
-                        } else {
+                    HomeCategoryItem(
+                        modifier = Modifier.fillMaxWidth(),
+                        name = category.name,
+                        image = category.image,
+                        isShowing = showingItem?.isEqualToCategory(category.id) ?: false,
+                        noteCount = category.noteCount
+                    ) {
+                        if (showingItem?.isEqualToCategory(category.id) != true) {
+                            showingItem = HomeShowingItem(
+                                isNote = false,
+                                id = category.id
+                            )
                             navigateToRoute(
-                                PienoteScreens.NoteScreen.createRoute(
-                                    id = note.id.toInt(),
-                                    isExist = true,
+                                PienoteScreens.CategoryScreen.createRoute(
+                                    category.id.toInt(),
                                     parent = "Home"
                                 )
                             )
                         }
-                    },
-                    onLongClick = {
-                        selectedNotes.add(note)
                     }
-                )
+                }
+
+                items(
+                    items = state.notes ?: emptyList(),
+                    key = { item -> "${item.id}_${item.title}" }
+                ) { note ->
+                    val isNoteSelected by remember(selectedNotes.size) {
+                        derivedStateOf { selectedNotes.contains(note) }
+                    }
+
+                    HomeNoteItem(
+                        modifier = Modifier
+                            .animateItem(
+                                fadeInSpec = tween(),
+                                fadeOutSpec = tween(),
+                                placementSpec = spring()
+                            ),
+                        title = note.title,
+                        note = note.markdown,
+                        color = note.color,
+                        isSelected = isNoteSelected,
+                        onClick = {
+                            if (isSelectingNote) {
+                                if (selectedNotes.contains(note)) {
+                                    selectedNotes.remove(note)
+                                } else {
+                                    selectedNotes.add(note)
+                                }
+                            } else {
+                                if (showingItem?.isEqualToNote(note.id) != true) {
+                                    showingItem = HomeShowingItem(
+                                        isNote = true,
+                                        id = note.id
+                                    )
+                                    navigateToRoute(
+                                        PienoteScreens.NoteScreen.createRoute(
+                                            id = note.id.toInt(),
+                                            isExist = true,
+                                            parent = "Home"
+                                        )
+                                    )
+                                }
+                            }
+                        },
+                        onLongClick = {
+                            selectedNotes.add(note)
+                        },
+                        isShowing = showingItem?.isEqualToNote(note.id) ?: false
+                    )
+                }
             }
         }
     }
+}
+
+@Immutable
+data class HomeShowingItem(
+    val isNote: Boolean,
+    val id: Long
+) {
+    fun isEqualToCategory(id: Long): Boolean =
+        !isNote && this.id == id
+
+    fun isEqualToNote(id: Long): Boolean =
+        isNote && this.id == id
 }

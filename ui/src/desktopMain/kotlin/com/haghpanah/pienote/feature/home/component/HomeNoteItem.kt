@@ -33,6 +33,7 @@ fun HomeNoteItem(
     note: String,
     color: String?,
     isSelected: Boolean,
+    isShowing: Boolean,
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
     onLongClick: () -> Unit = {}
@@ -55,7 +56,13 @@ fun HomeNoteItem(
     Column(
         modifier = modifier
             .clip(PienoteTheme.shapes.medium)
-            .background(PienoteTheme.colors.surfaceContainerLowest)
+            .background(
+                if (isShowing) {
+                    PienoteTheme.colors.surfaceDim
+                } else {
+                    PienoteTheme.colors.surfaceContainerLowest
+                }
+            )
             .combinedClickable(
                 onClick = onClick,
                 onLongClick = onLongClick
@@ -128,6 +135,7 @@ private fun HomeNoteItemPreview() {
                 isSelected = true,
                 onClick = { /*TODO*/ },
                 onLongClick = {},
+                isShowing = false
             )
         }
     }
