@@ -22,15 +22,20 @@ import com.haghpanah.pienote.core.theme.PienoteTheme
 fun HomeCategoryItem(
     modifier: Modifier = Modifier,
     name: String,
+    isShowing: Boolean,
     image: String? = null,
     noteCount: Int,
     onClick: () -> Unit
-){
+) {
     Box(
         modifier = modifier
             .clip(PienoteTheme.shapes.small)
             .background(
-                color = PienoteTheme.colors.surfaceContainerLowest,
+                color = if (isShowing) {
+                    PienoteTheme.colors.surfaceDim
+                } else {
+                    PienoteTheme.colors.surfaceContainerLowest
+                },
                 shape = PienoteTheme.shapes.medium
             )
             .clickable(onClick = onClick)
