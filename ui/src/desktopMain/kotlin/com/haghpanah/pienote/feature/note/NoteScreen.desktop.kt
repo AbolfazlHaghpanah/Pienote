@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
@@ -65,7 +64,7 @@ import pienote.ui.generated.resources.Res
 import pienote.ui.generated.resources.label_untitled
 
 @Composable
-actual fun NoteScreen(
+internal actual fun NoteScreen(
     state: NoteViewState,
     parentScreen: String?,
     onImageSelected: (Uri?) -> Unit,
@@ -232,7 +231,7 @@ actual fun NoteScreen(
 
             Column(
                 modifier = Modifier
-                    .widthIn(max = 520.dp)
+                    .widthIn(max = 680.dp)
 //                    .heightIn(min = localConfig.screenHeightDp.dp - 24.dp)
             ) {
                 Row(
