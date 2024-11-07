@@ -85,13 +85,17 @@ actual fun NoteScreen(
 
     // Updating note Ui when note has observed successfully from database
     LaunchedEffect(key1 = state.note.title, key2 = state.note.markdown) {
-        state.note.title.let {
-            titleText = it
-        }
+        state.note.title
+            .takeIf { it.isNotBlank() }
+            ?.let {
+                titleText = it
+            }
 
-        state.note.markdown.let {
-            noteText.updateMarkdown(it)
-        }
+        state.note.markdown
+            .takeIf { it.isNotBlank() }
+            ?.let {
+                noteText.updateMarkdown(it)
+            }
     }
 
     val noteColor: Color by animateColorAsState(
