@@ -91,7 +91,7 @@ private fun HomeSideBar(
                 popUpTo(route) {
                     inclusive = true
                 }
-                launchSingleTop = true
+                launchSingleTop = false
             }
         },
         onDeleteNote = viewModel::deleteNote,
@@ -106,7 +106,7 @@ private fun HomeSideBar(
     state: HomeViewState,
     visible: Boolean,
     onChangeVisibility: (Boolean) -> Unit,
-    navigateToRoute: (String) -> Unit,
+    navigateToRoute: (PienoteScreens) -> Unit,
     onDeleteNote: (NoteDomainModel) -> Unit,
     onAddNewCategory: (List<Long>, String, String?) -> Unit,
     onAddNotesToCategory: (noteIds: List<Long>, categoryId: Long) -> Unit
@@ -240,7 +240,7 @@ private fun HomeSideBar(
                                     backgroundColor = Color.Transparent,
                                     onClick = {
                                         navigateToRoute(
-                                            PienoteScreens.NoteScreen.createRoute(
+                                            PienoteScreens.NoteScreen(
                                                 id = -1,
                                                 isExist = false,
                                                 parent = "Home",
@@ -296,8 +296,8 @@ private fun HomeSideBar(
                                 id = category.id
                             )
                             navigateToRoute(
-                                PienoteScreens.CategoryScreen.createRoute(
-                                    category.id.toInt(),
+                                PienoteScreens.CategoryScreen(
+                                    category.id,
                                     parent = "Home"
                                 )
                             )
@@ -340,8 +340,8 @@ private fun HomeSideBar(
                                         id = note.id
                                     )
                                     navigateToRoute(
-                                        PienoteScreens.NoteScreen.createRoute(
-                                            id = note.id.toInt(),
+                                        PienoteScreens.NoteScreen(
+                                            id = note.id,
                                             isExist = true,
                                             parent = "Home"
                                         )

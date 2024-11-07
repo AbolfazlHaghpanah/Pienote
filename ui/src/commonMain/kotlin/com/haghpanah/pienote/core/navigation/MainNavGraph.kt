@@ -10,35 +10,15 @@ import com.haghpanah.pienote.feature.home.HomeScreen
 import com.haghpanah.pienote.feature.note.NoteScreen
 
 fun NavGraphBuilder.mainNavGraph(navHostController: NavHostController) {
-    composable(PienoteScreens.HomeScreen.route) {
+    composable<PienoteScreens.HomeScreen> {
         HomeScreen(navController = navHostController)
     }
 
-    composable(
-        route = PienoteScreens.CategoryScreen.route,
-        arguments = listOf(
-            navArgument(name = "id") {
-                type = NavType.IntType
-                nullable = false
-            }
-        )
-    ) {
+    composable<PienoteScreens.CategoryScreen> {
         CategoryScreen(navController = navHostController)
     }
 
-    composable(
-        route = PienoteScreens.NoteScreen.route,
-        arguments = listOf(
-            navArgument("id") {
-                type = NavType.IntType
-                nullable = false
-            },
-            navArgument("isExist") {
-                type = NavType.BoolType
-                nullable = false
-            }
-        )
-    ) {
-        NoteScreen(navHostController)
+    composable<PienoteScreens.NoteScreen> {
+        NoteScreen(navController = navHostController)
     }
 }

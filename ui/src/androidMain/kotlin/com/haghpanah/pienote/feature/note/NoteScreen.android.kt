@@ -75,7 +75,7 @@ internal actual fun NoteScreen(
     onUpdateCategory: (Long?) -> Unit,
     onSwitchEditMode: (String, String) -> Unit,
     onUpdateColor: (String?) -> Unit,
-    navigateToRoute: (String) -> Unit,
+    navigateToRoute: (PienoteScreens) -> Unit,
     onBack: (note: String, title: String) -> Unit
 ) {
     val localConfig = LocalConfiguration.current
@@ -303,9 +303,9 @@ internal actual fun NoteScreen(
                         onCategorySelect = onUpdateCategory,
                         onClickCategory = { categoryId ->
                             navigateToRoute(
-                                PienoteScreens.CategoryScreen.createRoute(
-                                    categoryId.toInt(),
-                                    state.note.title
+                                PienoteScreens.CategoryScreen(
+                                    id = categoryId,
+                                    parent = state.note.title
                                 )
                             )
                         }

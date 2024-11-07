@@ -23,7 +23,7 @@ class NoteViewModel(
 ) : BaseViewModel<NoteViewState>(
     initialState = NoteViewState(
         isExist = savedStateHandle.get<Boolean>("isExist") ?: false,
-        noteId = savedStateHandle.get<Int>("id") ?: -1
+        noteId = savedStateHandle.get<Long>("id")
     )
 ) {
     init {
@@ -143,7 +143,7 @@ class NoteViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             val noteId = insertNoteUseCase(getCurrentState().note)
 
-            updateState { copy(isExist = true, noteId = noteId.toInt()) }
+            updateState { copy(isExist = true, noteId = noteId) }
             getNoteInfo()
         }
     }

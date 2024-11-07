@@ -19,7 +19,7 @@ import pienote.ui.generated.resources.label_add_note
 @Composable
 internal actual fun HomeScreen(
     state: HomeViewState,
-    navigateToRoute: (String) -> Unit,
+    navigateToRoute: (PienoteScreens) -> Unit,
     onDeleteNote: (NoteDomainModel) -> Unit,
     onAddNewCategory: (List<Long>, String, String?) -> Unit,
     onAddNotesToCategory: (noteIds: List<Long>, categoryId: Long) -> Unit
@@ -29,7 +29,7 @@ internal actual fun HomeScreen(
             ExtendedFloatingActionButton(
                 onClick = {
                     navigateToRoute(
-                        PienoteScreens.NoteScreen.createRoute(
+                        PienoteScreens.NoteScreen(
                             id = -1,
                             isExist = false,
                             parent = "Home"

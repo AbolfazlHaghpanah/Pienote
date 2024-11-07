@@ -16,8 +16,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -45,10 +43,10 @@ import com.haghpanah.pienote.core.component.PienoteTopBar
 import com.haghpanah.pienote.core.navigation.PienoteScreens
 import com.haghpanah.pienote.core.theme.PienoteTheme
 import com.haghpanah.pienote.feature.home.component.AddCategoryComponent
-import com.haghpanah.pienote.model.NoteDomainModel
 import com.haghpanah.pienote.feature.home.component.HomeCategoryItem
 import com.haghpanah.pienote.feature.home.component.HomeNoteItem
 import com.haghpanah.pienote.feature.home.component.MoveToCategoryComponent
+import com.haghpanah.pienote.model.NoteDomainModel
 import com.haghpanh.pienote.features.home.ui.component.SelectingNoteBottomMenu
 import com.haghpanh.pienote.features.home.ui.component.SelectingNoteOptions
 import org.jetbrains.compose.resources.stringResource
@@ -61,7 +59,7 @@ import pienote.ui.generated.resources.label_home
 @Composable
 internal actual fun HomeScreen(
     state: HomeViewState,
-    navigateToRoute: (String) -> Unit,
+    navigateToRoute: (PienoteScreens) -> Unit,
     onDeleteNote: (NoteDomainModel) -> Unit,
     onAddNewCategory: (List<Long>, String, String?) -> Unit,
     onAddNotesToCategory: (noteIds: List<Long>, categoryId: Long) -> Unit
@@ -137,7 +135,7 @@ internal actual fun HomeScreen(
                 ExtendedFloatingActionButton(
                     onClick = {
                         navigateToRoute(
-                            PienoteScreens.NoteScreen.createRoute(
+                            PienoteScreens.NoteScreen(
                                 id = -1,
                                 isExist = false,
                                 parent = "Home"
@@ -258,8 +256,8 @@ internal actual fun HomeScreen(
                             noteCount = category.noteCount
                         ) {
                             navigateToRoute(
-                                PienoteScreens.CategoryScreen.createRoute(
-                                    category.id.toInt(),
+                                PienoteScreens.CategoryScreen(
+                                    category.id,
                                     parent = "context.getString(Res.string.label_home)"
                                 )
                             )
@@ -299,8 +297,8 @@ internal actual fun HomeScreen(
                             }
                         } else {
                             navigateToRoute(
-                                PienoteScreens.NoteScreen.createRoute(
-                                    id = note.id.toInt(),
+                                PienoteScreens.NoteScreen(
+                                    id = note.id,
                                     isExist = true,
                                     parent = "Home"
                                 )
