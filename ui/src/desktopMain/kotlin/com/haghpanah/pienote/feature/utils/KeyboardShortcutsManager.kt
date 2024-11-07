@@ -5,7 +5,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.ui.input.key.Key
 
-object KeyboardShortcutsManager {
+internal object KeyboardShortcutsManager {
     private val handlers = mutableStateListOf<Pair<Key, () -> Boolean>>()
 
     private fun pushShortcutAction(
