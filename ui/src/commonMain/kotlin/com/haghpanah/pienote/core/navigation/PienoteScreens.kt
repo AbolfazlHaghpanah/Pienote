@@ -1,15 +1,22 @@
 package com.haghpanah.pienote.core.navigation
 
-sealed class PienoteScreens(val route: String) {
-    data object HomeScreen : PienoteScreens("home-screen")
+import kotlinx.serialization.Serializable
 
-    data object NoteScreen : PienoteScreens("note-screen/{id}/{isExist}/{parent}") {
-        fun createRoute(id: Int, isExist: Boolean, parent: String) =
-            "note-screen/$id/$isExist/$parent"
-    }
+sealed class PienoteScreens {
 
-    data object CategoryScreen : PienoteScreens("category-screen/{id}/{parent}") {
-        fun createRoute(id: Int, parent: String) =
-            "category-screen/$id/$parent"
-    }
+    @Serializable
+    data object HomeScreen : PienoteScreens()
+
+    @Serializable
+    data class NoteScreen(
+        val id: Long,
+        val isExist: Boolean,
+        val parent: String
+    ) : PienoteScreens()
+
+    @Serializable
+    data class CategoryScreen(
+        val id: Long,
+        val parent: String
+    ) : PienoteScreens()
 }

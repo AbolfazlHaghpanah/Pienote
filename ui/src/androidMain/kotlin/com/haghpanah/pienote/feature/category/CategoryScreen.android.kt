@@ -65,7 +65,7 @@ actual fun CategoryScreen(
     parentScreen: String?,
 //    snackbarManager: SnackbarManager,
     onDeleteNoteFromCategory: (Long) -> Unit,
-    navigateToRoute: (String) -> Unit,
+    navigateToRoute: (PienoteScreens) -> Unit,
     onBack: () -> Unit,
     onUpdateCategoryName: (String) -> Unit
 ) {
@@ -358,8 +358,8 @@ actual fun CategoryScreen(
                         color = note.color,
                         onClick = {
                             navigateToRoute(
-                                PienoteScreens.NoteScreen.createRoute(
-                                    id = note.id.toInt(),
+                                PienoteScreens.NoteScreen(
+                                    id = note.id,
                                     isExist = true,
                                     parent = state.name
                                 )

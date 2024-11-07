@@ -70,7 +70,7 @@ internal actual fun CategoryScreen(
     state: CategoryViewState,
     parentScreen: String?,
     onDeleteNoteFromCategory: (Long) -> Unit,
-    navigateToRoute: (String) -> Unit,
+    navigateToRoute: (PienoteScreens) -> Unit,
     onBack: () -> Unit,
     onUpdateCategoryName: (String) -> Unit
 ) {
@@ -371,8 +371,8 @@ internal actual fun CategoryScreen(
                             color = state.notes[it].color,
                             onClick = {
                                 navigateToRoute(
-                                    PienoteScreens.NoteScreen.createRoute(
-                                        id = state.notes[it].id.toInt(),
+                                    PienoteScreens.NoteScreen(
+                                        id = state.notes[it].id,
                                         isExist = true,
                                         parent = state.name
                                     )

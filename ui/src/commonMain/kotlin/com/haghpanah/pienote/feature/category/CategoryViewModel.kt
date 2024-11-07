@@ -25,7 +25,8 @@ class CategoryViewModel(
     savedStateHandle: SavedStateHandle
 ) : BaseViewModel<CategoryViewState>(
     initialState = CategoryViewState(
-        id = (savedStateHandle.get<Int>("id") ?: -1).toLong()
+        id = (savedStateHandle.get<Long>("id")
+            ?: error("null category id from saved state handler"))
     ),
 ) {
     init {

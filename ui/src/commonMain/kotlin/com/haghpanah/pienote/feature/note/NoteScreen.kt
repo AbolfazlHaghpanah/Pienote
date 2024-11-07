@@ -6,6 +6,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.navigation.NavController
 import com.eygraber.uri.Uri
+import com.haghpanah.pienote.core.navigation.PienoteScreens
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -61,6 +62,6 @@ internal expect fun NoteScreen(
     onUpdateCategory: (Long?) -> Unit,
     onSwitchEditMode: (String, String) -> Unit,
     onUpdateColor: (String?) -> Unit,
-    navigateToRoute: (String) -> Unit,
+    navigateToRoute: (PienoteScreens) -> Unit,
     onBack: (note: String, title: String) -> Unit
 )

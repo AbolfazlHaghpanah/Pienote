@@ -128,22 +128,26 @@ fun main() = application {
                 Item(text = "New Note") {
                     isSideBarVisible = false
                     navController.navigate(
-                        PienoteScreens.NoteScreen.createRoute(
+                        PienoteScreens.NoteScreen(
                             id = -1,
                             parent = "Home",
                             isExist = false
                         )
-                    )
+                    ) {
+                        popUpTo<PienoteScreens.HomeScreen>()
+                    }
                 }
 
                 Item(text = "New Category") {
                     navController.navigate(
-                        PienoteScreens.NoteScreen.createRoute(
+                        PienoteScreens.NoteScreen(
                             id = -1,
                             parent = "Home",
                             isExist = false
                         )
-                    )
+                    ) {
+                        popUpTo<PienoteScreens.HomeScreen>()
+                    }
                 }
             }
         }

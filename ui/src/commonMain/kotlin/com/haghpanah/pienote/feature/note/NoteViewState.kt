@@ -12,7 +12,7 @@ data class NoteViewState(
     val category: CategoryDomainModel? = null,
     val isEditing: Boolean = false,
     val categories: List<CategoryDomainModel> = emptyList(),
-    val noteId: Int?,
+    val noteId: Long?,
     val isExist: Boolean,
     @EffectState
     val canNavigateBack: Boolean? = null,

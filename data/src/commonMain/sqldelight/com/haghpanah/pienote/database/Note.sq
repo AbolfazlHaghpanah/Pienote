@@ -18,17 +18,13 @@ ORDER BY notes.id DESC;
 getNoteWithCategoryById:
 SELECT * FROM notes
 LEFT JOIN categories
-WHERE notes.id = ? ;
+ON notes.category_id = categories.id
+WHERE notes.id = ?;
 
 getNotesByCategoryId:
 SELECT * FROM notes
 WHERE category_id = ?
 ORDER BY id DESC;
-
-isTableEmpty:
-SELECT (
-    SELECT COUNT(*) FROM notes
-) = 0;
 
 addNote:
 INSERT INTO

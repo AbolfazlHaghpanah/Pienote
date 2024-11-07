@@ -6,10 +6,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.rememberNavController
 import com.haghpanah.pienote.core.navigation.PienoteScreens
 import com.haghpanah.pienote.core.navigation.mainNavGraph
 import com.haghpanah.pienote.core.theme.PienoteTheme
@@ -27,7 +25,7 @@ fun MainScreen(navController: NavHostController) {
         ) {
             NavHost(
                 navController = navController,
-                startDestination = PienoteScreens.HomeScreen.route
+                startDestination = PienoteScreens.HomeScreen
             ) {
                 mainNavGraph(navController)
             }
