@@ -34,11 +34,13 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -73,7 +75,7 @@ import pienote.ui.generated.resources.notes
 internal actual fun CategoryScreen(
     state: CategoryViewState,
     parentScreen: String?,
-    onDeleteNoteFromCategory: (Long) -> Unit,
+    onDeleteNoteFromCategory: (List<Long>) -> Unit,
     navigateToRoute: (PienoteScreens) -> Unit,
     onBack: () -> Unit,
     onUpdateCategoryName: (String) -> Unit
@@ -82,6 +84,14 @@ internal actual fun CategoryScreen(
     val image = state.image ?: state.notes.firstOrNull()?.image
     val selectedNotesId = remember {
         mutableStateListOf<Long>()
+    }
+
+    LaunchedEffect(state.notes.size) {
+        selectedNotesId.removeAll { selectedNoteId ->
+            !state.notes
+                .map { note -> note.id }
+                .contains(selectedNoteId)
+        }
     }
 
     val dialogItemsAction: (Int) -> Unit = { id ->
@@ -224,9 +234,8 @@ internal actual fun CategoryScreen(
                 Button(
                     onClick = {
                         //TODO add implementation
-                        selectedNotesId.forEach {
-                            onDeleteNoteFromCategory(it)
-                        }
+                        onDeleteNoteFromCategory(selectedNotesId)
+//                        selectedNotesId.removeAll { true }
                     }
                 ) {
                     Icon(
@@ -394,44 +403,49 @@ internal actual fun CategoryScreen(
                     itemCount = state.notes.size,
                     maxItemsInEachRow = 3
                 ) { index ->
-                    val note = state.notes[index]
-                    val isSelected by remember {
-                        derivedStateOf { selectedNotesId.contains(note.id) }
-                    }
+                    runCatching {
+                        val note = state.notes[index]
+                        val isSelected by rememberSaveable(selectedNotesId.size) {
+                            derivedStateOf { selectedNotesId.contains(note.id) }
+                        }
 
-                    CategoryNoteItem(
-                        modifier = Modifier
-                            .padding(14.dp),
-                        title = note.title,
-                        markdown = note.markdown,
-                        color = note.color,
-                        onClick = {
-                            if (selectedNotesId.isEmpty()) {
-                                navigateToRoute(
-                                    PienoteScreens.NoteScreen(
-                                        id = note.id,
-                                        isExist = true,
-                                        parent = state.name
+                        CategoryNoteItem(
+                            modifier = Modifier
+                                .padding(14.dp),
+                            title = note.title,
+                            markdown = note.markdown,
+                            color = note.color,
+                            onClick = {
+                                if (selectedNotesId.isEmpty()) {
+                                    navigateToRoute(
+                                        PienoteScreens.NoteScreen(
+                                            id = note.id,
+                                            isExist = true,
+                                            parent = state.name
+                                        )
                                     )
-                                )
-                            } else {
-                                if (isSelected) {
-                                    selectedNotesId.removeAll { it == note.id }
                                 } else {
+                                    if (isSelected) {
+                                        selectedNotesId.removeAll { it == note.id }
+                                    } else {
+                                        selectedNotesId.add(note.id)
+                                    }
+                                }
+                            },
+                            isSelected = isSelected,
+                            onSelectChanged = { newValue ->
+                                if (newValue) {
                                     selectedNotesId.add(note.id)
+                                } else {
+                                    selectedNotesId.removeAll { it == note.id }
                                 }
                             }
-                        },
-                        isSelected = isSelected,
-                        onSelectChanged = { newValue ->
-                            if (newValue) {
-                                selectedNotesId.add(note.id)
-                            } else {
-                                selectedNotesId.removeAll { it == note.id }
-                            }
-                        }
-                    )
+                        )
+                    }.onFailure {
+                        println(it.message)
+                    }
                 }
+
             } else {
                 Box(modifier = Modifier.fillMaxSize()) {
                     Text(

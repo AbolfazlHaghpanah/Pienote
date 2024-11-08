@@ -64,7 +64,7 @@ actual fun CategoryScreen(
     state: CategoryViewState,
     parentScreen: String?,
 //    snackbarManager: SnackbarManager,
-    onDeleteNoteFromCategory: (Long) -> Unit,
+    onDeleteNoteFromCategory: (List<Long>) -> Unit,
     navigateToRoute: (PienoteScreens) -> Unit,
     onBack: () -> Unit,
     onUpdateCategoryName: (String) -> Unit
@@ -156,7 +156,7 @@ actual fun CategoryScreen(
                             TextButton(
                                 onClick = { dialogState = DialogState.Dismiss }
                             ) {
-                                Text(text = stringResource( Res.string.label_discard))
+                                Text(text = stringResource(Res.string.label_discard))
                             }
 
                             TextButton(
@@ -366,7 +366,7 @@ actual fun CategoryScreen(
                             )
                         },
                         onDelete = {
-                            onDeleteNoteFromCategory(note.id)
+                            onDeleteNoteFromCategory(listOf(note.id))
                         },
                         isSelected = false,
                     )

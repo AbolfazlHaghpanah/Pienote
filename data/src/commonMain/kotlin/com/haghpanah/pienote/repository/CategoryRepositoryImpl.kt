@@ -43,7 +43,7 @@ class CategoryRepositoryImpl(
             .asFlow()
             .mapToList(Dispatchers.IO)
 
-    override suspend fun deleteNoteFromCategory(noteId: Long) {
+    override suspend fun deleteNoteFromCategory(noteId: List<Long>) {
         database.noteQueries.nullCategoryId(noteId)
     }
 
