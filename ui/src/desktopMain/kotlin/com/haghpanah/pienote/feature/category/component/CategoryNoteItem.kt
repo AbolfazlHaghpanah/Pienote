@@ -1,7 +1,6 @@
 package com.haghpanah.pienote.feature.category.component
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.height
@@ -29,7 +28,7 @@ internal fun CategoryNoteItem(
     Column(
         modifier = modifier
             .clip(PienoteTheme.shapes.medium)
-            .widthIn(min = 200.dp, max = 340.dp)
+            .widthIn(min = 200.dp, max = 320.dp)
             .height(240.dp)
             .background(
                 color = color

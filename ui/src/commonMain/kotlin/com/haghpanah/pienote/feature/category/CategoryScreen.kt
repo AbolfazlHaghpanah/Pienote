@@ -40,7 +40,7 @@ internal expect fun CategoryScreen(
     state: CategoryViewState,
     parentScreen: String?,
 //    snackbarManager: SnackbarManager,
-    onDeleteNoteFromCategory: (Long) -> Unit,
+    onDeleteNoteFromCategory: (List<Long>) -> Unit,
     navigateToRoute: (PienoteScreens) -> Unit,
     onBack: () -> Unit,
     onUpdateCategoryName: (String) -> Unit

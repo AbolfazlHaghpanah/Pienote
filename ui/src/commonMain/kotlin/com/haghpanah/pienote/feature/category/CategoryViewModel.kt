@@ -72,9 +72,9 @@ class CategoryViewModel(
         }
     }
 
-    fun deleteNoteFromCategory(noteId: Long) {
+    fun deleteNoteFromCategory(noteIds: List<Long>) {
         viewModelScope.launch(Dispatchers.IO) {
-            deleteNoteFromCategoryUseCase(noteId)
+            deleteNoteFromCategoryUseCase(noteIds)
 
 //            snackbarManager.sendWarning(
 //                message = "Note Removed From Category"

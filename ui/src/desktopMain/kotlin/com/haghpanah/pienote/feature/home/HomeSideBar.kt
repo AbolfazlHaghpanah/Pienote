@@ -28,7 +28,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -118,7 +117,7 @@ private fun HomeSideBar(
     var showingItem: HomeShowingItem? by remember {
         mutableStateOf(null)
     }
-    val animatedWidth by animateDpAsState(if (isSelectingNote) 500.dp else 300.dp)
+    val contentWidth by animateDpAsState(if (isSelectingNote) 500.dp else 300.dp)
 
 
     // When clicking on each selected notes menu options this should set
@@ -149,7 +148,7 @@ private fun HomeSideBar(
         visible = visible
     ) {
         PienoteScaffold(
-            modifier = Modifier.widthIn(max = animatedWidth),
+            modifier = Modifier.widthIn(max = contentWidth),
             bottomMenu = {
                 AnimatedVisibility(
                     modifier = Modifier.padding(24.dp),
