@@ -1,5 +1,4 @@
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
-import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -27,16 +26,19 @@ kotlin {
             implementation(libs.koin.android)
         }
         commonMain.dependencies {
-            implementation(compose.runtime)
-            implementation(compose.foundation)
-            implementation(compose.ui)
-            implementation(compose.components.resources)
-            implementation(compose.components.uiToolingPreview)
+            implementation(libs.compose.runtime)
+            implementation(libs.compose.material3)
+            implementation(libs.compose.material3.adaptive.navigation)
+            implementation(libs.compose.ui)
+            implementation(libs.compose.foundation)
+            implementation(libs.compose.components.resources)
+            implementation(libs.compose.components.uiToolingPreview)
+            implementation(libs.compose.animation.graphics)
+            implementation(libs.compose.animation)
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
             implementation(libs.androidx.navigation.compose)
             implementation(libs.kotlin.serialization)
-            implementation(libs.androidx.material)
             implementation(libs.koin.core)
             implementation(libs.koin.viewmodel)
             implementation(libs.koin.viewmodel.navigation)

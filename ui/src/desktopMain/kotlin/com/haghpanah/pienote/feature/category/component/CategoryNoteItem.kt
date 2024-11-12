@@ -28,7 +28,7 @@ internal fun CategoryNoteItem(
     Column(
         modifier = modifier
             .clip(PienoteTheme.shapes.medium)
-            .widthIn(min = 200.dp, max = 320.dp)
+            .widthIn(min = 200.dp, max = 310.dp)
             .height(240.dp)
             .background(
                 color = color

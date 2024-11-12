@@ -15,10 +15,13 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 @Preview
-fun MainScreen(navController: NavHostController) {
+fun MainScreen(
+    navController: NavHostController,
+    modifier: Modifier = Modifier
+) {
     PienoteTheme {
         Box(
-            modifier = Modifier
+            modifier = modifier
                 .background(PienoteTheme.colors.background)
                 .navigationBarsPadding()
                 .fillMaxSize()
