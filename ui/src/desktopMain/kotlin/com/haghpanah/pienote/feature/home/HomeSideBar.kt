@@ -59,13 +59,11 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun HomeSideBar(
     navController: NavController,
-    visible: Boolean,
     onChangeVisibility: (Boolean) -> Unit
 ) {
     HomeSideBar(
         navController = navController,
         viewModel = koinViewModel(),
-        visible = visible,
         onChangeVisibility = onChangeVisibility
     )
 }
@@ -74,7 +72,6 @@ fun HomeSideBar(
 private fun HomeSideBar(
     navController: NavController,
     viewModel: HomeViewModel,
-    visible: Boolean,
     onChangeVisibility: (Boolean) -> Unit
 ) {
     val state by viewModel.collectAsStateWithLifecycle()
@@ -83,7 +80,6 @@ private fun HomeSideBar(
 
     HomeSideBar(
         state = state,
-        visible = visible,
         onChangeVisibility = onChangeVisibility,
         navigateToRoute = { route ->
             navController.navigate(route = route) {
@@ -103,7 +99,6 @@ private fun HomeSideBar(
 @Composable
 private fun HomeSideBar(
     state: HomeViewState,
-    visible: Boolean,
     onChangeVisibility: (Boolean) -> Unit,
     navigateToRoute: (PienoteScreens) -> Unit,
     onDeleteNote: (NoteDomainModel) -> Unit,
@@ -144,215 +139,211 @@ private fun HomeSideBar(
         }
     }
 
-    AnimatedVisibility(
-        visible = visible
-    ) {
-        PienoteScaffold(
-            modifier = Modifier.widthIn(max = contentWidth),
-            bottomMenu = {
-                AnimatedVisibility(
-                    modifier = Modifier.padding(24.dp),
-                    visible = isSelectingNote,
-                    enter = slideInVertically(initialOffsetY = { it }),
-                    exit = slideOutVertically(targetOffsetY = { it * 2 })
+    PienoteScaffold(
+        modifier = Modifier.widthIn(max = contentWidth),
+        bottomMenu = {
+            AnimatedVisibility(
+                modifier = Modifier.padding(24.dp),
+                visible = isSelectingNote,
+                enter = slideInVertically(initialOffsetY = { it }),
+                exit = slideOutVertically(targetOffsetY = { it * 2 })
+            ) {
+                addKeyboardShortcut(
+                    key = Key.Escape
                 ) {
-                    addKeyboardShortcut(
-                        key = Key.Escape
-                    ) {
-                        selectedNotes.removeAll { true }
-                        true
-                    }
+                    selectedNotes.removeAll { true }
+                    true
+                }
 
-                    AnimatedContent(
-                        targetState = bottomMenuContentType,
-                        label = "bottom menu options",
-                        transitionSpec = { fadeIn().togetherWith(fadeOut()) }
-                    ) { options ->
-                        when (options) {
-                            null -> {
-                                SelectingNoteBottomMenu {
-                                    bottomMenuContentType = it
-                                }
+                AnimatedContent(
+                    targetState = bottomMenuContentType,
+                    label = "bottom menu options",
+                    transitionSpec = { fadeIn().togetherWith(fadeOut()) }
+                ) { options ->
+                    when (options) {
+                        null -> {
+                            SelectingNoteBottomMenu {
+                                bottomMenuContentType = it
                             }
-
-                            SelectingNoteOptions.AddCategory -> {
-                                AddCategoryComponent(
-                                    onAddNewCategory = { name, image ->
-                                        onAddNewCategory(
-                                            selectedNotes.map { note -> note.id },
-                                            name,
-                                            image
-                                        )
-                                    },
-                                    onDiscard = { bottomMenuContentType = null }
-                                )
-                            }
-
-                            SelectingNoteOptions.MoveToCategory -> {
-                                MoveToCategoryComponent(
-                                    onCategorySelected = { catId ->
-                                        onAddNotesToCategory(
-                                            selectedNotes.map { note -> note.id },
-                                            catId
-                                        )
-                                    },
-                                    categories = state.categoriesChunked,
-                                    onDiscard = { bottomMenuContentType = null }
-                                )
-                            }
-
-                            SelectingNoteOptions.DeleteNotes -> {
-                                // TODO implement This
-                            }
-
-                            else -> {}
                         }
+
+                        SelectingNoteOptions.AddCategory -> {
+                            AddCategoryComponent(
+                                onAddNewCategory = { name, image ->
+                                    onAddNewCategory(
+                                        selectedNotes.map { note -> note.id },
+                                        name,
+                                        image
+                                    )
+                                },
+                                onDiscard = { bottomMenuContentType = null }
+                            )
+                        }
+
+                        SelectingNoteOptions.MoveToCategory -> {
+                            MoveToCategoryComponent(
+                                onCategorySelected = { catId ->
+                                    onAddNotesToCategory(
+                                        selectedNotes.map { note -> note.id },
+                                        catId
+                                    )
+                                },
+                                categories = state.categoriesChunked,
+                                onDiscard = { bottomMenuContentType = null }
+                            )
+                        }
+
+                        SelectingNoteOptions.DeleteNotes -> {
+                            // TODO implement This
+                        }
+
+                        else -> {}
                     }
                 }
             }
+        }
+    ) {
+        LazyColumn(
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            contentPadding = PaddingValues(16.dp)
         ) {
-            LazyColumn(
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                contentPadding = PaddingValues(16.dp)
-            ) {
-                item {
-                    TopAppBar(
-                        colors = TopAppBarDefaults.topAppBarColors(
-                            containerColor = Color.Transparent,
-                            titleContentColor = PienoteTheme.colors.onBackground
-                        ),
-                        title = {
-                            Text(
-                                text = "Pienote",
-                                style = PienoteTheme.typography.headlineMedium,
-                                color = PienoteTheme.colors.onBackground
-                            )
-                        },
-                        actions = {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(8.dp)
-                            ) {
-                                PienoteChip(
-                                    backgroundColor = Color.Transparent,
-                                    onClick = {
-                                        navigateToRoute(
-                                            PienoteScreens.NoteScreen(
-                                                id = -1,
-                                                isExist = false,
-                                                parent = "Home",
-                                            )
-                                        )
-                                    },
-                                    content = {
-                                        Icon(
-                                            modifier = Modifier.padding(4.dp),
-                                            imageVector = Icons.Rounded.Add,
-                                            contentDescription = null,
-                                            tint = PienoteTheme.colors.onBackground
-                                        )
-                                    }
-                                )
-
-                                PienoteChip(
-                                    backgroundColor = Color.Transparent,
-                                    onClick = {
-                                        onChangeVisibility(false)
-                                    },
-                                    content = {
-                                        Icon(
-                                            modifier = Modifier.padding(4.dp),
-                                            imageVector = Icons.Rounded.ArrowBack,
-                                            contentDescription = null,
-                                            tint = PienoteTheme.colors.onBackground
-                                        )
-                                    }
-                                )
-                            }
-                        },
-                        scrollBehavior = null,
-                    )
-                }
-
-                items(
-                    items = state.categoriesChunked?.flatten() ?: emptyList(),
-                    key = { item -> item.id.hashCode() }
-                ) { category ->
-                    Modifier.padding(horizontal = 24.dp)
-
-                    HomeCategoryItem(
-                        modifier = Modifier.fillMaxWidth().aspectRatio(3.14f),
-                        name = category.name,
-                        image = category.image,
-                        isShowing = showingItem?.isEqualToCategory(category.id) ?: false,
-                        noteCount = category.noteCount
-                    ) {
-                        if (showingItem?.isEqualToCategory(category.id) != true) {
-                            showingItem = HomeShowingItem(
-                                isNote = false,
-                                id = category.id
-                            )
-                            navigateToRoute(
-                                PienoteScreens.CategoryScreen(
-                                    category.id,
-                                    parent = "Home"
-                                )
-                            )
-                        }
-                    }
-                }
-
-                items(
-                    items = state.notes ?: emptyList(),
-                    key = { item -> "${item.id}_${item.title}" }
-                ) { note ->
-                    val isNoteSelected by remember(selectedNotes.size) {
-                        derivedStateOf { selectedNotes.contains(note) }
-                    }
-
-                    HomeNoteItem(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .aspectRatio(2.4f)
-                            .animateItem(
-                                fadeInSpec = tween(),
-                                fadeOutSpec = tween(),
-                                placementSpec = spring()
-                            ),
-                        title = note.title,
-                        note = note.markdown,
-                        color = note.color,
-                        isSelected = isNoteSelected,
-                        onClick = {
-                            if (isSelectingNote) {
-                                if (selectedNotes.contains(note)) {
-                                    selectedNotes.remove(note)
-                                } else {
-                                    selectedNotes.add(note)
-                                }
-                            } else {
-                                if (showingItem?.isEqualToNote(note.id) != true) {
-                                    showingItem = HomeShowingItem(
-                                        isNote = true,
-                                        id = note.id
-                                    )
+            item {
+                TopAppBar(
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = Color.Transparent,
+                        titleContentColor = PienoteTheme.colors.onBackground
+                    ),
+                    title = {
+                        Text(
+                            text = "Pienote",
+                            style = PienoteTheme.typography.headlineMedium,
+                            color = PienoteTheme.colors.onBackground
+                        )
+                    },
+                    actions = {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            PienoteChip(
+                                backgroundColor = Color.Transparent,
+                                onClick = {
                                     navigateToRoute(
                                         PienoteScreens.NoteScreen(
-                                            id = note.id,
-                                            isExist = true,
-                                            parent = "Home"
+                                            id = -1,
+                                            isExist = false,
+                                            parent = "Home",
                                         )
                                     )
+                                },
+                                content = {
+                                    Icon(
+                                        modifier = Modifier.padding(4.dp),
+                                        imageVector = Icons.Rounded.Add,
+                                        contentDescription = null,
+                                        tint = PienoteTheme.colors.onBackground
+                                    )
                                 }
-                            }
-                        },
-                        onLongClick = {
-                            selectedNotes.add(note)
-                        },
-                        isShowing = showingItem?.isEqualToNote(note.id) ?: false
-                    )
+                            )
+
+                            PienoteChip(
+                                backgroundColor = Color.Transparent,
+                                onClick = {
+                                    onChangeVisibility(false)
+                                },
+                                content = {
+                                    Icon(
+                                        modifier = Modifier.padding(4.dp),
+                                        imageVector = Icons.Rounded.ArrowBack,
+                                        contentDescription = null,
+                                        tint = PienoteTheme.colors.onBackground
+                                    )
+                                }
+                            )
+                        }
+                    },
+                    scrollBehavior = null,
+                )
+            }
+
+            items(
+                items = state.categoriesChunked?.flatten() ?: emptyList(),
+                key = { item -> item.id.hashCode() }
+            ) { category ->
+                Modifier.padding(horizontal = 24.dp)
+
+                HomeCategoryItem(
+                    modifier = Modifier.fillMaxWidth().aspectRatio(3.14f),
+                    name = category.name,
+                    image = category.image,
+                    isShowing = showingItem?.isEqualToCategory(category.id) ?: false,
+                    noteCount = category.noteCount
+                ) {
+                    if (showingItem?.isEqualToCategory(category.id) != true) {
+                        showingItem = HomeShowingItem(
+                            isNote = false,
+                            id = category.id
+                        )
+                        navigateToRoute(
+                            PienoteScreens.CategoryScreen(
+                                category.id,
+                                parent = "Home"
+                            )
+                        )
+                    }
                 }
+            }
+
+            items(
+                items = state.notes ?: emptyList(),
+                key = { item -> "${item.id}_${item.title}" }
+            ) { note ->
+                val isNoteSelected by remember(selectedNotes.size) {
+                    derivedStateOf { selectedNotes.contains(note) }
+                }
+
+                HomeNoteItem(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .aspectRatio(2.4f)
+                        .animateItem(
+                            fadeInSpec = tween(),
+                            fadeOutSpec = tween(),
+                            placementSpec = spring()
+                        ),
+                    title = note.title,
+                    note = note.markdown,
+                    color = note.color,
+                    isSelected = isNoteSelected,
+                    onClick = {
+                        if (isSelectingNote) {
+                            if (selectedNotes.contains(note)) {
+                                selectedNotes.remove(note)
+                            } else {
+                                selectedNotes.add(note)
+                            }
+                        } else {
+                            if (showingItem?.isEqualToNote(note.id) != true) {
+                                showingItem = HomeShowingItem(
+                                    isNote = true,
+                                    id = note.id
+                                )
+                                navigateToRoute(
+                                    PienoteScreens.NoteScreen(
+                                        id = note.id,
+                                        isExist = true,
+                                        parent = "Home"
+                                    )
+                                )
+                            }
+                        }
+                    },
+                    onLongClick = {
+                        selectedNotes.add(note)
+                    },
+                    isShowing = showingItem?.isEqualToNote(note.id) ?: false
+                )
             }
         }
     }
