@@ -1,4 +1,4 @@
-package com.haghpanah.pienote.core.texteditor.utils
+package com.haghpanah.pienote.utils
 
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.buildAnnotatedString

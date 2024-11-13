@@ -1,4 +1,4 @@
-package com.haghpanah.pienote.core.texteditor.utils
+package com.haghpanah.pienote.utils
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -13,24 +13,23 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.haghpanah.pienote.core.theme.PienoteFontProvider.robotoBoldFont
-import com.haghpanah.pienote.core.theme.PienoteFontProvider.robotoRegularFont
+import com.haghpanah.pienote.utils.TextEditorFontProvider.robotoRegularFont
 import org.jetbrains.compose.resources.StringResource
-import pienote.ui.generated.resources.Res
-import pienote.ui.generated.resources.label_h1
-import pienote.ui.generated.resources.label_h2
-import pienote.ui.generated.resources.label_h3
-import pienote.ui.generated.resources.label_h4
-import pienote.ui.generated.resources.label_header1
-import pienote.ui.generated.resources.label_header2
-import pienote.ui.generated.resources.label_header3
-import pienote.ui.generated.resources.label_header4
-import pienote.ui.generated.resources.label_list
-import pienote.ui.generated.resources.label_normal_text
-import pienote.ui.generated.resources.label_ordered_list
-import pienote.ui.generated.resources.label_t
-import pienote.ui.generated.resources.label_to_do
-import pienote.ui.generated.resources.label_write_three_dot
+import pienote.texteditor.generated.resources.Res
+import pienote.texteditor.generated.resources.label_h1
+import pienote.texteditor.generated.resources.label_h2
+import pienote.texteditor.generated.resources.label_h3
+import pienote.texteditor.generated.resources.label_h4
+import pienote.texteditor.generated.resources.label_header1
+import pienote.texteditor.generated.resources.label_header2
+import pienote.texteditor.generated.resources.label_header3
+import pienote.texteditor.generated.resources.label_header4
+import pienote.texteditor.generated.resources.label_list
+import pienote.texteditor.generated.resources.label_normal_text
+import pienote.texteditor.generated.resources.label_ordered_list
+import pienote.texteditor.generated.resources.label_t
+import pienote.texteditor.generated.resources.label_to_do
+import pienote.texteditor.generated.resources.label_write_three_dot
 
 enum class TextEditorAction(val key: String) {
     Non(""),
@@ -49,28 +48,28 @@ enum class TextEditorAction(val key: String) {
 fun TextEditorAction.getTextStyle(): TextStyle {
     return when (this) {
         TextEditorAction.H1 -> TextStyle.Default.copy(
-            fontFamily = robotoBoldFont,
+            fontFamily = TextEditorFontProvider.robotoBoldFont,
             fontSize = 32.sp,
             fontWeight = FontWeight.Bold,
             lineHeight = 38.sp
         )
 
         TextEditorAction.H2 -> TextStyle.Default.copy(
-            fontFamily = robotoBoldFont,
+            fontFamily = TextEditorFontProvider.robotoBoldFont,
             fontSize = 28.sp,
             fontWeight = FontWeight.SemiBold,
             lineHeight = 32.sp
         )
 
         TextEditorAction.H3 -> TextStyle.Default.copy(
-            fontFamily = robotoBoldFont,
+            fontFamily = TextEditorFontProvider.robotoBoldFont,
             fontSize = 24.sp,
             fontWeight = FontWeight.Medium,
             lineHeight = 28.sp
         )
 
         TextEditorAction.H4 -> TextStyle.Default.copy(
-            fontFamily = robotoBoldFont,
+            fontFamily = TextEditorFontProvider.robotoBoldFont,
             fontSize = 20.sp,
             fontWeight = FontWeight.Normal,
             lineHeight = 24.sp

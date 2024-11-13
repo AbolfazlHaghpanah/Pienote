@@ -153,4 +153,4 @@ fun lightColorScheme() = ColorScheme(
 )
 
 val LocalDarkColors = staticCompositionLocalOf { darkColorScheme() }
-val LocalLightColors = staticCompositionLocalOf { lightColorScheme() }
+val LocalLightColors = staticCompositionLocalOf { darkColorScheme() }

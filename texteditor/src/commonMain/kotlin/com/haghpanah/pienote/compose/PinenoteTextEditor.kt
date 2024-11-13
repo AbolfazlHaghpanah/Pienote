@@ -1,4 +1,4 @@
-package com.haghpanah.pienote.core.texteditor.compose
+package com.haghpanah.pienote.compose
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.fadeIn
@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.relocation.BringIntoViewRequester
 import androidx.compose.foundation.relocation.bringIntoViewRequester
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -23,6 +24,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Menu
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -48,15 +50,11 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
-import com.haghpanah.pienote.core.theme.PienoteTheme
-import com.haghpanah.pienote.core.texteditor.utils.CreateIcon
-import com.haghpanah.pienote.core.texteditor.utils.TextEditorAction.List
-import com.haghpanah.pienote.core.texteditor.utils.TextEditorAction.Non
-import com.haghpanah.pienote.core.texteditor.utils.TextEditorAction.TodoListComplete
-import com.haghpanah.pienote.core.texteditor.utils.TextEditorAction.TodoListNotComplete
-import com.haghpanah.pienote.core.texteditor.utils.TextEditorValue
-import com.haghpanah.pienote.core.texteditor.utils.getPlaceHolderStringId
-import com.haghpanah.pienote.core.texteditor.utils.getTextStyle
+import com.haghpanah.pienote.utils.CreateIcon
+import com.haghpanah.pienote.utils.TextEditorAction
+import com.haghpanah.pienote.utils.TextEditorValue
+import com.haghpanah.pienote.utils.getPlaceHolderStringId
+import com.haghpanah.pienote.utils.getTextStyle
 import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -126,12 +124,12 @@ fun PienoteTextEditor(
                             if (it.key == Key.Backspace) {
                                 if (
                                     item.action in setOf(
-                                        TodoListComplete,
-                                        TodoListNotComplete,
-                                        List
+                                        TextEditorAction.TodoListComplete,
+                                        TextEditorAction.TodoListNotComplete,
+                                        TextEditorAction.List
                                     ) && item.value.text.isEmpty()
                                 ) {
-                                    value.updateAction(index, Non)
+                                    value.updateAction(index, TextEditorAction.Non)
                                 } else if (item.value.text.isEmpty() && index != 0) {
                                     value.removeSection(index)
                                     hasRemovedSection = true
@@ -147,8 +145,8 @@ fun PienoteTextEditor(
                     icon = {
                         item.action?.CreateIcon {
                             if (item.action in setOf(
-                                    TodoListNotComplete,
-                                    TodoListComplete
+                                    TextEditorAction.TodoListNotComplete,
+                                    TextEditorAction.TodoListComplete
                                 )
                             ) {
                                 value.onCheckTodo(index)
@@ -166,11 +164,11 @@ fun PienoteTextEditor(
                     keyboardAction = KeyboardActions(
                         onDone = {
                             val action = when (item.action) {
-                                TodoListComplete,
-                                TodoListNotComplete -> TodoListNotComplete
+                                TextEditorAction.TodoListComplete,
+                                TextEditorAction.TodoListNotComplete -> TextEditorAction.TodoListNotComplete
 
-                                List -> List
-                                else -> Non
+                                TextEditorAction.List -> TextEditorAction.List
+                                else -> TextEditorAction.Non
                             }
 
                             value.addSection(
@@ -188,7 +186,7 @@ fun PienoteTextEditor(
                             ?.let { stringResource(it) }
                     } else {
                         null
-                    }
+                    },
                 )
 
 //                DropdownMenu(
@@ -250,9 +248,9 @@ private fun TextEditorField(
     onUpdateClick: (() -> Unit)? = null,
     textStyle: TextStyle = TextStyle.Default,
     placeHolderText: String? = null,
+    contentColor: Color = MaterialTheme.colorScheme.onBackground,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
-    keyboardAction: KeyboardActions = KeyboardActions.Default,
-    contentColor: Color = PienoteTheme.colors.onBackground
+    keyboardAction: KeyboardActions = KeyboardActions.Default
 ) {
     CompositionLocalProvider(
         value = LocalContentColor provides contentColor
@@ -279,11 +277,11 @@ private fun TextEditorField(
                         if (it) {
                             Icon(
                                 modifier = Modifier
-                                    .clip(PienoteTheme.shapes.verySmall)
+                                    .clip(MaterialTheme.shapes.extraSmall)
                                     .size(30.dp)
                                     .padding(4.dp)
                                     .clickable { onUpdateClick?.invoke() },
-                                tint = PienoteTheme.colors.onBackground.copy(alpha = 0.3f),
+                                tint = contentColor.copy(alpha = 0.3f),
                                 imageVector = Icons.Rounded.Menu,
                                 contentDescription = null
                             )

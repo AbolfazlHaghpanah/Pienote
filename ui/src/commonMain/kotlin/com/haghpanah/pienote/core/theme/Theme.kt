@@ -3,9 +3,9 @@ package com.haghpanah.pienote.core.theme
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ReadOnlyComposable
-import androidx.compose.material3.Typography
 import com.haghpanah.pienote.theme.LocalPienoteShapes
 import com.haghpanah.pienote.theme.PienoteShapes
 
@@ -25,8 +25,6 @@ fun PienoteTheme(
 }
 
 object PienoteTheme {
-
-
     val colors: ColorScheme
         @Composable
         @ReadOnlyComposable
@@ -38,10 +36,7 @@ object PienoteTheme {
 
     val typography: Typography
         @Composable
-        get() {
-            PienoteFontProvider.Initialize()
-            return createPienoteTypography()
-        }
+        get() = pienoteTypography()
 
     val icon: PienoteIcons
         @Composable
