@@ -50,6 +50,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.eygraber.uri.Uri
+import com.haghpanah.pienote.compose.PienoteTextEditor
 import com.haghpanah.pienote.core.component.PienoteChip
 import com.haghpanah.pienote.core.component.PienoteScaffold
 import com.haghpanah.pienote.core.component.PienoteTextField
@@ -60,9 +61,8 @@ import com.haghpanah.pienote.feature.note.component.CategoryChipSection
 import com.haghpanah.pienote.feature.note.component.ImageCoverSection
 import com.haghpanah.pienote.feature.note.component.NoteColorSection
 import com.haghpanah.pienote.feature.note.utils.rememberNoteNestedScrollConnection
-import com.haghpanah.pienote.core.texteditor.compose.PienoteTextEditor
+import com.haghpanah.pienote.utils.rememberTextEditorValue
 import com.haghpanh.pienote.commonui.texteditor.compose.TextEditorActionBar
-import com.haghpanah.pienote.core.texteditor.utils.rememberTextEditorValue
 import org.jetbrains.compose.resources.stringResource
 import pienote.ui.generated.resources.Res
 import pienote.ui.generated.resources.label_untitled

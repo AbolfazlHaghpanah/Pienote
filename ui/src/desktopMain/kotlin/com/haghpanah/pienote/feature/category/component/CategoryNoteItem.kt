@@ -11,9 +11,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
-import com.haghpanah.pienote.core.texteditor.utils.renderMarkdownToAnnotatedString
 import com.haghpanah.pienote.core.theme.PienoteTheme
 import com.haghpanah.pienote.core.utlis.toComposeColor
+import com.haghpanah.pienote.utils.renderMarkdownToAnnotatedString
 
 @Composable
 internal fun CategoryNoteItem(

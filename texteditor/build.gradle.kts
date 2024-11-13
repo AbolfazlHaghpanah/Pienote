@@ -19,10 +19,10 @@ kotlin {
         val desktopMain by getting
 
         androidMain.dependencies {
+            implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
         }
         commonMain.dependencies {
-            implementation(libs.uri.kmp)
             implementation(libs.compose.runtime)
             implementation(libs.compose.material3)
             implementation(libs.compose.material3.adaptive.navigation)
@@ -33,18 +33,9 @@ kotlin {
             implementation(libs.compose.animation.graphics)
             implementation(libs.compose.animation)
 //            implementation(libs.compose.ui.util)
-            implementation(libs.androidx.lifecycle.viewmodel)
-            implementation(libs.androidx.lifecycle.runtime.compose)
-            implementation(libs.androidx.navigation.compose)
             implementation(libs.androidx.material.icons)
             implementation(libs.kotlin.serialization)
-            implementation(libs.kotlin.reflect)
             implementation(libs.coil.compose)
-            implementation(libs.koin.core)
-            implementation(libs.koin.viewmodel)
-            implementation(libs.koin.viewmodel.navigation)
-            implementation(project(":domain"))
-            implementation(project(":texteditor"))
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
@@ -54,7 +45,7 @@ kotlin {
 }
 
 android {
-    namespace = "com.haghpanah.pienote.ui"
+    namespace = "com.haghpanah.pienote.texteditor"
     compileSdk = 34
 
     defaultConfig {
@@ -81,9 +72,4 @@ compose {
         publicResClass = true
         generateResClass = auto
     }
-}
-
-dependencies {
-    implementation(libs.androidx.navigation.runtime.ktx)
-    debugImplementation(compose.uiTooling)
 }

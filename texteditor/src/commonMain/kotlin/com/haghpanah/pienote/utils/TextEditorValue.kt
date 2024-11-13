@@ -1,4 +1,4 @@
-package com.haghpanah.pienote.core.texteditor.utils
+package com.haghpanah.pienote.utils
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -258,7 +258,7 @@ data class RenderedText(
  */
 @Composable
 fun rememberTextEditorValue(
-    initialMarkdown: String
+    initialMarkdown: String,
 ): TextEditorValue {
     return rememberSaveable(saver = TextEditorValue.saver) {
         TextEditorValue(initialMarkdown)

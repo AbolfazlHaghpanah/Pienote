@@ -11,7 +11,6 @@ import com.haghpanah.pienote.utils.toCategoryDomainModel
 import com.haghpanah.pienote.utils.toDomainModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 
 internal class HomeRepositoryImpl(
