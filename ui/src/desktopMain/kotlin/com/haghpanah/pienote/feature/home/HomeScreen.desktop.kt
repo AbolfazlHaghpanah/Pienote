@@ -8,6 +8,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import com.eygraber.uri.Uri
 import com.haghpanah.pienote.core.component.PienoteScaffold
 import com.haghpanah.pienote.core.navigation.PienoteScreens
 import com.haghpanah.pienote.core.theme.PienoteTheme
@@ -23,7 +24,7 @@ internal actual fun HomeScreen(
     snackbarManager: SnackbarManager,
     navigateToRoute: (PienoteScreens) -> Unit,
     onDeleteNote: (NoteDomainModel) -> Unit,
-    onAddNewCategory: (List<Long>, String, String?) -> Unit,
+    onAddNewCategory: (List<Long>, String, Uri?) -> Unit,
     onAddNotesToCategory: (noteIds: List<Long>, categoryId: Long) -> Unit
 ) {
     PienoteScaffold(

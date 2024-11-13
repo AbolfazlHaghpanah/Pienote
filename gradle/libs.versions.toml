@@ -26,9 +26,10 @@ appcompatV7 = "28.0.0"
 navigationRuntimeKtx = "2.8.3"
 uiUnitDesktop = "1.7.0"
 uiUtil = "1.7.0"
-uriKmp = "0.0.18"
+uriKmp = "0.0.19"
 jetbrainsKotlinJvm = "1.9.24"
 detekt = "1.23.6"
+coreKtx = "1.15.0"
 
 [libraries]
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coilCompose" }
@@ -74,6 +75,7 @@ appcompat-v7 = { group = "com.android.support", name = "appcompat-v7", version.r
 androidx-navigation-runtime-ktx = { group = "androidx.navigation", name = "navigation-runtime-ktx", version.ref = "navigationRuntimeKtx" }
 androidx-ui-unit-desktop = { group = "androidx.compose.ui", name = "ui-unit-desktop", version.ref = "uiUnitDesktop" }
 uri-kmp = { module = "com.eygraber:uri-kmp", version.ref = "uriKmp" }
+androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
@@ -83,7 +85,7 @@ composeCompiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "k
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 sqldelite = { id = "app.cash.sqldelight", version.ref = "sqldelite" }
-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version = "1.9.24" }
 jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "jetbrainsKotlinJvm" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 pienote-application-multiplatform = { id = "com.haghpanah.pienote.android-application" }

@@ -8,7 +8,7 @@ plugins {
 }
 
 android {
-    namespace = "com.haghpanah.pienote"
+    namespace = Configuration.PACKAGE_NAME
 }
 
 kotlin {

@@ -3,7 +3,6 @@ package com.haghpanah.pienote.repository
 import com.haghpanah.pienote.database.Categories
 import com.haghpanah.pienote.database.PienoteDatabase
 import com.haghpanah.pienote.model.NoteDomainModel
-import com.haghpanah.pienote.repository.CommonRepository
 import com.haghpanah.pienote.utils.toNotes
 
 internal class CommonRepositoryImpl(

@@ -36,7 +36,7 @@ dependencyResolutionManagement {
 
 include(":app")
 include(":data")
-include(":domain")
 include(":ui")
 include(":texteditor")
+include(":domain")
 includeBuild("build-logic")

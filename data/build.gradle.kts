@@ -21,6 +21,7 @@ kotlin {
             implementation(libs.koin.core)
             implementation(libs.sqldelite.coroutines.extensions)
             implementation(project(":domain"))
+            implementation(libs.uri.kmp)
         }
         desktopMain.dependencies {
             implementation(libs.sqldelite.driver)

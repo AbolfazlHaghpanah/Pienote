@@ -95,7 +95,7 @@ class CategoryViewModel(
 
             updateImageUseCase(
                 currentCategory = currentCategory,
-                uri = uri?.path
+                uri = uri
             )
         }
     }

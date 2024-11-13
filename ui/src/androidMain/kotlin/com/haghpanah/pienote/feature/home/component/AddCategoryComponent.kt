@@ -1,6 +1,5 @@
 package com.haghpanah.pienote.feature.home.component
 
-import android.net.Uri
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
@@ -38,6 +37,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import com.eygraber.uri.Uri
 import com.haghpanah.pienote.core.component.PienoteTextField
 import com.haghpanah.pienote.core.theme.PienoteTheme
 import org.jetbrains.compose.resources.stringResource
@@ -64,7 +64,7 @@ fun AddCategoryComponent(
 
     val pickMedia = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia(),
-        onResult = { uri -> categoryImage = uri }
+        onResult = { uri -> categoryImage = uri?.toString()?.let { Uri.parse(it) } }
     )
 
     Column(

@@ -98,8 +98,8 @@ class NoteViewModel(
     fun updateNoteImage(uri: Uri?) {
         viewModelScope.launch(Dispatchers.IO) {
             val note = getCurrentState().note
-            val newImage = noteUpdateNoteImageUseCase(note = note, uri = uri?.path)
-            val newNote = getCurrentState().note.copy(image = newImage)
+            val newImage = noteUpdateNoteImageUseCase(note = note, uri = uri)
+            val newNote = getCurrentState().note.copy(image = newImage.toString())
 
             updateState { copy(note = newNote) }
         }

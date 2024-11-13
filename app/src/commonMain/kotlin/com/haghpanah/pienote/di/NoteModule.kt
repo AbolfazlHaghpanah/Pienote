@@ -8,7 +8,6 @@ import com.haghpanah.pienote.usecase.note.NoteUpdateNoteImageUseCase
 import com.haghpanah.pienote.usecase.note.NoteUpdateNoteUseCase
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.viewModelOf
-import org.koin.dsl.bind
 import org.koin.dsl.module
 
 val noteModule = module {

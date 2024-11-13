@@ -38,6 +38,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import com.eygraber.uri.Uri
 import com.haghpanah.pienote.core.component.PienoteScaffold
 import com.haghpanah.pienote.core.component.PienoteTopBar
 import com.haghpanah.pienote.core.navigation.PienoteScreens
@@ -63,7 +64,7 @@ internal actual fun HomeScreen(
     snackbarManager: SnackbarManager,
     navigateToRoute: (PienoteScreens) -> Unit,
     onDeleteNote: (NoteDomainModel) -> Unit,
-    onAddNewCategory: (List<Long>, String, String?) -> Unit,
+    onAddNewCategory: (List<Long>, String, Uri?) -> Unit,
     onAddNotesToCategory: (noteIds: List<Long>, categoryId: Long) -> Unit
 ) {
     val context = LocalContext.current
@@ -183,7 +184,7 @@ internal actual fun HomeScreen(
                                     onAddNewCategory(
                                         selectedNotes.map { note -> note.id },
                                         name,
-                                        image?.path
+                                        image
                                     )
                                 },
                                 onDiscard = { bottomMenuContentType = null }

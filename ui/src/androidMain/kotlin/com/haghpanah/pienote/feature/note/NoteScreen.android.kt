@@ -1,5 +1,6 @@
 package com.haghpanah.pienote.feature.note
 
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
@@ -94,8 +95,8 @@ internal actual fun NoteScreen(
         contract = ActivityResultContracts.PickVisualMedia(),
         onResult = { uri ->
             onImageSelected(
-                uri?.let {
-                    Uri.parseOrNull(it.path.orEmpty())
+                uri?.toString()?.let {
+                    Uri.parse(it)
                 }
             )
         }
@@ -245,7 +246,11 @@ internal actual fun NoteScreen(
                 isEditing = state.isEditing,
                 image = state.note.image,
                 onClick = {
-                    pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+                    pickMedia.launch(
+                        PickVisualMediaRequest(
+                            ActivityResultContracts.PickVisualMedia.ImageOnly
+                        )
+                    )
                 }
             )
 

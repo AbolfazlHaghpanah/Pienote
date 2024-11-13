@@ -1,6 +1,7 @@
 package com.haghpanah.pienote.feature.home
 
 import androidx.lifecycle.viewModelScope
+import com.eygraber.uri.Uri
 import com.haghpanah.pienote.core.utlis.BaseViewModel
 import com.haghpanah.pienote.core.utlis.SnackbarManager
 import com.haghpanah.pienote.core.utlis.chunkedEven
@@ -38,13 +39,13 @@ class HomeViewModel(
     fun addNewCategory(
         noteIds: List<Long>,
         name: String,
-        image: String?
+        image: Uri?
     ) {
         viewModelScope.launch(Dispatchers.IO) {
             runCatching {
                 insertCategoryUseCase(
                     name = name,
-                    image = ""
+                    image = image
                 )
             }.onSuccess {
                 // TODO this is Dozdi Way

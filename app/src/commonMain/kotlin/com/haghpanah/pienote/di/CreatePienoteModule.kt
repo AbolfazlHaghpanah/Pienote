@@ -6,5 +6,6 @@ internal fun createPienoteModules() = listOf(
     databaseModule,
     noteModule,
     categoryModule,
-    commonModule
+    commonModule,
+    fileManagerModule
 )
