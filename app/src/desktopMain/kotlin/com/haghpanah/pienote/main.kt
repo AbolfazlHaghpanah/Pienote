@@ -82,7 +82,7 @@ fun main() = application {
             state = drawerState,
             modifier = Modifier
                 .clip(PienoteTheme.shapes.large)
-                .background(PienoteTheme.colors.surface)
+                .background(PienoteTheme.colors.surfaceContainerLow)
                 .padding(8.dp),
             drawerContent = {
                 HomeSideBar(
