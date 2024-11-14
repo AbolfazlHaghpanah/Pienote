@@ -32,8 +32,8 @@ kotlin {
             implementation(libs.compose.components.uiToolingPreview)
             implementation(libs.compose.animation.graphics)
             implementation(libs.compose.animation)
-//            implementation(libs.compose.ui.util)
-            implementation(libs.androidx.material.icons)
+            implementation(libs.compose.ui.util)
+            implementation(libs.compose.material.icons)
             implementation(libs.kotlin.serialization)
             implementation(libs.coil.compose)
         }
