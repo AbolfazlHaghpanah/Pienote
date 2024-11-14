@@ -6,6 +6,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.material3.Typography
+import androidx.compose.material3.darkColorScheme
 import com.haghpanah.pienote.theme.LocalPienoteShapes
 import com.haghpanah.pienote.theme.PienoteShapes
 
@@ -25,8 +26,6 @@ fun PienoteTheme(
 }
 
 object PienoteTheme {
-
-
     val colors: ColorScheme
         @Composable
         @ReadOnlyComposable
