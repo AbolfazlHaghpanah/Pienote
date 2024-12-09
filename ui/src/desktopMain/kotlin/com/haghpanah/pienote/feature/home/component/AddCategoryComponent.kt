@@ -9,9 +9,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -36,7 +34,7 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.haghpanah.pienote.core.component.PienoteTextField
 import com.haghpanah.pienote.core.theme.PienoteTheme
-import com.haghpanah.pienote.feature.utils.KeyboardShortcutsManager
+import com.haghpanah.pienote.shortcuthandler.addKeyboardShortcut
 import com.haghpanh.pienote.features.home.ui.component.SelectingNoteOptions
 import org.jetbrains.compose.resources.stringResource
 import pienote.ui.generated.resources.Res
@@ -51,19 +49,17 @@ fun AddCategoryComponent(
     onAddNewCategory: (String, String?) -> Unit,
     onDiscard: () -> Unit
 ) {
-    KeyboardShortcutsManager.addKeyboardShortcut(
-        key = Key.Escape
-    ){
-        onDiscard()
-        false
-    }
-
     var categoryName: String? by remember {
         mutableStateOf(null)
     }
     //TODO
     var categoryImage: String? by remember {
         mutableStateOf(null)
+    }
+
+    addKeyboardShortcut(Key.Escape) {
+        onDiscard()
+        true
     }
 
     Column(

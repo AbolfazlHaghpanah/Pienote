@@ -20,8 +20,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.unit.dp
 import com.haghpanah.pienote.core.theme.PienoteTheme
-import com.haghpanah.pienote.feature.utils.KeyboardShortcutsManager
 import com.haghpanah.pienote.model.CategoryWithNotesCountDomainModel
+import com.haghpanah.pienote.shortcuthandler.addKeyboardShortcut
 import com.haghpanh.pienote.features.home.ui.component.SelectingNoteOptions
 
 @Composable
@@ -31,13 +31,10 @@ fun MoveToCategoryComponent(
     categories: List<List<CategoryWithNotesCountDomainModel>>?,
     onDiscard: () -> Unit
 ) {
-    KeyboardShortcutsManager.addKeyboardShortcut(
-        key = Key.Escape
-    ) {
+    addKeyboardShortcut(Key.Escape) {
         onDiscard()
-        false
+        true
     }
-
     Column(
         modifier
             .clip(PienoteTheme.shapes.large)

@@ -1,5 +1,6 @@
 package com.haghpanah.pienote.utils
 
+import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
@@ -259,7 +260,12 @@ data class RenderedText(
 @Composable
 fun rememberTextEditorValue(
     initialMarkdown: String,
+    typography: Typography
 ): TextEditorValue {
+    TextEditorFontProvider.Initialize(
+        typography = typography
+    )
+
     return rememberSaveable(saver = TextEditorValue.saver) {
         TextEditorValue(initialMarkdown)
     }

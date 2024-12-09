@@ -45,13 +45,13 @@ import com.haghpanah.pienote.core.component.PienoteChip
 import com.haghpanah.pienote.core.component.PienoteScaffold
 import com.haghpanah.pienote.core.navigation.PienoteScreens
 import com.haghpanah.pienote.core.theme.PienoteTheme
-import com.haghpanah.pienote.feature.utils.KeyboardShortcutsManager.addKeyboardShortcut
 import com.haghpanah.pienote.feature.home.component.AddCategoryComponent
 import com.haghpanah.pienote.feature.home.component.HomeCategoryItem
 import com.haghpanah.pienote.feature.home.component.HomeNoteItem
 import com.haghpanah.pienote.feature.home.component.HomeShowingItem
 import com.haghpanah.pienote.feature.home.component.MoveToCategoryComponent
 import com.haghpanah.pienote.model.NoteDomainModel
+import com.haghpanah.pienote.shortcuthandler.addKeyboardShortcut
 import com.haghpanh.pienote.features.home.ui.component.SelectingNoteBottomMenu
 import com.haghpanh.pienote.features.home.ui.component.SelectingNoteOptions
 import org.koin.compose.viewmodel.koinViewModel
@@ -148,9 +148,7 @@ private fun HomeSideBar(
                 enter = slideInVertically(initialOffsetY = { it }),
                 exit = slideOutVertically(targetOffsetY = { it * 2 })
             ) {
-                addKeyboardShortcut(
-                    key = Key.Escape
-                ) {
+                addKeyboardShortcut(Key.Escape) {
                     selectedNotes.removeAll { true }
                     true
                 }

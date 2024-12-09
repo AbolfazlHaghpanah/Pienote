@@ -9,11 +9,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.haghpanah.pienote.utils.TextEditorFontProvider.robotoRegularFont
 import org.jetbrains.compose.resources.StringResource
 import pienote.texteditor.generated.resources.Res
 import pienote.texteditor.generated.resources.label_h1
@@ -47,65 +43,15 @@ enum class TextEditorAction(val key: String) {
 
 fun TextEditorAction.getTextStyle(): TextStyle {
     return when (this) {
-        TextEditorAction.H1 -> TextStyle.Default.copy(
-            fontFamily = TextEditorFontProvider.robotoBoldFont,
-            fontSize = 32.sp,
-            fontWeight = FontWeight.Bold,
-            lineHeight = 38.sp
-        )
-
-        TextEditorAction.H2 -> TextStyle.Default.copy(
-            fontFamily = TextEditorFontProvider.robotoBoldFont,
-            fontSize = 28.sp,
-            fontWeight = FontWeight.SemiBold,
-            lineHeight = 32.sp
-        )
-
-        TextEditorAction.H3 -> TextStyle.Default.copy(
-            fontFamily = TextEditorFontProvider.robotoBoldFont,
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Medium,
-            lineHeight = 28.sp
-        )
-
-        TextEditorAction.H4 -> TextStyle.Default.copy(
-            fontFamily = TextEditorFontProvider.robotoBoldFont,
-            fontSize = 20.sp,
-            fontWeight = FontWeight.Normal,
-            lineHeight = 24.sp
-        )
-
-        TextEditorAction.TodoListNotComplete -> TextStyle.Default.copy(
-            fontFamily = robotoRegularFont,
-            fontSize = 18.sp,
-            fontWeight = FontWeight.Normal,
-            textDecoration = TextDecoration.None,
-        )
-
-        TextEditorAction.TodoListComplete -> TextStyle.Default.copy(
-            fontFamily = robotoRegularFont,
-            fontSize = 18.sp,
-            fontWeight = FontWeight.Normal,
-            textDecoration = TextDecoration.LineThrough
-        )
-
-        TextEditorAction.List -> TextStyle.Default.copy(
-            fontFamily = robotoRegularFont,
-            fontSize = 18.sp,
-            fontWeight = FontWeight.Light
-        )
-
-        TextEditorAction.OrderedList -> TextStyle.Default.copy(
-            fontFamily = robotoRegularFont,
-            fontSize = 18.sp,
-            fontWeight = FontWeight.Light
-        )
-
-        TextEditorAction.Non -> TextStyle.Default.copy(
-            fontFamily = robotoRegularFont,
-            fontSize = 18.sp,
-            fontWeight = FontWeight.Light
-        )
+        TextEditorAction.H1 -> TextEditorFontProvider.typography.displayMedium
+        TextEditorAction.H2 -> TextEditorFontProvider.typography.headlineLarge
+        TextEditorAction.H3 -> TextEditorFontProvider.typography.displayMedium
+        TextEditorAction.H4 -> TextEditorFontProvider.typography.headlineSmall
+        TextEditorAction.TodoListComplete -> TextEditorFontProvider.typography.bodyMedium
+        TextEditorAction.TodoListNotComplete -> TextEditorFontProvider.typography.bodyMedium
+        TextEditorAction.OrderedList -> TextEditorFontProvider.typography.bodyMedium
+        TextEditorAction.List -> TextEditorFontProvider.typography.bodyMedium
+        TextEditorAction.Non -> TextEditorFontProvider.typography.bodyMedium
     }
 }
 
@@ -169,6 +115,6 @@ fun TextEditorAction.CreateIcon(onIconClick: () -> Unit) {
             )
         }
 
-        else -> null
+        else -> {}
     }
 }
