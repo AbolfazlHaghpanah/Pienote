@@ -45,6 +45,7 @@ kotlin {
             implementation(project(":ui"))
             implementation(project(":data"))
             implementation(project(":domain"))
+            implementation(project(":texteditor"))
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)

@@ -1,4 +1,4 @@
-package com.haghpanh.pienote.commonui.texteditor.compose
+package com.haghpanah.pienote.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box

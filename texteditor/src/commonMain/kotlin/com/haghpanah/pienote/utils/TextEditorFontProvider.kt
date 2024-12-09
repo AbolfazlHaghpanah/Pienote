@@ -1,20 +1,25 @@
 package com.haghpanah.pienote.utils
 
+import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.text.font.FontFamily
 
-object TextEditorFontProvider {
-    lateinit var robotoBoldFont: FontFamily
-        private set
-    lateinit var robotoRegularFont: FontFamily
+internal object TextEditorFontProvider {
+    lateinit var typography: Typography
         private set
 
     @Composable
     fun Initialize(
-        regularFont: FontFamily,
-        boldFont: FontFamily
+        typography: Typography
     ) {
-        robotoBoldFont = regularFont
-        robotoRegularFont = boldFont
+        this.typography = typography
     }
+}
+
+@Composable
+fun InitiateTextEditorFont(
+    typography: Typography
+) {
+    TextEditorFontProvider.Initialize(
+        typography = typography
+    )
 }

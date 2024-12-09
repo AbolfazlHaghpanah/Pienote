@@ -7,8 +7,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ContextualFlowRow
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
@@ -399,12 +399,10 @@ internal actual fun CategoryScreen(
             }
 
             if (state.notes.isNotEmpty()) {
-                ContextualFlowRow(
-                    itemCount = state.notes.size,
+                FlowRow(
                     maxItemsInEachRow = 3
-                ) { index ->
-                    runCatching {
-                        val note = state.notes[index]
+                ) {
+                    state.notes.onEach { note ->
                         val isSelected by rememberSaveable(selectedNotesId.size) {
                             derivedStateOf { selectedNotesId.contains(note.id) }
                         }
@@ -441,8 +439,6 @@ internal actual fun CategoryScreen(
                                 }
                             }
                         )
-                    }.onFailure {
-                        println(it.message)
                     }
                 }
 

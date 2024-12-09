@@ -1,4 +1,11 @@
 <resources>
+    <string name="label_bold">Bold</string>
+    <string name="label_copy">Copy</string>
+    <string name="label_paste">Paste</string>
+    <string name="label_cut">Cut</string>
+    <string name="label_select_all">Select All</string>
+    <string name="label_underline">Under Line</string>
+    <string name="label_code">Code</string>
     <string name="label_write_three_dot">Write…</string>
     <string name="label_header1">Header 1</string>
     <string name="label_header2">Header 2</string>

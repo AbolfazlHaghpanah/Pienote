@@ -3,6 +3,9 @@ package com.haghpanah.pienote.utils
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.buildAnnotatedString
 
+/**
+ * Make sure U've Initiates font for Text editor before using this function.
+ */
 fun renderMarkdownToAnnotatedString(markdownInput: String): AnnotatedString {
     return buildAnnotatedString {
         var counter = 0

@@ -5,32 +5,30 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDirection
-import com.haghpanah.pienote.utils.TextEditorFontProvider
 import org.jetbrains.compose.resources.Font
 import pienote.ui.generated.resources.Res
 import pienote.ui.generated.resources.roboto_bold
 import pienote.ui.generated.resources.roboto_regular
 
-@Composable
-fun pienoteTypography(): Typography {
-    val robotoBoldFont = FontFamily(
+val robotoBoldFont: FontFamily
+    @Composable
+    get() = FontFamily(
         Font(
             resource = Res.font.roboto_bold,
             weight = FontWeight.Normal
         )
     )
-    val robotoRegularFont = FontFamily(
+val robotoRegularFont: FontFamily
+    @Composable
+    get() = FontFamily(
         Font(
             resource = Res.font.roboto_regular,
             weight = FontWeight.Normal
         )
     )
 
-    TextEditorFontProvider.Initialize(
-        boldFont = robotoBoldFont,
-        regularFont = robotoRegularFont
-    )
-
+@Composable
+fun pienoteTypography(): Typography {
     return Typography(
         displayLarge = Typography().displayLarge.copy(
             fontFamily = robotoBoldFont,
