@@ -1,4 +1,4 @@
-package com.haghpanah.pienote.feature.home
+package com.haghpanah.pienote.feature.sidebar
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
@@ -45,6 +45,8 @@ import com.haghpanah.pienote.core.component.PienoteChip
 import com.haghpanah.pienote.core.component.PienoteScaffold
 import com.haghpanah.pienote.core.navigation.PienoteScreens
 import com.haghpanah.pienote.core.theme.PienoteTheme
+import com.haghpanah.pienote.feature.home.HomeViewModel
+import com.haghpanah.pienote.feature.home.HomeViewState
 import com.haghpanah.pienote.feature.home.component.AddCategoryComponent
 import com.haghpanah.pienote.feature.home.component.HomeCategoryItem
 import com.haghpanah.pienote.feature.home.component.HomeNoteItem
