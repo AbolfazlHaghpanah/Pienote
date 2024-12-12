@@ -26,7 +26,7 @@ import com.haghpanah.pienote.core.component.rememberDrawerState
 import com.haghpanah.pienote.core.navigation.PienoteScreens
 import com.haghpanah.pienote.core.theme.PienoteTheme
 import com.haghpanah.pienote.di.createPienoteModules
-import com.haghpanah.pienote.feature.home.HomeSideBar
+import com.haghpanah.pienote.feature.sidebar.HomeSideBar
 import com.haghpanah.pienote.shortcuthandler.addKeyboardShortcut
 import com.haghpanah.pienote.shortcuthandler.handleKeyEvent
 import com.haghpanah.pienote.ui.MainScreen
