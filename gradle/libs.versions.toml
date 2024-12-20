@@ -27,10 +27,14 @@ navigationRuntimeKtx = "2.8.3"
 uiUnitDesktop = "1.7.0"
 uiUtil = "1.7.0"
 uriKmp = "0.0.18"
+jetbrainsKotlinJvm = "1.9.24"
 
 [libraries]
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coilCompose" }
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
+kotlin-gradlePlugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
+andorid-gradlePlugin = { module = "com.android.tools.build:gradle", version.ref = "agp" }
+compose-gradlePlugin = { module = "org.jetbrains.compose:org.jetbrains.compose.gradle.plugin", version.ref = "compose-multiplatform" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -46,7 +50,6 @@ compose-components-resources = { module = "org.jetbrains.compose.components:comp
 compose-components-uiToolingPreview = { module = "org.jetbrains.compose.components:components-ui-tooling-preview", version.ref = "compose-multiplatform" }
 compose-material-icons = { module = "org.jetbrains.compose.material:material-icons-extended", version.ref = "compose-multiplatform" }
 compose-ui-util = { module = "org.jetbrains.compose.ui:ui-util", version.ref = "uiUtil" }
-
 
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activityCompose" }
 androidx-lifecycle-viewmodel = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-viewmodel", version.ref = "androidx-lifecycle" }
@@ -78,3 +81,4 @@ kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref =
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 sqldelite = { id = "app.cash.sqldelight", version.ref = "sqldelite" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "jetbrainsKotlinJvm" }

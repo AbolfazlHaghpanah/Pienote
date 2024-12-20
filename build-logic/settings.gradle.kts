@@ -1,6 +1,3 @@
-rootProject.name = "Pienote"
-enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
-
 pluginManagement {
     repositories {
         maven {
@@ -32,11 +29,12 @@ dependencyResolutionManagement {
         }
         mavenCentral()
     }
+    versionCatalogs {
+        create("libs") {
+            from(files("../gradle/libs.versions.toml"))
+        }
+    }
 }
 
-include(":app")
-include(":data")
-include(":domain")
-include(":ui")
-include(":texteditor")
-includeBuild("build-logic")
+rootProject.name = "build-logic"
+include(":convention")
