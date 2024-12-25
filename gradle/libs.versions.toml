@@ -82,3 +82,7 @@ kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", versi
 sqldelite = { id = "app.cash.sqldelight", version.ref = "sqldelite" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "jetbrainsKotlinJvm" }
+pienote-application-multiplatform = { id = "com.haghpanah.pienote.android-application" }
+pienote-android-library = { id = "com.haghpanah.pienote.android-library" }
+pienote-multiplatform = { id = "com.haghpanah.pienote.multiplatform" }
+pienote-compose-multiplatform = { id = "com.haghpanah.pienote.compose-multiplatform" }

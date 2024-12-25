@@ -1,19 +1,13 @@
+import com.haghpanah.pienote.Configuration
+
 plugins {
-    alias(libs.plugins.kotlinMultiplatform)
-    alias(libs.plugins.androidLibrary)
+    alias(libs.plugins.pienote.android.library)
+    alias(libs.plugins.pienote.multiplatform)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.sqldelite)
 }
 
 kotlin {
-    android {
-        compilations.all {
-            kotlinOptions.jvmTarget = "21"
-        }
-    }
-
-    jvm("desktop")
-
     sourceSets {
         val desktopMain by getting
 
@@ -35,26 +29,7 @@ kotlin {
 }
 
 android {
-    namespace = "com.haghpanah.pienote.data"
-    compileSdk = libs.versions.android.compileSdk.get().toInt()
-
-    defaultConfig {
-        minSdk = libs.versions.android.minSdk.get().toInt()
-    }
-
-    buildTypes {
-        release {
-            isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
-        }
-    }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_21
-        targetCompatibility = JavaVersion.VERSION_21
-    }
+    namespace = "${Configuration.PACKAGE_NAME}.data"
 }
 
 sqldelight {
