@@ -25,9 +25,30 @@ kotlin {
 
 gradlePlugin {
     plugins {
-        register("ApplicationPlugin") {
-            id = "com.haghpanah.pienote.multiplatform-application"
-            implementationClass = "ApplicationGradlePlugin"
+        register("MultiplatformApplicationConversionPlugin") {
+            id = libs.plugins.pienote.application.multiplatform.get().pluginId
+            implementationClass = "MultiplatformApplicationConversionPlugin"
+        }
+    }
+
+    plugins {
+        register("AndroidLibraryConversionPlugin") {
+            id = libs.plugins.pienote.android.library.get().pluginId
+            implementationClass = "AndroidLibraryConversionPlugin"
+        }
+    }
+
+    plugins {
+        register("MultiplatformConversionPlugin") {
+            id = libs.plugins.pienote.multiplatform.get().pluginId
+            implementationClass = "MultiplatformConversionPlugin"
+        }
+    }
+
+    plugins {
+        register("ComposeMultiplatformConversionPlugin") {
+            id = libs.plugins.pienote.compose.multiplatform.get().pluginId
+            implementationClass = "ComposeMultiplatformConversionPlugin"
         }
     }
 }
