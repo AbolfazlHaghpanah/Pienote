@@ -35,7 +35,6 @@ import coil3.compose.AsyncImage
 import com.haghpanah.pienote.core.component.PienoteTextField
 import com.haghpanah.pienote.core.theme.PienoteTheme
 import com.haghpanah.pienote.shortcuthandler.addKeyboardShortcut
-import com.haghpanh.pienote.features.home.ui.component.SelectingNoteOptions
 import org.jetbrains.compose.resources.stringResource
 import pienote.ui.generated.resources.Res
 import pienote.ui.generated.resources.add_cover_image

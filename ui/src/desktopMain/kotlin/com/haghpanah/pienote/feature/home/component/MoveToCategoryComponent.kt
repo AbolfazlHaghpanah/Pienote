@@ -22,7 +22,6 @@ import androidx.compose.ui.unit.dp
 import com.haghpanah.pienote.core.theme.PienoteTheme
 import com.haghpanah.pienote.model.CategoryWithNotesCountDomainModel
 import com.haghpanah.pienote.shortcuthandler.addKeyboardShortcut
-import com.haghpanh.pienote.features.home.ui.component.SelectingNoteOptions
 
 @Composable
 fun MoveToCategoryComponent(

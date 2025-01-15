@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.navigation.NavController
 import com.haghpanah.pienote.core.navigation.PienoteScreens
+import com.haghpanah.pienote.core.utlis.SnackbarManager
 import com.haghpanah.pienote.model.NoteDomainModel
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -28,7 +29,7 @@ private fun HomeScreen(
 
     HomeScreen(
         state = state,
-//        snackbarManager = viewModel.snackbarManager,
+        snackbarManager = viewModel.snackbarManager,
         navigateToRoute = { route ->
             navController.navigate(route = route) {
                 popUpTo(route) {
@@ -46,7 +47,7 @@ private fun HomeScreen(
 @Composable
 internal expect fun HomeScreen(
     state: HomeViewState,
-//    snackbarManager: SnackbarManager,
+    snackbarManager: SnackbarManager,
     navigateToRoute: (PienoteScreens) -> Unit,
     onDeleteNote: (NoteDomainModel) -> Unit,
     onAddNewCategory: (List<Long>, String, String?) -> Unit,

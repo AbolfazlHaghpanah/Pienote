@@ -21,7 +21,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import com.haghpanah.pienote.core.theme.PienoteTheme
 import com.haghpanah.pienote.model.CategoryWithNotesCountDomainModel
-import com.haghpanh.pienote.features.home.ui.component.SelectingNoteOptions
 
 @Composable
 fun MoveToCategoryComponent(

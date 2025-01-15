@@ -42,13 +42,14 @@ import com.haghpanah.pienote.core.component.PienoteScaffold
 import com.haghpanah.pienote.core.component.PienoteTopBar
 import com.haghpanah.pienote.core.navigation.PienoteScreens
 import com.haghpanah.pienote.core.theme.PienoteTheme
+import com.haghpanah.pienote.core.utlis.SnackbarManager
 import com.haghpanah.pienote.feature.home.component.AddCategoryComponent
 import com.haghpanah.pienote.feature.home.component.HomeCategoryItem
 import com.haghpanah.pienote.feature.home.component.HomeNoteItem
 import com.haghpanah.pienote.feature.home.component.MoveToCategoryComponent
 import com.haghpanah.pienote.model.NoteDomainModel
-import com.haghpanh.pienote.features.home.ui.component.SelectingNoteBottomMenu
-import com.haghpanh.pienote.features.home.ui.component.SelectingNoteOptions
+import com.haghpanah.pienote.feature.home.component.SelectingNoteBottomMenu
+import com.haghpanah.pienote.feature.home.component.SelectingNoteOptions
 import org.jetbrains.compose.resources.stringResource
 import pienote.ui.generated.resources.Res
 import pienote.ui.generated.resources.home
@@ -59,6 +60,7 @@ import pienote.ui.generated.resources.label_home
 @Composable
 internal actual fun HomeScreen(
     state: HomeViewState,
+    snackbarManager: SnackbarManager,
     navigateToRoute: (PienoteScreens) -> Unit,
     onDeleteNote: (NoteDomainModel) -> Unit,
     onAddNewCategory: (List<Long>, String, String?) -> Unit,

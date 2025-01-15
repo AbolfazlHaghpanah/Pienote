@@ -2,6 +2,7 @@ package com.haghpanah.pienote.feature.home
 
 import androidx.lifecycle.viewModelScope
 import com.haghpanah.pienote.core.utlis.BaseViewModel
+import com.haghpanah.pienote.core.utlis.SnackbarManager
 import com.haghpanah.pienote.core.utlis.chunkedEven
 import com.haghpanah.pienote.model.NoteDomainModel
 import com.haghpanah.pienote.usecase.home.HomeAddNotesToCategoryUseCase
@@ -14,7 +15,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class HomeViewModel(
-//    val snackbarManager: SnackbarManager,
+    val snackbarManager: SnackbarManager,
     private val homeObserveNotesUseCase: HomeObserveNotesUseCase,
     private val homeObserveCategoriesUseCase: HomeObserveCategoriesUseCase,
     private val homeDeleteNoteUseCase: HomeDeleteNoteUseCase,
@@ -61,8 +62,7 @@ class HomeViewModel(
                         }
                     }
             }.onFailure {
-                //TODO
-//                snackbarManager.sendError("Fail To Create Category")
+                snackbarManager.sendError("Fail To Create Category")
             }
         }
     }

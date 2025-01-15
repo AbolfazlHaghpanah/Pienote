@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.eygraber.uri.Uri
 import com.haghpanah.pienote.core.utlis.BaseViewModel
+import com.haghpanah.pienote.core.utlis.SnackbarManager
 import com.haghpanah.pienote.model.CategoryDomainModel
 import com.haghpanah.pienote.usecase.category.CategoryAddNoteToCategoryUseCase
 import com.haghpanah.pienote.usecase.category.CategoryDeleteNoteFromCategoryUseCase
@@ -15,7 +16,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class CategoryViewModel(
-//    val snackbarManager: SnackbarManager,
+    val snackbarManager: SnackbarManager,
     private val getCategoryUseCase: CategoryObserveCategoryUseCase,
     private val updateCategoryUseCase: CategoryUpdateCategoryUseCase,
     private val deleteNoteFromCategoryUseCase: CategoryDeleteNoteFromCategoryUseCase,
@@ -76,9 +77,9 @@ class CategoryViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             deleteNoteFromCategoryUseCase(noteIds)
 
-//            snackbarManager.sendWarning(
-//                message = "Note Removed From Category"
-//            )
+            snackbarManager.sendWarning(
+                message = "Note Removed From Category"
+            )
         }
     }
 

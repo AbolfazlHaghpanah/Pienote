@@ -1,4 +1,4 @@
-package com.haghpanh.pienote.features.home.ui.component
+package com.haghpanah.pienote.feature.home.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
