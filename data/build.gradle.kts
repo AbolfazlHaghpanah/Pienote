@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.pienote.multiplatform)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.sqldelite)
+    alias(libs.plugins.pienote.subproject)
 }
 
 kotlin {

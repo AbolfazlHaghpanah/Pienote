@@ -4,6 +4,7 @@ import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 plugins {
     alias(libs.plugins.pienote.application.multiplatform)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.pienote.subproject)
 }
 
 android {

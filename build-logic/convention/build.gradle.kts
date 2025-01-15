@@ -10,6 +10,7 @@ dependencies {
     compileOnly(libs.kotlin.gradlePlugin)
     compileOnly(libs.andorid.gradlePlugin)
     compileOnly(libs.compose.gradlePlugin)
+    compileOnly(libs.detekt.gradlePlugin)
 }
 
 java {
@@ -49,6 +50,13 @@ gradlePlugin {
         register("ComposeMultiplatformConversionPlugin") {
             id = libs.plugins.pienote.compose.multiplatform.get().pluginId
             implementationClass = "ComposeMultiplatformConversionPlugin"
+        }
+    }
+
+    plugins {
+        register("SubprojectConversionPlugin") {
+            id = libs.plugins.pienote.subproject.get().pluginId
+            implementationClass = "SubprojectConversionPlugin"
         }
     }
 }

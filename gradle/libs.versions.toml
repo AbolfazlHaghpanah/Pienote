@@ -28,6 +28,7 @@ uiUnitDesktop = "1.7.0"
 uiUtil = "1.7.0"
 uriKmp = "0.0.18"
 jetbrainsKotlinJvm = "1.9.24"
+detekt = "1.23.6"
 
 [libraries]
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coilCompose" }
@@ -35,9 +36,11 @@ koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
 kotlin-gradlePlugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 andorid-gradlePlugin = { module = "com.android.tools.build:gradle", version.ref = "agp" }
 compose-gradlePlugin = { module = "org.jetbrains.compose:org.jetbrains.compose.gradle.plugin", version.ref = "compose-multiplatform" }
+detekt-gradlePlugin = { module = "io.gitlab.arturbosch.detekt:detekt-gradle-plugin", version.ref = "detekt" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
+detekt-formatting = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", version.ref = "detekt" }
 
 compose-ui = { module = "org.jetbrains.compose.ui:ui", version.ref = "compose-multiplatform" }
 compose-material3-adaptive-navigation = { module = "org.jetbrains.compose.material3:material3-adaptive-navigation-suite", version.ref = "compose-multiplatform" }
@@ -82,7 +85,9 @@ kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", versi
 sqldelite = { id = "app.cash.sqldelight", version.ref = "sqldelite" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "jetbrainsKotlinJvm" }
+detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 pienote-application-multiplatform = { id = "com.haghpanah.pienote.android-application" }
 pienote-android-library = { id = "com.haghpanah.pienote.android-library" }
 pienote-multiplatform = { id = "com.haghpanah.pienote.multiplatform" }
 pienote-compose-multiplatform = { id = "com.haghpanah.pienote.compose-multiplatform" }
+pienote-subproject = { id = "com.haghpanah.pienote.subproject" }
