@@ -1,6 +1,7 @@
 plugins {
     kotlin("jvm")
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.pienote.subproject)
 }
 
 kotlin {
