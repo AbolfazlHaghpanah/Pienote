@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import com.haghpanah.pienote.core.component.PienoteScaffold
 import com.haghpanah.pienote.core.navigation.PienoteScreens
 import com.haghpanah.pienote.core.theme.PienoteTheme
+import com.haghpanah.pienote.core.utlis.SnackbarManager
 import com.haghpanah.pienote.model.NoteDomainModel
 import org.jetbrains.compose.resources.stringResource
 import pienote.ui.generated.resources.Res
@@ -19,6 +20,7 @@ import pienote.ui.generated.resources.label_add_note
 @Composable
 internal actual fun HomeScreen(
     state: HomeViewState,
+    snackbarManager: SnackbarManager,
     navigateToRoute: (PienoteScreens) -> Unit,
     onDeleteNote: (NoteDomainModel) -> Unit,
     onAddNewCategory: (List<Long>, String, String?) -> Unit,

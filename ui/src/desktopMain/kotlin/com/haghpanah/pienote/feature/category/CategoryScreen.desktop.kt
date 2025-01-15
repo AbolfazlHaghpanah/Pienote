@@ -56,6 +56,8 @@ import com.haghpanah.pienote.core.component.PienoteDialog
 import com.haghpanah.pienote.core.component.PienoteScaffold
 import com.haghpanah.pienote.core.navigation.PienoteScreens
 import com.haghpanah.pienote.core.theme.PienoteTheme
+import com.haghpanah.pienote.core.utlis.PienoteSnackbarHost
+import com.haghpanah.pienote.core.utlis.SnackbarManager
 import com.haghpanah.pienote.feature.category.component.CATEGORY_DIALOG_ITEM_ADD_NOTE_ID
 import com.haghpanah.pienote.feature.category.component.CATEGORY_DIALOG_ITEM_CHANGE_COVER_ID
 import com.haghpanah.pienote.feature.category.component.CATEGORY_DIALOG_ITEM_EDIT_NAME_ID
@@ -75,6 +77,7 @@ import pienote.ui.generated.resources.notes
 internal actual fun CategoryScreen(
     state: CategoryViewState,
     parentScreen: String?,
+    snackbarManager: SnackbarManager,
     onDeleteNoteFromCategory: (List<Long>) -> Unit,
     navigateToRoute: (PienoteScreens) -> Unit,
     onBack: () -> Unit,
@@ -222,7 +225,7 @@ internal actual fun CategoryScreen(
 
     PienoteScaffold(
         snackbarHost = {
-//            PienoteSnackbarHost(manager = snackbarManager)
+            PienoteSnackbarHost(manager = snackbarManager)
         },
         bottomMenu = {
             AnimatedVisibility(

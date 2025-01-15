@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.navigation.NavController
 import com.haghpanah.pienote.core.navigation.PienoteScreens
+import com.haghpanah.pienote.core.utlis.SnackbarManager
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -27,7 +28,7 @@ private fun CategoryScreen(
     CategoryScreen(
         state = state,
         parentScreen = parentScreen,
-//        snackbarManager = viewModel::snackbarManager.get(),
+        snackbarManager = viewModel::snackbarManager.get(),
         onDeleteNoteFromCategory = viewModel::deleteNoteFromCategory,
         navigateToRoute = { route -> navController.navigate(route) },
         onBack = { navController.popBackStack() },
@@ -39,7 +40,7 @@ private fun CategoryScreen(
 internal expect fun CategoryScreen(
     state: CategoryViewState,
     parentScreen: String?,
-//    snackbarManager: SnackbarManager,
+    snackbarManager: SnackbarManager,
     onDeleteNoteFromCategory: (List<Long>) -> Unit,
     navigateToRoute: (PienoteScreens) -> Unit,
     onBack: () -> Unit,

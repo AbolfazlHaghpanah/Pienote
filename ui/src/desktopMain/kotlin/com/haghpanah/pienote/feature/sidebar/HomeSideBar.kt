@@ -54,8 +54,8 @@ import com.haghpanah.pienote.feature.home.component.HomeShowingItem
 import com.haghpanah.pienote.feature.home.component.MoveToCategoryComponent
 import com.haghpanah.pienote.model.NoteDomainModel
 import com.haghpanah.pienote.shortcuthandler.addKeyboardShortcut
-import com.haghpanh.pienote.features.home.ui.component.SelectingNoteBottomMenu
-import com.haghpanh.pienote.features.home.ui.component.SelectingNoteOptions
+import com.haghpanah.pienote.feature.home.component.SelectingNoteBottomMenu
+import com.haghpanah.pienote.feature.home.component.SelectingNoteOptions
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable

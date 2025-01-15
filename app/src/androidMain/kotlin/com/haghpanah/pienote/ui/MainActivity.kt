@@ -20,6 +20,5 @@ class MainActivity : ComponentActivity() {
                 enableEdgeToEdge()
             }
         }
-
     }
 }
