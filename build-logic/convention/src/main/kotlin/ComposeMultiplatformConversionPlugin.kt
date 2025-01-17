@@ -1,9 +1,12 @@
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.artifacts.VersionCatalogsExtension
+import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.findByType
 import org.gradle.kotlin.dsl.getByType
+import org.jetbrains.compose.ComposeExtension
 import org.jetbrains.compose.compose
+import org.jetbrains.compose.resources.ResourcesExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 
 class ComposeMultiplatformConversionPlugin : Plugin<Project> {
@@ -21,18 +24,20 @@ class ComposeMultiplatformConversionPlugin : Plugin<Project> {
                 sourceSets.commonMain.dependencies {
                     implementation(libs.findLibrary("compose.runtime").get().get())
                     implementation(libs.findLibrary("compose.material3").get().get())
-                    implementation(
-                        libs.findLibrary("compose.material3.adaptive.navigation").get().get()
-                    )
+                    implementation(libs.findLibrary("compose.material3.adaptive.navigation").get().get())
                     implementation(libs.findLibrary("compose.ui").get().get())
                     implementation(libs.findLibrary("compose.foundation").get().get())
                     implementation(libs.findLibrary("compose.components.resources").get().get())
-                    implementation(
-                        libs.findLibrary("compose.components.uiToolingPreview").get().get()
-                    )
+                    implementation(libs.findLibrary("compose.components.uiToolingPreview").get().get())
                     implementation(libs.findLibrary("compose.animation.graphics").get().get())
                     implementation(libs.findLibrary("compose.animation").get().get())
                 }
+            }
+
+            extensions.findByType<ComposeExtension>()
+                ?.configure<ResourcesExtension> {
+                    publicResClass = true
+                    generateResClass = auto
             }
         }
     }

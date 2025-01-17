@@ -9,5 +9,6 @@ kotlin {
 }
 
 dependencies {
+    implementation(libs.uri.kmp)
     implementation(libs.kotlinx.coroutines.core)
 }
