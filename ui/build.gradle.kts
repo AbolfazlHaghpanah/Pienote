@@ -1,3 +1,5 @@
+import com.haghpanah.pienote.Configuration
+
 plugins {
     alias(libs.plugins.pienote.android.library)
     alias(libs.plugins.pienote.compose.multiplatform)
@@ -6,7 +8,7 @@ plugins {
 }
 
 android {
-    namespace = "com.haghpanah.pienote.ui"
+    namespace = "${Configuration.PACKAGE_NAME}.ui"
 
     buildTypes {
         release {

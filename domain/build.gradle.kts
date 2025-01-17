@@ -1,3 +1,5 @@
+import com.haghpanah.pienote.Configuration
+
 plugins {
     kotlin("jvm")
     alias(libs.plugins.kotlin.serialization)
@@ -5,7 +7,7 @@ plugins {
 }
 
 kotlin {
-    jvmToolchain(21)
+    jvmToolchain(Configuration.JVM_CODE)
 }
 
 dependencies {
