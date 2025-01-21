@@ -32,6 +32,7 @@ import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import com.eygraber.uri.Uri
 import com.haghpanah.pienote.core.component.PienoteTextField
 import com.haghpanah.pienote.core.theme.PienoteTheme
 import com.haghpanah.pienote.shortcuthandler.addKeyboardShortcut
@@ -45,14 +46,14 @@ import pienote.ui.generated.resources.label_unnamed
 @Composable
 fun AddCategoryComponent(
     modifier: Modifier = Modifier,
-    onAddNewCategory: (String, String?) -> Unit,
+    onAddNewCategory: (String, Uri?) -> Unit,
     onDiscard: () -> Unit
 ) {
     var categoryName: String? by remember {
         mutableStateOf(null)
     }
-    //TODO
-    var categoryImage: String? by remember {
+
+    var categoryImage: Uri? by remember {
         mutableStateOf(null)
     }
 
@@ -84,7 +85,7 @@ fun AddCategoryComponent(
                 .clip(PienoteTheme.shapes.small)
                 .background(PienoteTheme.colors.background)
                 .clickable {
-                    //TODO()
+                    //TODO Implement adding image in desktop
                 }
                 .fillMaxWidth()
                 .aspectRatio(2.4f),

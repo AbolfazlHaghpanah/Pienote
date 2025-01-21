@@ -124,7 +124,7 @@ class SnackbarManager {
     ) {
         val snackbarData = SnackbarData(
             message = message,
-            type = SnackbarTypes.Warning,
+            type = SnackbarTypes.Success,
             duration = duration,
             action = if (actionLabel != null && action != null) {
                 SnackbarAction(

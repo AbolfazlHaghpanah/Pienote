@@ -41,10 +41,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.eygraber.uri.Uri
 import com.haghpanah.pienote.core.component.PienoteChip
 import com.haghpanah.pienote.core.component.PienoteScaffold
 import com.haghpanah.pienote.core.navigation.PienoteScreens
 import com.haghpanah.pienote.core.theme.PienoteTheme
+import com.haghpanah.pienote.core.utlis.PienoteSnackbarHost
+import com.haghpanah.pienote.core.utlis.SnackbarManager
 import com.haghpanah.pienote.feature.home.HomeViewModel
 import com.haghpanah.pienote.feature.home.HomeViewState
 import com.haghpanah.pienote.feature.home.component.AddCategoryComponent
@@ -93,7 +96,8 @@ private fun HomeSideBar(
         },
         onDeleteNote = viewModel::deleteNote,
         onAddNewCategory = viewModel::addNewCategory,
-        onAddNotesToCategory = viewModel::addNoteToCategory
+        onAddNotesToCategory = viewModel::addNoteToCategory,
+        snackbarManager = viewModel.snackbarManager
     )
 }
 
@@ -104,8 +108,9 @@ private fun HomeSideBar(
     onChangeVisibility: (Boolean) -> Unit,
     navigateToRoute: (PienoteScreens) -> Unit,
     onDeleteNote: (NoteDomainModel) -> Unit,
-    onAddNewCategory: (List<Long>, String, String?) -> Unit,
-    onAddNotesToCategory: (noteIds: List<Long>, categoryId: Long) -> Unit
+    onAddNewCategory: (List<Long>, String, Uri?) -> Unit,
+    onAddNotesToCategory: (noteIds: List<Long>, categoryId: Long) -> Unit,
+    snackbarManager: SnackbarManager
 ) {
     val selectedNotes = remember { mutableStateListOf<NoteDomainModel>() }
     val isSelectingNote by remember {
@@ -142,6 +147,9 @@ private fun HomeSideBar(
     }
 
     PienoteScaffold(
+        snackbarHost = {
+            PienoteSnackbarHost(snackbarManager)
+        },
         modifier = Modifier.widthIn(max = contentWidth),
         bottomMenu = {
             AnimatedVisibility(

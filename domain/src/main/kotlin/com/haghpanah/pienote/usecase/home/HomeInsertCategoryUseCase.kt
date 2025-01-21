@@ -9,7 +9,11 @@ class HomeInsertCategoryUseCase(
     private val saveImageUriInCacheUseCase: SaveImageUriInCacheUseCase
 ) {
     suspend operator fun invoke(name: String, image: Uri?) {
-        val imageUri = requireNotNull(saveImageUriInCacheUseCase(image)).toString()
+        val imageUri = if (image != null) {
+            requireNotNull(saveImageUriInCacheUseCase(image)).toString()
+        } else {
+            null
+        }
 
         commonRepository.insertCategory(
             name = name,

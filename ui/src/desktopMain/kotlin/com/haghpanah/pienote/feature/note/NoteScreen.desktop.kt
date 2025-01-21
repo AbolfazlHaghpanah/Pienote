@@ -235,7 +235,6 @@ internal actual fun NoteScreen(
             Column(
                 modifier = Modifier
                     .widthIn(max = 680.dp)
-//                    .heightIn(min = localConfig.screenHeightDp.dp - 24.dp)
             ) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),

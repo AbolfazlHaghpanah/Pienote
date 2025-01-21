@@ -60,6 +60,11 @@ class HomeViewModel(
                                 noteIds = noteIds,
                                 categoryId = category.id
                             )
+
+                            snackbarManager.sendSuccess(
+                                message = "Category Created",
+                                action = { updateState { copy(movedToCategoryId = category.id) } }
+                            )
                         }
                     }
             }.onFailure {
