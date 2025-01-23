@@ -1,0 +1,58 @@
+CREATE TABLE IF NOT EXISTS notes (
+  id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+  title TEXT NOT NULL,
+  markdown TEXT NOT NULL,
+  image TEXT,
+  added_time TEXT NOT NULL,
+  last_changed_time TEXT,
+  category_id INTEGER,
+  color TEXT,
+  FOREIGN KEY (category_id) REFERENCES categories(id)
+);
+
+getNotes:
+SELECT * FROM notes
+WHERE notes.category_id ISNULL
+ORDER BY notes.id DESC;
+
+getNoteWithCategoryById:
+SELECT * FROM notes
+LEFT JOIN categories
+ON notes.category_id = categories.id
+WHERE notes.id = ?;
+
+getNotesByCategoryId:
+SELECT * FROM notes
+WHERE category_id = ?
+ORDER BY id DESC;
+
+addNote:
+INSERT INTO
+notes (title, markdown, image, added_time, last_changed_time, category_id, color)
+VALUES :note;
+
+lastInsertId:
+SELECT last_insert_rowid();
+
+addOrReplaceNote:
+INSERT OR REPLACE INTO
+notes (id,title, markdown, image, added_time, last_changed_time, category_id, color)
+VALUES :note;
+
+deleteNote:
+DELETE FROM notes
+WHERE notes.id IN :noteIds;
+
+addNotesToCategory:
+UPDATE notes
+SET category_id = :categoryId
+WHERE notes.id IN :noteIds;
+
+nullCategoryId:
+UPDATE notes
+SET category_id = NULL
+WHERE notes.id IN :noteIds;
+
+getNotesWithoutCategory:
+SELECT * FROM notes
+WHERE notes.category_id ISNULL;

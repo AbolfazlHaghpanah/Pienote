@@ -1,0 +1,45 @@
+CREATE TABLE IF NOT EXISTS categories (
+  id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+  name TEXT NOT NULL,
+  priority INTEGER,
+  image TEXT
+);
+
+getCategories:
+SELECT * FROM categories;
+
+getCategoryWithNoteCount:
+SELECT categories.*,COUNT(notes.id)
+FROM categories
+LEFT JOIN notes ON category_id = categories.id
+GROUP BY categories.id
+ORDER BY categories.id DESC;
+
+addCategory:
+INSERT INTO
+categories (name, priority, image)
+VALUES ?;
+
+getCategoryById:
+SELECT * FROM categories
+LEFT JOIN notes
+ON notes.category_id = categories.id
+WHERE categories.id = ?;
+
+insertOrReplaceCategory:
+INSERT OR REPLACE INTO
+categories(id,name, priority, image)
+VALUES :category;
+
+addMockCategories:
+INSERT INTO categories (name, priority, image) VALUES
+('Personal', 1, 'personal_icon.png'),
+('Work', 2, 'work_icon.png'),
+('Recipes', 3, NULL),
+('Fitness', 4, 'fitness_icon.png'),
+('Travel', 5, 'travel_icon.png'),
+('Reading', 3, 'reading_icon.png'),
+('Finance', 2, NULL),
+('Hobbies', 4, 'hobbies_icon.png'),
+('Goals', 1, 'goals_icon.png'),
+('Shopping', 2, 'shopping_icon.png');

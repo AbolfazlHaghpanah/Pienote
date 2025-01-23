@@ -1,0 +1,181 @@
+package com.haghpanah.pienote.feature.home.component
+
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.unit.dp
+import coil3.compose.AsyncImage
+import com.eygraber.uri.Uri
+import com.haghpanah.pienote.core.component.PienoteTextField
+import com.haghpanah.pienote.core.theme.PienoteTheme
+import com.haghpanah.pienote.shortcuthandler.addKeyboardShortcut
+import org.jetbrains.compose.resources.stringResource
+import pienote.ui.generated.resources.Res
+import pienote.ui.generated.resources.add_cover_image
+import pienote.ui.generated.resources.label_add
+import pienote.ui.generated.resources.label_discard
+import pienote.ui.generated.resources.label_unnamed
+
+@Composable
+fun AddCategoryComponent(
+    modifier: Modifier = Modifier,
+    onAddNewCategory: (String, Uri?) -> Unit,
+    onDiscard: () -> Unit
+) {
+    var categoryName: String? by remember {
+        mutableStateOf(null)
+    }
+
+    var categoryImage: Uri? by remember {
+        mutableStateOf(null)
+    }
+
+    addKeyboardShortcut(Key.Escape) {
+        onDiscard()
+        true
+    }
+
+    Column(
+        modifier
+            .verticalScroll(rememberScrollState())
+            .clip(PienoteTheme.shapes.large)
+            .background(PienoteTheme.colors.surfaceContainerHighest)
+            .padding(24.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        Text(
+            text = SelectingNoteOptions.AddCategory.label,
+            style = PienoteTheme.typography.titleMedium,
+            color = PienoteTheme.colors.onSurfaceVariant
+        )
+
+        HorizontalDivider()
+
+        Spacer(modifier = Modifier.weight(1f))
+
+        Box(
+            modifier = Modifier
+                .clip(PienoteTheme.shapes.small)
+                .background(PienoteTheme.colors.background)
+                .clickable {
+                    //TODO Implement adding image in desktop
+                }
+                .fillMaxWidth()
+                .aspectRatio(2.4f),
+        ) {
+            if (categoryImage == null) {
+                Text(
+                    modifier = Modifier
+                        .padding(8.dp)
+                        .align(Alignment.BottomStart),
+                    text = stringResource(Res.string.add_cover_image),
+                    style = PienoteTheme.typography.displayLarge,
+                    color = PienoteTheme.colors.onBackground,
+                )
+            } else {
+                AsyncImage(
+                    modifier = Modifier
+                        .clickable {
+
+                        }
+                        .fillMaxWidth()
+                        .aspectRatio(2.4f),
+                    model = categoryImage,
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop
+                )
+
+                Box(
+                    modifier = Modifier
+                        .background(
+                            Brush.verticalGradient(
+                                listOf(
+                                    Color.Transparent,
+                                    Color.Transparent,
+                                    PienoteTheme.colors.surfaceContainerHighest
+                                )
+                            )
+                        )
+                        .fillMaxWidth()
+                        .aspectRatio(2.4f),
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.weight(1f))
+
+        PienoteTextField(
+            modifier = modifier.fillMaxWidth(),
+            value = categoryName.orEmpty(),
+            onValueChange = { categoryName = it },
+            placeHolderText = stringResource(Res.string.label_unnamed),
+            textStyle = PienoteTheme.typography.headlineMedium
+        )
+
+        Spacer(modifier = Modifier.weight(1f))
+
+        Row(
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            Button(
+                onClick = {
+                    if (categoryName.isNullOrEmpty().not()) {
+                        onAddNewCategory(
+                            categoryName!!,
+                            categoryImage
+                        )
+                    }
+                },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = PienoteTheme.colors.tertiaryContainer,
+                    contentColor = PienoteTheme.colors.onTertiaryContainer
+                )
+            ) {
+                Text(text = stringResource(Res.string.label_add))
+            }
+
+            OutlinedButton(
+                onClick = onDiscard,
+                colors = ButtonDefaults.outlinedButtonColors(
+                    contentColor = PienoteTheme.colors.onErrorContainer
+                ),
+                border = BorderStroke(
+                    width = 1.dp,
+                    color = PienoteTheme.colors.onErrorContainer
+                )
+            ) {
+                Text(text = stringResource(Res.string.label_discard))
+            }
+        }
+    }
+}

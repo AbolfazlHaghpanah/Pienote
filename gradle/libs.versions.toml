@@ -1,106 +1,95 @@
 [versions]
-agp = "8.2.2"
-detektFormatting = "1.23.3"
-kotlin = "1.9.24"
-core-ktx = "1.13.1"
+agp = "8.5.2"
+android-compileSdk = "34"
+android-minSdk = "24"
+android-targetSdk = "34"
+androidx-activityCompose = "1.9.3"
+androidx-appcompat = "1.7.0"
+androidx-constraintlayout = "2.2.0"
+androidx-core-ktx = "1.15.0"
+androidx-espresso-core = "3.6.1"
+androidx-lifecycle = "2.8.3"
+androidx-test-junit = "1.2.1"
+andoridx-navigation = "2.7.0-alpha07"
+coilCompose = "3.0.0-rc01"
+compose-multiplatform = "1.7.0"
 junit = "4.13.2"
-androidx-test-ext-junit = "1.2.1"
-espresso-core = "3.6.1"
-lifecycle-runtime-ktx = "2.8.3"
-activity-compose = "1.9.0"
-composeCompiler = "1.5.14"
-composeFoundation = "1.6.8"
-composeMaterial = "1.2.1"
-composeRuntime = "1.6.8"
-composeUi = "1.6.8"
-composeNavigation = "2.7.7"
-room = "2.6.1"
-ksp = "1.9.24-1.0.20"
-lifecycle = "2.8.3"
-coil = "2.6.0"
-paging = "3.3.0"
-roomPaging = "2.6.1"
-detekt = "1.23.6"
+kotlin = "2.0.21"
+kotlinx-coroutines = "1.9.0"
+kotlin-serialization = "1.7.3"
 koin = "4.0.0"
-koin-annotations = "1.4.0-RC4"
+sqldelite = "2.0.2"
+sqliteDriver = "2.0.2"
+runner = "1.0.2"
+espressoCore = "3.0.2"
+appcompatV7 = "28.0.0"
+navigationRuntimeKtx = "2.8.3"
+uiUnitDesktop = "1.7.0"
+uiUtil = "1.7.0"
+uriKmp = "0.0.19"
+jetbrainsKotlinJvm = "1.9.24"
+detekt = "1.23.6"
+coreKtx = "1.15.0"
 
 [libraries]
-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
-detekt-formatting = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", version.ref = "detektFormatting" }
-junit = { group = "junit", name = "junit", version.ref = "junit" }
-androidx-test-ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidx-test-ext-junit" }
-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso-core" }
-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycle-runtime-ktx" }
-lifecycle-viewModel = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "lifecycle" }
-lifecycle-viewModelCompose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycle" }
-lifecycle-runtimeCompose = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "lifecycle" }
-lifecycle-savedState = { module = "androidx.lifecycle:lifecycle-viewmodel-savedstate", version.ref = "lifecycle" }
-lifecycle-compiler = { module = "androidx.lifecycle:lifecycle-compiler", version.ref = "lifecycle" }
-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activity-compose" }
-composeUi = { module = "androidx.compose.ui:ui", version.ref = "composeUi" }
-composeCompiler = { module = "androidx.compose.compiler:compiler", version.ref = "composeCompiler" }
-composeFoundation = { module = "androidx.compose.foundation:foundation", version.ref = "composeFoundation" }
-composeRuntime = { module = "androidx.compose.runtime:runtime", version.ref = "composeRuntime" }
-composeNavigation = { module = "androidx.navigation:navigation-compose", version.ref = "composeNavigation" }
-room-paging = { module = " androidx.room:room-paging", version.ref = "roomPaging" }
-ui = { group = "androidx.compose.ui", name = "ui" }
-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics", version.ref = "composeUi" }
-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling", version.ref = "composeUi" }
-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview", version.ref = "composeUi" }
-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest", version.ref = "composeUi" }
-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4", version.ref = "composeUi" }
-material = { group = "androidx.compose.material3", name = "material3", version.ref = "composeMaterial" }
-room = { module = "androidx.room:room-runtime", version.ref = "room" }
-roomCompiler = { module = "androidx.room:room-compiler", version.ref = "room" }
-roomKtx = { module = "androidx.room:room-ktx", version.ref = "room" }
-coil = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
-paging = { module = "androidx.paging:paging-runtime", version.ref = "paging" }
-pagingCompose = { module = "androidx.paging:paging-compose", version.ref = "paging" }
-pagingCommon = { module = "androidx.paging:paging-common-ktx", version.ref = "paging" }
-koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
-koin-core-viewmodel = { module = "io.insert-koin:koin-core-viewmodel", version.ref = "koin" }
-koin-core-coroutines = { module = "io.insert-koin:koin-core-coroutines", version.ref = "koin" }
+coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coilCompose" }
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
-koin-compose-viewmodel = { module = "io.insert-koin:koin-compose-viewmodel", version.ref = "koin" }
-koin-compose-viewmodel-navigation = { module = "io.insert-koin:koin-compose-viewmodel-navigation", version.ref = "koin" }
-koin-annotations = { module = "io.insert-koin:koin-annotations", version.ref = "koin-annotations" }
-koin-ksp-compiler = { module = "io.insert-koin:koin-ksp-compiler", version.ref = "koin-annotations" }
+kotlin-gradlePlugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
+andorid-gradlePlugin = { module = "com.android.tools.build:gradle", version.ref = "agp" }
+compose-gradlePlugin = { module = "org.jetbrains.compose:org.jetbrains.compose.gradle.plugin", version.ref = "compose-multiplatform" }
+detekt-gradlePlugin = { module = "io.gitlab.arturbosch.detekt:detekt-gradle-plugin", version.ref = "detekt" }
+kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
+kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
+junit = { group = "junit", name = "junit", version.ref = "junit" }
+detekt-formatting = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", version.ref = "detekt" }
+
+compose-ui = { module = "org.jetbrains.compose.ui:ui", version.ref = "compose-multiplatform" }
+compose-material3-adaptive-navigation = { module = "org.jetbrains.compose.material3:material3-adaptive-navigation-suite", version.ref = "compose-multiplatform" }
+compose-material3 = { module = "org.jetbrains.compose.material3:material3", version.ref = "compose-multiplatform" }
+compose-animation = { module = "org.jetbrains.compose.animation:animation", version.ref = "compose-multiplatform" }
+compose-animation-graphics = { module = "org.jetbrains.compose.animation:animation-graphics", version.ref = "compose-multiplatform" }
+compose-foundation = { module = "org.jetbrains.compose.foundation:foundation", version.ref = "compose-multiplatform" }
+compose-runtime = { module = "org.jetbrains.compose.runtime:runtime", version.ref = "compose-multiplatform" }
+compose-components-resources = { module = "org.jetbrains.compose.components:components-resources", version.ref = "compose-multiplatform" }
+compose-components-uiToolingPreview = { module = "org.jetbrains.compose.components:components-ui-tooling-preview", version.ref = "compose-multiplatform" }
+compose-material-icons = { module = "org.jetbrains.compose.material:material-icons-extended", version.ref = "compose-multiplatform" }
+compose-ui-util = { module = "org.jetbrains.compose.ui:ui-util", version.ref = "uiUtil" }
+
+androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activityCompose" }
+androidx-lifecycle-viewmodel = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-viewmodel", version.ref = "androidx-lifecycle" }
+androidx-lifecycle-runtime-compose = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "androidx-lifecycle" }
+androidx-navigation-compose = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "andoridx-navigation" }
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
+kotlinx-coroutines-swing = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-swing", version.ref = "kotlinx-coroutines" }
+kotlin-serialization = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlin-serialization" }
+kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
+koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
+koin-viewmodel = { module = "io.insert-koin:koin-compose-viewmodel", version.ref = "koin" }
+koin-viewmodel-navigation = { module = "io.insert-koin:koin-compose-viewmodel-navigation", version.ref = "koin" }
+sqldelite-driver = { module = "app.cash.sqldelight:sqlite-driver", version.ref = "sqldelite" }
+sqldelite-coroutines-extensions = { module = "app.cash.sqldelight:coroutines-extensions", version.ref = "sqldelite" }
+sqldelite-android-driver = { module = "app.cash.sqldelight:android-driver", version.ref = "sqldelite" }
+runner = { group = "com.android.support.test", name = "runner", version.ref = "runner" }
+espresso-core = { group = "com.android.support.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
+appcompat-v7 = { group = "com.android.support", name = "appcompat-v7", version.ref = "appcompatV7" }
+androidx-navigation-runtime-ktx = { group = "androidx.navigation", name = "navigation-runtime-ktx", version.ref = "navigationRuntimeKtx" }
+androidx-ui-unit-desktop = { group = "androidx.compose.ui", name = "ui-unit-desktop", version.ref = "uiUnitDesktop" }
+uri-kmp = { module = "com.eygraber:uri-kmp", version.ref = "uriKmp" }
+androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
-kotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-room = { id = "androidx.room", version.ref = "room" }
-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+androidLibrary = { id = "com.android.library", version.ref = "agp" }
+composeMultiplatform = { id = "org.jetbrains.compose", version.ref = "compose-multiplatform" }
+composeCompiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+sqldelite = { id = "app.cash.sqldelight", version.ref = "sqldelite" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version = "1.9.24" }
+jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "jetbrainsKotlinJvm" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
-
-[bundles]
-compose = [
-    "activity-compose",
-    "composeRuntime",
-    "composeFoundation",
-    "composeUi",
-    "composeCompiler",
-    "composeNavigation"
-]
-
-koin = [
-    "koin-core",
-    "koin-core-coroutines",
-    "koin-core-viewmodel",
-    "koin-android",
-    "koin-compose-viewmodel",
-    "koin-compose-viewmodel-navigation"
-]
-
-room = [
-    "room",
-    "roomKtx"
-]
-
-lifecycle = [
-    "lifecycle-runtime-ktx",
-    "lifecycle-runtimeCompose",
-    "lifecycle-savedState",
-    "lifecycle-viewModel",
-    "lifecycle-viewModelCompose"
-]
+pienote-application-multiplatform = { id = "com.haghpanah.pienote.android-application" }
+pienote-android-library = { id = "com.haghpanah.pienote.android-library" }
+pienote-multiplatform = { id = "com.haghpanah.pienote.multiplatform" }
+pienote-compose-multiplatform = { id = "com.haghpanah.pienote.compose-multiplatform" }
+pienote-subproject = { id = "com.haghpanah.pienote.subproject" }
