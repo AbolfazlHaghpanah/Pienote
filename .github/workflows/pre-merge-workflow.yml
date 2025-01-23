@@ -23,14 +23,14 @@ jobs:
         run: chmod +x gradlew
 
       - name: Build with Gradle
-        run: ./gradlew build
+        run: ./gradlew assembleDebug
 
-      - name: Upload Lint Report
-        uses: github/codeql-action/upload-sarif@v3
-        if: success() || failure()
+      - name: Upload Debug .apk
+        uses: actions/upload-artifact@v3
+        if: success()
         with:
-          sarif_file: app/build/reports/lint-results-debug.sarif
-          category: lint
+          name: app-debug.apk
+          path: app/build/outputs/apk/debug/app-debug.apk
 
   detekt:
     permissions:
@@ -51,5 +51,5 @@ jobs:
         uses: github/codeql-action/upload-sarif@v3
         if: success() || failure()
         with:
-          sarif_file: app/build/reports/detekt/detekt.sarif
+          sarif_file: build/reports/detekt/detekt.sarif
           category: detekt
