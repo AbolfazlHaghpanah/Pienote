@@ -12,7 +12,7 @@ fun CommonExtension<*, *, *, *, *, *>.configureCommonExtension() {
     packaging.resources.excludes.add("/META-INF/{AL2.0,LGPL2.1}")
 
     buildTypes.getByName("release") {
-        isMinifyEnabled = true
+        isMinifyEnabled = false
     }
 
     compileOptions {
