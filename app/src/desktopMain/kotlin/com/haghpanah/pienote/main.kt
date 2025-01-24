@@ -33,7 +33,7 @@ import com.haghpanah.pienote.ui.MainScreen
 import org.jetbrains.compose.resources.painterResource
 import org.koin.core.context.startKoin
 import pienote.ui.generated.resources.Res
-import pienote.ui.generated.resources.ic_launcher_foreground
+import pienote.ui.generated.resources.pienote_icon
 import java.awt.Dimension
 import java.awt.Toolkit
 
@@ -56,7 +56,7 @@ fun main() = application {
         undecorated = true,
         transparent = true,
         onKeyEvent = ::handleKeyEvent,
-        icon = painterResource(Res.drawable.ic_launcher_foreground),
+        icon = painterResource(Res.drawable.pienote_icon),
     ) {
         addKeyboardShortcut(Key.Escape) {
             if (drawerState.isOpen) {

@@ -46,11 +46,19 @@ compose {
     desktop {
         application {
             mainClass = "${Configuration.PACKAGE_NAME}.MainKt"
-
             nativeDistributions {
-                targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
                 packageName = Configuration.PACKAGE_NAME
                 packageVersion = Configuration.VERSION_NAME
+                targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
+
+                macOS {
+                    iconFile.set(
+                        File(
+                            project.rootDir,
+                            "ui/src/commonMain/composeResources/drawable/pienote_icon_mac_os.icns"
+                        )
+                    )
+                }
             }
         }
     }
