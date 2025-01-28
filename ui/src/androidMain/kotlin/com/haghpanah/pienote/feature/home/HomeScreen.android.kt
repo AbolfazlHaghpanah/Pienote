@@ -35,7 +35,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.eygraber.uri.Uri
@@ -43,14 +42,15 @@ import com.haghpanah.pienote.core.component.PienoteScaffold
 import com.haghpanah.pienote.core.component.PienoteTopBar
 import com.haghpanah.pienote.core.navigation.PienoteScreens
 import com.haghpanah.pienote.core.theme.PienoteTheme
+import com.haghpanah.pienote.core.utlis.PienoteSnackbarHost
 import com.haghpanah.pienote.core.utlis.SnackbarManager
 import com.haghpanah.pienote.feature.home.component.AddCategoryComponent
 import com.haghpanah.pienote.feature.home.component.HomeCategoryItem
 import com.haghpanah.pienote.feature.home.component.HomeNoteItem
 import com.haghpanah.pienote.feature.home.component.MoveToCategoryComponent
-import com.haghpanah.pienote.model.NoteDomainModel
 import com.haghpanah.pienote.feature.home.component.SelectingNoteBottomMenu
 import com.haghpanah.pienote.feature.home.component.SelectingNoteOptions
+import com.haghpanah.pienote.model.NoteDomainModel
 import org.jetbrains.compose.resources.stringResource
 import pienote.ui.generated.resources.Res
 import pienote.ui.generated.resources.home
@@ -67,7 +67,6 @@ internal actual fun HomeScreen(
     onAddNewCategory: (List<Long>, String, Uri?) -> Unit,
     onAddNotesToCategory: (noteIds: List<Long>, categoryId: Long) -> Unit
 ) {
-    val context = LocalContext.current
     val listState = rememberLazyListState()
     val selectedNotes = remember { mutableStateListOf<NoteDomainModel>() }
     val shouldExpandFAB by remember {
@@ -114,9 +113,9 @@ internal actual fun HomeScreen(
 //                "Moved To Category Category",
 //                action = {
 //                    navigateToRoute(
-//                        AppScreens.CategoryScreen.createRoute(
+//                        PienoteScreens.CategoryScreen(
 //                            id,
-//                            context.getString(R.string.label_home)
+//                            getString(Res.string.label_home)
 //                        )
 //                    )
 //                },
@@ -126,9 +125,9 @@ internal actual fun HomeScreen(
     }
 
     PienoteScaffold(
-//        snackbarHost = {
-//            PienoteSnackbarHost(manager = snackbarManager)
-//        },
+        snackbarHost = {
+            PienoteSnackbarHost(manager = snackbarManager)
+        },
         floatingActionButton = {
             AnimatedVisibility(
                 visible = isSelectingNote.not(),
@@ -231,9 +230,9 @@ internal actual fun HomeScreen(
                 items = state.categoriesChunked ?: emptyList(),
                 key = { item -> item.first().id + (item.lastOrNull()?.id ?: 0) }
             ) { categoriesInARow ->
-                Modifier.padding(horizontal = 24.dp)
                 Row(
                     modifier = Modifier
+                        .padding(horizontal = 24.dp)
                         .animateItem(
                             //TODO
                             fadeInSpec = null,
