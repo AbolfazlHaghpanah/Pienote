@@ -37,4 +37,5 @@
     <string name="label_t">T</string>
     <string name="label_normal_text">Normal Text</string>
     <string name="label_change">Change</string>
+    <string name="label_show">Show</string>
 </resources>

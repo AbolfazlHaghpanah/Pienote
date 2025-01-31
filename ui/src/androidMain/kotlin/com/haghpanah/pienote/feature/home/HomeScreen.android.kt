@@ -31,11 +31,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.eygraber.uri.Uri
 import com.haghpanah.pienote.core.component.PienoteScaffold
@@ -51,11 +51,14 @@ import com.haghpanah.pienote.feature.home.component.MoveToCategoryComponent
 import com.haghpanah.pienote.feature.home.component.SelectingNoteBottomMenu
 import com.haghpanah.pienote.feature.home.component.SelectingNoteOptions
 import com.haghpanah.pienote.model.NoteDomainModel
+import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.getString
 import org.jetbrains.compose.resources.stringResource
 import pienote.ui.generated.resources.Res
 import pienote.ui.generated.resources.home
 import pienote.ui.generated.resources.label_add_note
 import pienote.ui.generated.resources.label_home
+import pienote.ui.generated.resources.label_show
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -67,6 +70,7 @@ internal actual fun HomeScreen(
     onAddNewCategory: (List<Long>, String, Uri?) -> Unit,
     onAddNotesToCategory: (noteIds: List<Long>, categoryId: Long) -> Unit
 ) {
+    val scope = rememberCoroutineScope()
     val listState = rememberLazyListState()
     val selectedNotes = remember { mutableStateListOf<NoteDomainModel>() }
     val shouldExpandFAB by remember {
@@ -109,18 +113,20 @@ internal actual fun HomeScreen(
     // shows snackbar for successfully move notes to a category
     LaunchedEffect(state.movedToCategoryId) {
         state.movedToCategoryId?.let { id ->
-//            snackbarManager.sendSuccess(
-//                "Moved To Category Category",
-//                action = {
-//                    navigateToRoute(
-//                        PienoteScreens.CategoryScreen(
-//                            id,
-//                            getString(Res.string.label_home)
-//                        )
-//                    )
-//                },
-//                actionLabel = "Show"
-//            )
+            snackbarManager.sendSuccess(
+                "Moved To Category Category",
+                action = {
+                    launch {
+                        navigateToRoute(
+                            PienoteScreens.CategoryScreen(
+                                id,
+                                getString(Res.string.label_home)
+                            )
+                        )
+                    }
+                },
+                actionLabel = Res.string.label_show
+            )
         }
     }
 
@@ -237,7 +243,7 @@ internal actual fun HomeScreen(
                             //TODO
                             fadeInSpec = null,
                             fadeOutSpec = null,
-                            placementSpec = tween<IntOffset>(300)
+                            placementSpec = tween(300)
                         ),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(16.dp)
@@ -257,12 +263,14 @@ internal actual fun HomeScreen(
                             image = category.image,
                             noteCount = category.noteCount
                         ) {
-                            navigateToRoute(
-                                PienoteScreens.CategoryScreen(
-                                    category.id,
-                                    parent = "context.getString(Res.string.label_home)"
+                            scope.launch {
+                                navigateToRoute(
+                                    PienoteScreens.CategoryScreen(
+                                        id = category.id,
+                                        parent = getString(Res.string.label_home)
+                                    )
                                 )
-                            )
+                            }
                         }
                     }
                 }

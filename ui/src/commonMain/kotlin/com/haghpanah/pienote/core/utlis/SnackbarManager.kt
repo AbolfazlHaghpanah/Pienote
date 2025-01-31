@@ -16,6 +16,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import com.haghpanah.pienote.core.component.PienoteSnackbar
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
@@ -59,7 +60,7 @@ class SnackbarManager {
      */
     suspend fun sendError(
         message: String,
-        action: (() -> Unit)? = null,
+        action: (CoroutineScope.() -> Unit)? = null,
         duration: SnackbarDuration = SnackbarDuration.Short
     ) {
         val snackbarData = SnackbarData(
@@ -87,7 +88,7 @@ class SnackbarManager {
      */
     suspend fun sendWarning(
         message: String,
-        action: (() -> Unit)? = null,
+        action: (CoroutineScope.() -> Unit)? = null,
         actionLabel: StringResource? = null,
         duration: SnackbarDuration = SnackbarDuration.Short
     ) {
@@ -118,7 +119,7 @@ class SnackbarManager {
      */
     suspend fun sendSuccess(
         message: String,
-        action: (() -> Unit)? = null,
+        action: (CoroutineScope.() -> Unit)? = null,
         actionLabel: StringResource? = null,
         duration: SnackbarDuration = SnackbarDuration.Short
     ) {
@@ -237,7 +238,7 @@ data class SnackbarData(
  */
 @Immutable
 data class SnackbarAction(
-    val action: () -> Unit,
+    val action: CoroutineScope.() -> Unit,
     val label: StringResource
 )
 
