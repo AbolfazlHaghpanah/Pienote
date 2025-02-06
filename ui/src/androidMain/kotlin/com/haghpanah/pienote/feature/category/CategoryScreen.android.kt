@@ -69,7 +69,7 @@ actual fun CategoryScreen(
     onDeleteNoteFromCategory: (List<Long>) -> Unit,
     navigateToRoute: (PienoteScreens) -> Unit,
     onBack: () -> Unit,
-    onUpdateCategoryName: (String) -> Unit
+    onUpdateCategoryName: (String) -> Unit,
 ) {
     var dialogState: DialogState by remember { mutableStateOf(DialogState.Dismiss) }
     val image = state.image ?: state.notes.firstOrNull()?.image
@@ -283,13 +283,15 @@ actual fun CategoryScreen(
                                         ) {
                                             Icon(
                                                 imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
-                                                contentDescription = "back"
+                                                contentDescription = "back",
+                                                tint = PienoteTheme.colors.onBackground
                                             )
 
                                             Text(
                                                 modifier = Modifier.padding(end = 4.dp),
                                                 text = parentScreen,
-                                                style = PienoteTheme.typography.labelMedium
+                                                style = PienoteTheme.typography.labelMedium,
+                                                color = PienoteTheme.colors.onBackground
                                             )
                                         }
                                     }
@@ -309,6 +311,7 @@ actual fun CategoryScreen(
                                         .padding(32.dp),
                                     text = state.name,
                                     style = PienoteTheme.typography.headlineLarge,
+                                    color = PienoteTheme.colors.onBackground,
                                     maxLines = 1,
                                     overflow = TextOverflow.Ellipsis
                                 )
