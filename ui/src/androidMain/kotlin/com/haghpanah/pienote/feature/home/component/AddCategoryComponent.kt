@@ -122,7 +122,7 @@ fun AddCategoryComponent(
                         }
                         .fillMaxWidth()
                         .aspectRatio(1f),
-                    model = categoryImage,
+                    model = categoryImage?.toString(),
                     contentDescription = null,
                     contentScale = ContentScale.Crop
                 )
