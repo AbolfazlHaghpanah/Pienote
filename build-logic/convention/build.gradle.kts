@@ -59,4 +59,11 @@ gradlePlugin {
             implementationClass = "SubprojectConversionPlugin"
         }
     }
+
+    plugins {
+        register("FeatureConversionPlugin") {
+            id = libs.plugins.pienote.feature.get().pluginId
+            implementationClass = "FeatureConversionPlugin"
+        }
+    }
 }

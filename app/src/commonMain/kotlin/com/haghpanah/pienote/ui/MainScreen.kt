@@ -8,9 +8,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
-import com.haghpanah.pienote.core.navigation.PienoteScreens
-import com.haghpanah.pienote.core.navigation.mainNavGraph
-import com.haghpanah.pienote.core.theme.PienoteTheme
+import com.haghpanah.pienote.designsystem.theme.PienoteTheme
+import com.haghpanah.pienote.navigation.PienoteScreens
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable

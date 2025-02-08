@@ -1,6 +1,6 @@
 package com.haghpanah.pienote.di
 
-import com.haghpanah.pienote.feature.category.CategoryViewModel
+import com.haghpanah.pienote.category.CategoryViewModel
 import com.haghpanah.pienote.usecase.category.CategoryAddNoteToCategoryUseCase
 import com.haghpanah.pienote.usecase.category.CategoryDeleteNoteFromCategoryUseCase
 import com.haghpanah.pienote.usecase.category.CategoryObserveAvailableNotesUseCase

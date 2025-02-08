@@ -1,6 +1,6 @@
 package com.haghpanah.pienote.di
 
-import com.haghpanah.pienote.feature.note.NoteViewModel
+import com.haghpanah.pienote.note.NoteViewModel
 import com.haghpanah.pienote.usecase.note.NoteGetCategoriesUseCase
 import com.haghpanah.pienote.usecase.note.NoteInsertNoteUseCase
 import com.haghpanah.pienote.usecase.note.NoteObserveNoteInfoUseCase

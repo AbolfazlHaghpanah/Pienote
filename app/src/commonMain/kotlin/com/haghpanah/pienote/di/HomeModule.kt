@@ -1,6 +1,6 @@
 package com.haghpanah.pienote.di
 
-import com.haghpanah.pienote.feature.home.HomeViewModel
+import com.haghpanah.pienote.home.HomeViewModel
 import com.haghpanah.pienote.usecase.home.HomeAddNotesToCategoryUseCase
 import com.haghpanah.pienote.usecase.home.HomeDeleteNoteUseCase
 import com.haghpanah.pienote.usecase.home.HomeInsertCategoryUseCase

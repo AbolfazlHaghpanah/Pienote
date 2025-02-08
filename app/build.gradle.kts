@@ -21,14 +21,21 @@ kotlin {
             implementation(libs.koin.android)
         }
         commonMain.dependencies {
+            implementation(projects.domain)
+            implementation(projects.data)
+            implementation(projects.ui.base)
+            implementation(projects.ui.navigation)
+            implementation(projects.ui.designSystem)
+            implementation(projects.ui.featureHome)
+            implementation(projects.ui.featureNote)
+            implementation(projects.ui.featureCategory)
+            implementation(projects.ui.snackbar)
+            implementation(projects.texteditor)
+
             implementation(libs.kotlin.serialization)
             implementation(libs.koin.core)
             implementation(libs.koin.viewmodel)
             implementation(libs.koin.viewmodel.navigation)
-            implementation(project(":ui"))
-            implementation(project(":data"))
-            implementation(project(":domain"))
-            implementation(project(":texteditor"))
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
