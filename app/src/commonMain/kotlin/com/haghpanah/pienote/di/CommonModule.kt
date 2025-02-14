@@ -1,6 +1,6 @@
 package com.haghpanah.pienote.di
 
-import com.haghpanah.pienote.core.utlis.SnackbarManager
+import com.haghpanah.pienote.snackbar.SnackbarManager
 import com.haghpanah.pienote.usecase.common.SaveImageUriInCacheUseCase
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf

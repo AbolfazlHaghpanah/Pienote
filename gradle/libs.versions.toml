@@ -93,3 +93,4 @@ pienote-android-library = { id = "com.haghpanah.pienote.android-library" }
 pienote-multiplatform = { id = "com.haghpanah.pienote.multiplatform" }
 pienote-compose-multiplatform = { id = "com.haghpanah.pienote.compose-multiplatform" }
 pienote-subproject = { id = "com.haghpanah.pienote.subproject" }
+pienote-feature = { id = "com.haghpanah.pienote.feature" }

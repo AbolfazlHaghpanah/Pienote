@@ -19,21 +19,20 @@ import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.haghpanah.pienote.core.component.DrawerState
-import com.haghpanah.pienote.core.component.DrawerState.DrawerValue.Open
-import com.haghpanah.pienote.core.component.PienoteDrawer
-import com.haghpanah.pienote.core.component.rememberDrawerState
-import com.haghpanah.pienote.core.navigation.PienoteScreens
-import com.haghpanah.pienote.core.theme.PienoteTheme
+import com.haghpanah.pienote.designsystem.component.DrawerState
+import com.haghpanah.pienote.designsystem.component.PienoteDrawer
+import com.haghpanah.pienote.designsystem.component.rememberDrawerState
+import com.haghpanah.pienote.designsystem.theme.PienoteTheme
 import com.haghpanah.pienote.di.createPienoteModules
-import com.haghpanah.pienote.feature.sidebar.HomeSideBar
+import com.haghpanah.pienote.home.HomeSideBar
+import com.haghpanah.pienote.navigation.PienoteScreens
 import com.haghpanah.pienote.shortcuthandler.addKeyboardShortcut
 import com.haghpanah.pienote.shortcuthandler.handleKeyEvent
 import com.haghpanah.pienote.ui.MainScreen
 import org.jetbrains.compose.resources.painterResource
 import org.koin.core.context.startKoin
-import pienote.ui.generated.resources.Res
-import pienote.ui.generated.resources.pienote_icon
+import pienote.ui.base.generated.resources.Res
+import pienote.ui.base.generated.resources.pienote_icon
 import java.awt.Dimension
 import java.awt.Toolkit
 
@@ -47,7 +46,7 @@ fun main() = application {
         position = WindowPosition.Aligned(Alignment.Center)
     )
     val navController = rememberNavController()
-    val drawerState = rememberDrawerState(Open)
+    val drawerState = rememberDrawerState(DrawerState.DrawerValue.Open)
 
     Window(
         onCloseRequest = ::exitApplication,

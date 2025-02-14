@@ -1,0 +1,61 @@
+name: Build
+
+on:
+  pull_request:
+    branches: [ "develop" ]
+  workflow_dispatch:
+
+jobs:
+  build-debug:
+    permissions:
+      security-events: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup Gradle
+        uses: ./.github/action/gradle-setup
+      - name: Grant gradlew permission
+        run: chmod +x gradlew
+      - name: Build Debug APK
+        run: ./gradlew assembleDebug
+      - name: Upload Debug APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-debug.apk
+          path: app/build/outputs/apk/debug/app-debug.apk
+
+  build-release:
+    permissions:
+      security-events: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup Gradle
+        uses: ./.github/action/gradle-setup
+      - name: Grant gradlew permission
+        run: chmod +x gradlew
+      - name: Build Release APK
+        run: ./gradlew assembleRelease
+      - name: Upload Release APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-release.apk
+          path: app/build/outputs/apk/release/app-release-unsigned.apk
+
+  build-desktop:
+    permissions:
+      security-events: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup Gradle
+        uses: ./.github/action/gradle-setup
+      - name: Grant gradlew permission
+        run: chmod +x gradlew
+      - name: Build Desktop App
+        run: ./gradlew packageDistributionForCurrentOS
+      - name: Upload Desktop Build
+        uses: actions/upload-artifact@v4
+        with:
+          name: desktop-app
+          path: desktop/build/compose/binaries
