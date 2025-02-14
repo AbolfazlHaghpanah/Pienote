@@ -19,4 +19,7 @@ sealed class PienoteScreens {
         val id: Long,
         val parent: String,
     ) : PienoteScreens()
+
+    @Serializable
+    data object Configurations : PienoteScreens()
 }

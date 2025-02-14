@@ -14,13 +14,14 @@ kotlin {
 
         androidMain.dependencies {
             implementation(libs.sqldelite.android.driver)
+            implementation(libs.androidx.datastore.preferences)
             implementation(libs.koin.android)
         }
         commonMain.dependencies {
+            implementation(projects.domain)
             implementation(libs.kotlin.serialization)
             implementation(libs.koin.core)
             implementation(libs.sqldelite.coroutines.extensions)
-            implementation(project(":domain"))
             implementation(libs.uri.kmp)
         }
         desktopMain.dependencies {
