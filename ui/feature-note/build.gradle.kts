@@ -21,5 +21,5 @@ kotlin {
 }
 
 dependencies {
-    implementation(projects.texteditor)
+    implementation(projects.ui.texteditor)
 }

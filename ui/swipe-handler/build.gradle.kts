@@ -7,5 +7,5 @@ plugins {
 }
 
 android {
-    namespace = "${Configuration.PACKAGE_NAME}.home"
+    namespace = "${Configuration.PACKAGE_NAME}.ui.swipehandler"
 }

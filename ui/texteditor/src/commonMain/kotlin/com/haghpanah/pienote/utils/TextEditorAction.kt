@@ -11,21 +11,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.resources.StringResource
-import pienote.texteditor.generated.resources.Res
-import pienote.texteditor.generated.resources.label_h1
-import pienote.texteditor.generated.resources.label_h2
-import pienote.texteditor.generated.resources.label_h3
-import pienote.texteditor.generated.resources.label_h4
-import pienote.texteditor.generated.resources.label_header1
-import pienote.texteditor.generated.resources.label_header2
-import pienote.texteditor.generated.resources.label_header3
-import pienote.texteditor.generated.resources.label_header4
-import pienote.texteditor.generated.resources.label_list
-import pienote.texteditor.generated.resources.label_normal_text
-import pienote.texteditor.generated.resources.label_ordered_list
-import pienote.texteditor.generated.resources.label_t
-import pienote.texteditor.generated.resources.label_to_do
-import pienote.texteditor.generated.resources.label_write_three_dot
+import pienote.ui.texteditor.generated.resources.Res
+import pienote.ui.texteditor.generated.resources.label_h1
+import pienote.ui.texteditor.generated.resources.label_h2
+import pienote.ui.texteditor.generated.resources.label_h3
+import pienote.ui.texteditor.generated.resources.label_h4
+import pienote.ui.texteditor.generated.resources.label_header1
+import pienote.ui.texteditor.generated.resources.label_header2
+import pienote.ui.texteditor.generated.resources.label_header3
+import pienote.ui.texteditor.generated.resources.label_header4
+import pienote.ui.texteditor.generated.resources.label_list
+import pienote.ui.texteditor.generated.resources.label_normal_text
+import pienote.ui.texteditor.generated.resources.label_ordered_list
+import pienote.ui.texteditor.generated.resources.label_t
+import pienote.ui.texteditor.generated.resources.label_to_do
+import pienote.ui.texteditor.generated.resources.label_write_three_dot
 
 enum class TextEditorAction(val key: String) {
     Non(""),

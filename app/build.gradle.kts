@@ -30,7 +30,7 @@ kotlin {
             implementation(projects.ui.featureNote)
             implementation(projects.ui.featureCategory)
             implementation(projects.ui.snackbar)
-            implementation(projects.texteditor)
+            implementation(projects.ui.texteditor)
 
             implementation(libs.kotlin.serialization)
             implementation(libs.koin.core)

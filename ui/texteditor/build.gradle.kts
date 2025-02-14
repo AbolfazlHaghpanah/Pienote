@@ -7,7 +7,7 @@ plugins {
     alias(libs.plugins.pienote.subproject)
 }
 android {
-    namespace = "${Configuration.PACKAGE_NAME}.texteditor"
+    namespace = "${Configuration.PACKAGE_NAME}.ui.texteditor"
 
     buildTypes {
         release {

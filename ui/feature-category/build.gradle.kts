@@ -18,7 +18,7 @@ kotlin {
         }
 
         commonMain.dependencies {
-            implementation(projects.texteditor)
+            implementation(projects.ui.texteditor)
         }
 
         desktopMain.dependencies {

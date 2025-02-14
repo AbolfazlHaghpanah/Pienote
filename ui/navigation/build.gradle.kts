@@ -8,7 +8,7 @@ plugins {
 }
 
 android {
-    namespace = "${Configuration.PACKAGE_NAME}.navigation"
+    namespace = "${Configuration.PACKAGE_NAME}.ui.navigation"
 }
 
 kotlin {

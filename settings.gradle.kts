@@ -36,12 +36,12 @@ dependencyResolutionManagement {
 
 include(":app")
 include(":data")
-include(":texteditor")
 include(":domain")
 includeBuild("build-logic")
 include(":ui:feature-home")
 include(":ui:feature-note")
 include(":ui:feature-category")
+include(":ui:texteditor")
 include(":ui:design-system")
 include(":ui:navigation")
 include(":ui:base")

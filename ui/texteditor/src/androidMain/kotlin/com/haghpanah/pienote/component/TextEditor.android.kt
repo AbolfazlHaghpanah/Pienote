@@ -49,8 +49,8 @@ import com.haghpanah.pienote.utils.getPrefixOrNull
 import com.haghpanah.pienote.utils.getTextStyle
 import com.haghpanah.pienote.utils.performAction
 import org.jetbrains.compose.resources.stringResource
-import pienote.texteditor.generated.resources.Res
-import pienote.texteditor.generated.resources.label_change
+import pienote.ui.texteditor.generated.resources.Res
+import pienote.ui.texteditor.generated.resources.label_change
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
