@@ -13,13 +13,13 @@ kotlin {
     sourceSets {
         val desktopMain by getting
 
+        commonMain.dependencies {
+            implementation(projects.ui.texteditor)
+        }
+
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutines.swing)
         }
     }
-}
-
-dependencies {
-    implementation(projects.ui.texteditor)
 }
