@@ -38,4 +38,6 @@
     <string name="label_normal_text">Normal Text</string>
     <string name="label_change">Change</string>
     <string name="label_show">Show</string>
+    <string name="label_configurations">Configurations</string>
+    <string name="label_theme">Theme</string>
 </resources>

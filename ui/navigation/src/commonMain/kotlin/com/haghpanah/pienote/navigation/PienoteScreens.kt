@@ -21,5 +21,7 @@ sealed class PienoteScreens {
     ) : PienoteScreens()
 
     @Serializable
-    data object Configurations : PienoteScreens()
+    data class Configurations(
+        val backButtonText: String,
+    ) : PienoteScreens()
 }

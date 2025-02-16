@@ -8,5 +8,6 @@ internal fun createPienoteModules() = listOf(
     categoryModule,
     commonModule,
     fileManagerModule,
-    preferencesModule
+    preferencesModule,
+    configurationsModule
 )

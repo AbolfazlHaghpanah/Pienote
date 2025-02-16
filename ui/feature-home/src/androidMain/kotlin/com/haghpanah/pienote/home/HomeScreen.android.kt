@@ -39,6 +39,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import com.eygraber.uri.Uri
 import com.haghpanah.pienote.designsystem.component.PienoteScaffold
+import com.haghpanah.pienote.designsystem.component.PienoteTopBar
 import com.haghpanah.pienote.designsystem.theme.PienoteTheme
 import com.haghpanah.pienote.home.component.AddCategoryComponent
 import com.haghpanah.pienote.home.component.HomeCategoryItem
@@ -54,6 +55,7 @@ import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.getString
 import org.jetbrains.compose.resources.stringResource
 import pienote.ui.base.generated.resources.Res
+import pienote.ui.base.generated.resources.configurations
 import pienote.ui.base.generated.resources.home
 import pienote.ui.base.generated.resources.label_add_note
 import pienote.ui.base.generated.resources.label_home
@@ -67,7 +69,7 @@ internal actual fun HomeScreen(
     navigateToRoute: (PienoteScreens) -> Unit,
     onDeleteNote: (NoteDomainModel) -> Unit,
     onAddNewCategory: (List<Long>, String, Uri?) -> Unit,
-    onAddNotesToCategory: (noteIds: List<Long>, categoryId: Long) -> Unit
+    onAddNotesToCategory: (noteIds: List<Long>, categoryId: Long) -> Unit,
 ) {
     val scope = rememberCoroutineScope()
     val listState = rememberLazyListState()
@@ -225,9 +227,19 @@ internal actual fun HomeScreen(
             state = listState
         ) {
             item {
-                com.haghpanah.pienote.designsystem.component.PienoteTopBar(
+                PienoteTopBar(
                     title = stringResource(Res.string.label_home),
                     icon = Res.drawable.home,
+                    actionIcon = Res.drawable.configurations,
+                    action = {
+                        scope.launch {
+                            navigateToRoute(
+                                PienoteScreens.Configurations(
+                                    backButtonText = getString(Res.string.label_home)
+                                )
+                            )
+                        }
+                    }
                 )
             }
 

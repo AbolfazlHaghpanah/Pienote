@@ -6,13 +6,18 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ReadOnlyComposable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import com.haghpanah.pienote.model.ThemeType
+import com.haghpanah.pienote.usecase.common.ObserveThemeUseCase
+import org.koin.java.KoinJavaComponent.inject
 
 @Composable
 fun PienoteTheme(
     typography: Typography = PienoteTheme.typography,
     colors: ColorScheme = PienoteTheme.colors,
     pienoteShapes: PienoteShapes = PienoteTheme.shapes,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     MaterialTheme(
         typography = typography,
@@ -23,10 +28,22 @@ fun PienoteTheme(
 }
 
 object PienoteTheme {
+    val isDarkMode: Boolean
+        @Composable
+        get() {
+            val observeThemeUseCase: ObserveThemeUseCase by inject(ObserveThemeUseCase::class.java)
+            val currentTheme by observeThemeUseCase()
+                .collectAsState(initial = ThemeType.SystemDefault)
+            return when (currentTheme) {
+                ThemeType.Dark -> true
+                ThemeType.Light -> false
+                else -> isSystemInDarkTheme()
+            }
+        }
+
     val colors: ColorScheme
         @Composable
-        @ReadOnlyComposable
-        get() = if (isSystemInDarkTheme()) {
+        get() = if (isDarkMode) {
             LocalDarkColors.current
         } else {
             LocalLightColors.current

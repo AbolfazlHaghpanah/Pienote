@@ -8,5 +8,4 @@ sealed class ConfigurationsScreens {
     @Serializable
     data object Home : ConfigurationsScreens()
 
-
 }

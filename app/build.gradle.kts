@@ -19,6 +19,7 @@ kotlin {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
             implementation(libs.koin.android)
+            implementation(libs.androidx.core.splashscreen)
         }
         commonMain.dependencies {
             implementation(projects.domain)
@@ -29,6 +30,7 @@ kotlin {
             implementation(projects.ui.featureHome)
             implementation(projects.ui.featureNote)
             implementation(projects.ui.featureCategory)
+            implementation(projects.ui.featureConfigurations)
             implementation(projects.ui.snackbar)
             implementation(projects.ui.texteditor)
 

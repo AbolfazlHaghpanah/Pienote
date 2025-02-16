@@ -13,6 +13,7 @@ androidx-test-junit = "1.2.1"
 andoridx-navigation = "2.7.0-alpha07"
 coilCompose = "3.0.0-rc01"
 compose-multiplatform = "1.7.0"
+coreSplashscreen = "1.0.1"
 datastorePreferences = "1.1.2"
 junit = "4.13.2"
 kotlin = "2.0.21"
@@ -38,6 +39,7 @@ appcompat = "1.7.0"
 material = "1.12.0"
 
 [libraries]
+androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "coreSplashscreen" }
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coilCompose" }
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
