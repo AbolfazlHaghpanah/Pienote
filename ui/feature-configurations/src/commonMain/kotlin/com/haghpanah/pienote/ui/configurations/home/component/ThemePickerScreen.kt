@@ -26,6 +26,9 @@ import com.haghpanah.pienote.designsystem.theme.lightColorScheme
 import com.haghpanah.pienote.model.ThemeType
 import org.jetbrains.compose.resources.stringResource
 import pienote.ui.base.generated.resources.Res
+import pienote.ui.base.generated.resources.label_dark
+import pienote.ui.base.generated.resources.label_light
+import pienote.ui.base.generated.resources.label_system_default
 import pienote.ui.base.generated.resources.label_theme
 
 
@@ -89,9 +92,9 @@ internal fun ThemePickerSection(
 @Composable
 private fun ThemeType.getShowText(): String =
     when (this) {
-        ThemeType.Dark -> "Dark"
-        ThemeType.Light -> "Light"
-        ThemeType.SystemDefault -> "System\nDefault"
+        ThemeType.Dark -> stringResource(Res.string.label_dark)
+        ThemeType.Light -> stringResource(Res.string.label_light)
+        ThemeType.SystemDefault -> stringResource(Res.string.label_system_default)
     }
 
 @Composable

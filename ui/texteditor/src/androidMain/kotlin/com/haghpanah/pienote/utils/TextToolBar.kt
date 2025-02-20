@@ -16,14 +16,14 @@ import com.haghpanah.pienote.utils.MenuItemOption.Paste
 import com.haghpanah.pienote.utils.MenuItemOption.SelectAll
 import com.haghpanah.pienote.utils.MenuItemOption.UnderLine
 import org.jetbrains.compose.resources.StringResource
-import pienote.ui.texteditor.generated.resources.Res
-import pienote.ui.texteditor.generated.resources.label_bold
-import pienote.ui.texteditor.generated.resources.label_code
-import pienote.ui.texteditor.generated.resources.label_copy
-import pienote.ui.texteditor.generated.resources.label_cut
-import pienote.ui.texteditor.generated.resources.label_paste
-import pienote.ui.texteditor.generated.resources.label_select_all
-import pienote.ui.texteditor.generated.resources.label_underline
+import pienote.ui.base.generated.resources.Res
+import pienote.ui.base.generated.resources.label_bold
+import pienote.ui.base.generated.resources.label_code
+import pienote.ui.base.generated.resources.label_copy
+import pienote.ui.base.generated.resources.label_cut
+import pienote.ui.base.generated.resources.label_paste
+import pienote.ui.base.generated.resources.label_select_all
+import pienote.ui.base.generated.resources.label_underline
 
 /**
  * A customized version of the [androidx.compose.ui.platform.AndroidTextToolbar] class that extends

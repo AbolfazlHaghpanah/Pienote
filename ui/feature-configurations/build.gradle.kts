@@ -13,6 +13,10 @@ kotlin {
     sourceSets {
         val desktopMain by getting
 
+        androidMain.dependencies {
+            implementation(libs.androidx.appcompat)
+        }
+
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutines.swing)

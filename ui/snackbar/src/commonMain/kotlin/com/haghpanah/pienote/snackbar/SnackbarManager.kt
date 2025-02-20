@@ -4,8 +4,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import org.jetbrains.compose.resources.StringResource
-import pienote.ui.snackbar.generated.resources.Res
-import pienote.ui.snackbar.generated.resources.label_try_again
+import pienote.ui.base.generated.resources.Res
+import pienote.ui.base.generated.resources.label_try_again
 
 /**
  * A manager class responsible for displaying and dismissing snackbar messages in the application.

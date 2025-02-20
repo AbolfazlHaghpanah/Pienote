@@ -40,4 +40,14 @@
     <string name="label_show">Show</string>
     <string name="label_configurations">Configurations</string>
     <string name="label_theme">Theme</string>
+    <string name="label_language">Language</string>
+    <string name="label_persian">Persian</string>
+    <string name="label_English">English</string>
+    <string name="label_copy">Copy</string>
+    <string name="label_paste">Paste</string>
+    <string name="label_cut">Cut</string>
+    <string name="label_select_all">Select All</string>
+    <string name="label_dark">Dark</string>
+    <string name="label_light">Light</string>
+    <string name="label_system_default">System\nDefault</string>
 </resources>

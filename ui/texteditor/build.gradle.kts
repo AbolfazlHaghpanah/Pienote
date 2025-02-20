@@ -24,6 +24,7 @@ kotlin {
         val desktopMain by getting
 
         commonMain.dependencies {
+            implementation(projects.ui.base)
             implementation(libs.compose.material.icons)
             implementation(libs.kotlin.serialization)
             implementation(libs.coil.compose)

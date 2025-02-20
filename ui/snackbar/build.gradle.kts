@@ -12,6 +12,7 @@ android {
 
 kotlin {
     sourceSets.commonMain.dependencies {
+        implementation(projects.ui.base)
         implementation(projects.ui.designSystem)
     }
 }

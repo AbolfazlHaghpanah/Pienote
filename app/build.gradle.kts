@@ -16,6 +16,7 @@ kotlin {
         val desktopMain by getting
 
         androidMain.dependencies {
+            implementation(libs.androidx.appcompat)
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
             implementation(libs.koin.android)
