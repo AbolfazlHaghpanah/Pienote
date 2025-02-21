@@ -82,5 +82,4 @@ fun lightColorScheme() = ColorScheme(
     surfaceContainerLowest = surfaceContainerLowestLight
 )
 
-val LocalDarkColors = staticCompositionLocalOf { darkColorScheme() }
-val LocalLightColors = staticCompositionLocalOf { lightColorScheme() }
+val LocalColorScheme = staticCompositionLocalOf { darkColorScheme() }

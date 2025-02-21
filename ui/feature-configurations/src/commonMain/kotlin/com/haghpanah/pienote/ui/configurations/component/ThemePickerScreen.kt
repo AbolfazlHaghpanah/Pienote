@@ -1,4 +1,4 @@
-package com.haghpanah.pienote.ui.configurations.home.component
+package com.haghpanah.pienote.ui.configurations.component
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background

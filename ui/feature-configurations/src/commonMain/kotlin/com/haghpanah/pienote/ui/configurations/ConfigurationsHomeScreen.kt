@@ -1,41 +1,39 @@
-package com.haghpanah.pienote.ui.configurations.home
+package com.haghpanah.pienote.ui.configurations
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.navigation.NavController
+import com.haghpanah.pienote.model.SupportedLanguage
 import com.haghpanah.pienote.model.ThemeType
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-internal fun ConfigurationsHomeScreen(navController: NavController) {
-    ConfigurationsHomeScreen(
+fun ConfigurationsScreen(navController: NavController) {
+    ConfigurationsScreen(
         navController = navController,
         viewModel = koinViewModel()
     )
 }
 
 @Composable
-private fun ConfigurationsHomeScreen(
+private fun ConfigurationsScreen(
     navController: NavController,
-    viewModel: ConfigurationsHomeViewModel,
+    viewModel: ConfigurationsViewModel,
 ) {
     val state by viewModel.collectAsStateWithLifecycle()
 
-    ConfigurationsHomeScreen(
+    ConfigurationsScreen(
         state = state,
-        backButtonText = navController
-            .currentBackStackEntry
-            ?.arguments
-            ?.getString("backButtonText"),
         onBack = { navController.navigateUp() },
+        onSetAppLanguage = viewModel::setAppLanguage,
         onSetTheme = viewModel::setTheme
     )
 }
 
 @Composable
-internal expect fun ConfigurationsHomeScreen(
-    state: ConfigurationsHomeViewState,
-    backButtonText: String?,
+internal expect fun ConfigurationsScreen(
+    state: ConfigurationsViewState,
     onBack: () -> Unit,
     onSetTheme: (ThemeType) -> Unit,
+    onSetAppLanguage: (SupportedLanguage) -> Unit,
 )

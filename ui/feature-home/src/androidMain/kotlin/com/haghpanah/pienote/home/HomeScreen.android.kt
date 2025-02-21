@@ -234,9 +234,7 @@ internal actual fun HomeScreen(
                     action = {
                         scope.launch {
                             navigateToRoute(
-                                PienoteScreens.Configurations(
-                                    backButtonText = getString(Res.string.label_home)
-                                )
+                                PienoteScreens.ConfigurationsScreen
                             )
                         }
                     }

@@ -9,6 +9,10 @@ plugins {
 
 android {
     namespace = Configuration.PACKAGE_NAME
+
+    defaultConfig {
+        resourceConfigurations += setOf("fa")
+    }
 }
 
 kotlin {

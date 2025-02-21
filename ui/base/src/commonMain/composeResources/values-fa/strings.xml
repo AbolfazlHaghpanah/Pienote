@@ -42,7 +42,7 @@
     <string name="label_theme">پوسته</string>
     <string name="label_language">زبان</string>
     <string name="label_persian">فارسی</string>
-    <string name="label_English">انگلیسی</string>
+    <string name="label_English">(English) انگلیسی</string>
     <string name="label_copy">کپی</string>
     <string name="label_paste">چسباندن</string>
     <string name="label_cut">برش</string>

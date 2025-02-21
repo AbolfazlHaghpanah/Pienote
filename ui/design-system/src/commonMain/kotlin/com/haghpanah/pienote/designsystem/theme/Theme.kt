@@ -5,49 +5,41 @@ import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.ReadOnlyComposable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import com.haghpanah.pienote.model.ThemeType
-import com.haghpanah.pienote.usecase.common.ObserveThemeUseCase
-import org.koin.java.KoinJavaComponent.inject
 
 @Composable
 fun PienoteTheme(
+    isDarkMode: Boolean = true,
     typography: Typography = PienoteTheme.typography,
     colors: ColorScheme = PienoteTheme.colors,
     pienoteShapes: PienoteShapes = PienoteTheme.shapes,
     content: @Composable () -> Unit,
 ) {
-    MaterialTheme(
-        typography = typography,
-        colorScheme = colors,
-        content = content,
-        shapes = pienoteShapes.toShapes()
-    )
+    val colorScheme = if (isDarkMode) {
+        darkColorScheme()
+    } else {
+        lightColorScheme()
+    }
+
+    CompositionLocalProvider(
+        LocalColorScheme provides colorScheme
+    ) {
+        MaterialTheme(
+            typography = typography,
+            colorScheme = colors,
+            shapes = pienoteShapes.toShapes(),
+            content = content
+        )
+    }
 }
 
 object PienoteTheme {
-    val isDarkMode: Boolean
-        @Composable
-        get() {
-            val observeThemeUseCase: ObserveThemeUseCase by inject(ObserveThemeUseCase::class.java)
-            val currentTheme by observeThemeUseCase()
-                .collectAsState(initial = ThemeType.SystemDefault)
-            return when (currentTheme) {
-                ThemeType.Dark -> true
-                ThemeType.Light -> false
-                else -> isSystemInDarkTheme()
-            }
-        }
-
     val colors: ColorScheme
         @Composable
-        get() = if (isDarkMode) {
-            LocalDarkColors.current
-        } else {
-            LocalLightColors.current
-        }
+        @ReadOnlyComposable
+        get() = LocalColorScheme.current
 
     val typography: Typography
         @Composable

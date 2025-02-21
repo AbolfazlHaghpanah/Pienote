@@ -16,21 +16,19 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @Preview
 fun MainScreen(
     navController: NavHostController,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
-    PienoteTheme {
-        Box(
-            modifier = modifier
-                .background(PienoteTheme.colors.background)
-                .navigationBarsPadding()
-                .fillMaxSize()
+    Box(
+        modifier = modifier
+            .background(PienoteTheme.colors.background)
+            .navigationBarsPadding()
+            .fillMaxSize()
+    ) {
+        NavHost(
+            navController = navController,
+            startDestination = PienoteScreens.HomeScreen
         ) {
-            NavHost(
-                navController = navController,
-                startDestination = PienoteScreens.HomeScreen
-            ) {
-                mainNavGraph(navController)
-            }
+            mainNavGraph(navController)
         }
     }
 }
