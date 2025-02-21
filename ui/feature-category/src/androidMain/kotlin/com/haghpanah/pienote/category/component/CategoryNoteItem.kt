@@ -188,7 +188,7 @@ fun CategoryNoteItem(
 )
 @Composable
 private fun HomeNoteItemPreview() {
-    PienoteTheme {
+    PienoteTheme() {
         Box(
             modifier = Modifier
                 .background(PienoteTheme.colors.background)

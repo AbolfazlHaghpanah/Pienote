@@ -13,6 +13,8 @@ android {
 
 kotlin {
     sourceSets.commonMain.dependencies {
+        implementation(projects.domain)
+        implementation(libs.koin.core)
         implementation(libs.uri.kmp)
         implementation(libs.compose.ui.util)
         implementation(libs.androidx.lifecycle.viewmodel)

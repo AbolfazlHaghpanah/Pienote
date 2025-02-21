@@ -1,8 +1,12 @@
 package com.haghpanah.pienote
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -25,12 +29,15 @@ import com.haghpanah.pienote.designsystem.component.rememberDrawerState
 import com.haghpanah.pienote.designsystem.theme.PienoteTheme
 import com.haghpanah.pienote.di.createPienoteModules
 import com.haghpanah.pienote.home.HomeSideBar
+import com.haghpanah.pienote.model.ThemeType
 import com.haghpanah.pienote.navigation.PienoteScreens
 import com.haghpanah.pienote.shortcuthandler.addKeyboardShortcut
 import com.haghpanah.pienote.shortcuthandler.handleKeyEvent
 import com.haghpanah.pienote.ui.MainScreen
+import com.haghpanah.pienote.ui.MainViewModel
 import org.jetbrains.compose.resources.painterResource
 import org.koin.core.context.startKoin
+import org.koin.java.KoinJavaComponent.inject
 import pienote.ui.base.generated.resources.Res
 import pienote.ui.base.generated.resources.pienote_icon
 import java.awt.Dimension
@@ -40,6 +47,9 @@ fun main() = application {
     startKoin {
         modules(createPienoteModules())
     }
+
+    val viewModel: MainViewModel by inject(MainViewModel::class.java)
+    val state by viewModel.collectAsStateWithLifecycle()
 
     val windowState = rememberWindowState(
         size = getPreferredWindowSize(1080, 720),
@@ -57,6 +67,18 @@ fun main() = application {
         onKeyEvent = ::handleKeyEvent,
         icon = painterResource(Res.drawable.pienote_icon),
     ) {
+        val isSystemDarkTheme = isSystemInDarkTheme()
+        val isDarkMode by remember {
+            derivedStateOf {
+                when (state.currentTheme) {
+                    ThemeType.Dark -> true
+                    ThemeType.Light -> false
+                    ThemeType.SystemDefault -> isSystemDarkTheme
+                    else -> true
+                }
+            }
+        }
+
         addKeyboardShortcut(Key.Escape) {
             if (drawerState.isOpen) {
                 drawerState.close()
@@ -66,29 +88,33 @@ fun main() = application {
             true
         }
 
-        PienoteDrawer(
-            state = drawerState,
-            modifier = Modifier
-                .clip(PienoteTheme.shapes.large)
-                .background(PienoteTheme.colors.surfaceContainerLow)
-                .padding(8.dp),
-            drawerContent = {
-                HomeSideBar(
-                    navController = navController,
-                    onChangeVisibility = {
-                        if (drawerState.isOpen) {
-                            drawerState.close()
-                        } else {
-                            drawerState.open()
+        PienoteTheme(
+            isDarkMode = isDarkMode
+        ) {
+            PienoteDrawer(
+                state = drawerState,
+                modifier = Modifier
+                    .clip(PienoteTheme.shapes.large)
+                    .background(PienoteTheme.colors.surfaceContainerLow)
+                    .padding(8.dp),
+                drawerContent = {
+                    HomeSideBar(
+                        navController = navController,
+                        onChangeVisibility = {
+                            if (drawerState.isOpen) {
+                                drawerState.close()
+                            } else {
+                                drawerState.open()
+                            }
                         }
-                    }
+                    )
+                }
+            ) {
+                MainScreen(
+                    modifier = Modifier.clip(PienoteTheme.shapes.medium),
+                    navController = navController
                 )
             }
-        ) {
-            MainScreen(
-                modifier = Modifier.clip(PienoteTheme.shapes.medium),
-                navController = navController
-            )
         }
 
         createMenu(
@@ -103,7 +129,7 @@ fun main() = application {
 private fun FrameWindowScope.createMenu(
     drawerState: DrawerState,
     windowState: WindowState,
-    navController: NavHostController
+    navController: NavHostController,
 ) {
     MenuBar {
         Menu(

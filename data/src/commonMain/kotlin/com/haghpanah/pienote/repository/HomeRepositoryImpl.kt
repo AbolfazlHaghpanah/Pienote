@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 internal class HomeRepositoryImpl(
-    private val database: PienoteDatabase
+    private val database: PienoteDatabase,
 ) : HomeRepository {
     override fun observeNotes(): Flow<List<NoteDomainModel>> =
         database.noteQueries
@@ -42,6 +42,7 @@ internal class HomeRepositoryImpl(
             }
 
     override suspend fun deleteNote(note: NoteDomainModel) {
-
+        //TODO Perform List remove
+        database.noteQueries.deleteNote(listOf(note.id))
     }
 }

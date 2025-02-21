@@ -5,32 +5,41 @@ import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.ReadOnlyComposable
+import com.haghpanah.pienote.model.ThemeType
 
 @Composable
 fun PienoteTheme(
+    isDarkMode: Boolean = true,
     typography: Typography = PienoteTheme.typography,
     colors: ColorScheme = PienoteTheme.colors,
     pienoteShapes: PienoteShapes = PienoteTheme.shapes,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
-    MaterialTheme(
-        typography = typography,
-        colorScheme = colors,
-        content = content,
-        shapes = pienoteShapes.toShapes()
-    )
+    val colorScheme = if (isDarkMode) {
+        darkColorScheme()
+    } else {
+        lightColorScheme()
+    }
+
+    CompositionLocalProvider(
+        LocalColorScheme provides colorScheme
+    ) {
+        MaterialTheme(
+            typography = typography,
+            colorScheme = colors,
+            shapes = pienoteShapes.toShapes(),
+            content = content
+        )
+    }
 }
 
 object PienoteTheme {
     val colors: ColorScheme
         @Composable
         @ReadOnlyComposable
-        get() = if (isSystemInDarkTheme()) {
-            LocalDarkColors.current
-        } else {
-            LocalLightColors.current
-        }
+        get() = LocalColorScheme.current
 
     val typography: Typography
         @Composable
